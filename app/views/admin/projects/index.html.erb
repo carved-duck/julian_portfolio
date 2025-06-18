@@ -1,0 +1,13 @@
+<p style="color: green"><%= notice %></p>
+<h1>Admin: Projects</h1>
+<%= link_to "New Project", new_admin_project_path, class: "btn btn-primary mb-3" %>
+<div id="admin_projects">
+  <% @projects.each do |project| %>
+    <%= render "project", project: project %>
+    <p>
+      <%= link_to "Show", admin_project_path(project), class: "btn btn-sm btn-outline-secondary" %>
+      <%= link_to "Edit", edit_admin_project_path(project), class: "btn btn-sm btn-outline-primary" %>
+      <%= link_to "Delete", admin_project_path(project), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-sm btn-outline-danger" %>
+    </p>
+  <% end %>
+</div>
