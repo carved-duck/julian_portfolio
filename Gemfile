@@ -75,3 +75,5 @@ end
 
 # custom install
 gem "ostruct"
+gem "cloudinary"
+gem "geocoder"
