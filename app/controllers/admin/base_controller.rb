@@ -1,6 +1,11 @@
 class Admin::BaseController < ApplicationController
-  http_basic_authenticate_with(
-    name: ENV.fetch("ADMIN_USER"),
-    password: ENV.fetch("ADMIN_PASSWORD")
-  )
+  before_action :authenticate_admin
+
+  private
+
+  def authenticate_admin
+    authenticate_or_request_with_http_basic("Admin Area") do |username, password|
+      username == ENV['ADMIN_USERNAME'] && password == ENV['ADMIN_PASSWORD']
+    end
+  end
 end

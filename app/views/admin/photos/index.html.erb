@@ -1,0 +1,20 @@
+<p style="color: green"><%= notice %></p>
+<h1>Admin - Photos</h1>
+<div id="photos">
+  <% @photos.each do |photo| %>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title"><%= photo.category %></h5>
+        <% if photo.image.attached? %>
+          <%= image_tag photo.image.variant(resize_to_limit: [200, 200]), class: "img-thumbnail" %>
+        <% end %>
+        <div class="mt-2">
+          <%= link_to "Show", admin_photo_path(photo), class: "btn btn-primary btn-sm" %>
+          <%= link_to "Edit", edit_admin_photo_path(photo), class: "btn btn-secondary btn-sm" %>
+          <%= link_to "Delete", admin_photo_path(photo), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger btn-sm" %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+<%= link_to "New Photo", new_admin_photo_path, class: "btn btn-success" %>

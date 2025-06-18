@@ -1,0 +1,69 @@
+<div class="container-fluid admin-dashboard">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="mb-4">Admin Dashboard</h1>
+      <p class="lead">Manage your portfolio content</p>
+    </div>
+  </div>
+  <div class="row">
+    <!-- Projects -->
+    <div class="col-md-6 col-lg-3 mb-4">
+      <div class="card h-100">
+        <div class="card-body text-center">
+          <i class="fas fa-project-diagram fa-3x text-primary mb-3"></i>
+          <h5 class="card-title">Projects</h5>
+          <p class="card-text fs-2 fw-bold text-primary"><%= @projects_count %></p>
+          <%= link_to "Manage Projects", admin_projects_path, class: "btn btn-primary" %>
+        </div>
+      </div>
+    </div>
+    <!-- Photos -->
+    <div class="col-md-6 col-lg-3 mb-4">
+      <div class="card h-100">
+        <div class="card-body text-center">
+          <i class="fas fa-camera fa-3x text-success mb-3"></i>
+          <h5 class="card-title">Photos</h5>
+          <p class="card-text fs-2 fw-bold text-success"><%= @photos_count %></p>
+          <%= link_to "Manage Photos", admin_photos_path, class: "btn btn-success" %>
+        </div>
+      </div>
+    </div>
+    <!-- Blog Posts -->
+    <div class="col-md-6 col-lg-3 mb-4">
+      <div class="card h-100">
+        <div class="card-body text-center">
+          <i class="fas fa-blog fa-3x text-warning mb-3"></i>
+          <h5 class="card-title">Blog Posts</h5>
+          <p class="card-text fs-2 fw-bold text-warning"><%= @blog_posts_count %></p>
+          <%= link_to "Manage Blog Posts", admin_blog_posts_path, class: "btn btn-warning" %>
+        </div>
+      </div>
+    </div>
+    <!-- Submissions -->
+    <div class="col-md-6 col-lg-3 mb-4">
+      <div class="card h-100">
+        <div class="card-body text-center">
+          <i class="fas fa-envelope fa-3x text-info mb-3"></i>
+          <h5 class="card-title">Submissions</h5>
+          <p class="card-text fs-2 fw-bold text-info"><%= @submissions_count %></p>
+          <%= link_to "View Submissions", admin_submissions_path, class: "btn btn-info" %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Quick Actions</h5>
+          <div class="btn-group" role="group">
+            <%= link_to "New Project", new_admin_project_path, class: "btn btn-outline-primary" %>
+            <%= link_to "New Photo", new_admin_photo_path, class: "btn btn-outline-success" %>
+            <%= link_to "New Blog Post", new_admin_blog_post_path, class: "btn btn-outline-warning" %>
+            <%= link_to "View Public Site", root_path, class: "btn btn-outline-secondary", target: "_blank" %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

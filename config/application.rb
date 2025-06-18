@@ -6,6 +6,11 @@ require "rails/all"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+# Load dotenv early - before Rails configuration
+if defined?(Dotenv)
+  Dotenv.load
+end
+
 module ChangeThisToYourRailsAppName
   class Application < Rails::Application
     config.action_controller.raise_on_missing_callback_actions = false if Rails.version >= "7.1.0"

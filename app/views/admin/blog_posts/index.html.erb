@@ -1,0 +1,28 @@
+<p style="color: green"><%= notice %></p>
+<h1>Admin - Blog Posts</h1>
+<div id="blog_posts">
+  <% @blog_posts.each do |blog_post| %>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title"><%= blog_post.title %></h5>
+        <p class="card-text"><%= truncate(blog_post.body, length: 100) %></p>
+        <small class="text-muted">
+          <% if blog_post.published? %>
+            Published: <%= blog_post.published_at.strftime("%B %d, %Y") %>
+          <% else %>
+            <em>Draft</em>
+          <% end %>
+        </small>
+        <div class="mt-2">
+          <%= link_to "Show", admin_blog_post_path(blog_post), class: "btn btn-primary btn-sm" %>
+          <%= link_to "Edit", edit_admin_blog_post_path(blog_post), class: "btn btn-secondary btn-sm" %>
+          <%= link_to "Delete", admin_blog_post_path(blog_post),
+                      method: :delete,
+                      data: { confirm: "Are you sure?" },
+                      class: "btn btn-danger btn-sm" %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+<%= link_to "New Blog Post", new_admin_blog_post_path, class: "btn btn-success" %>

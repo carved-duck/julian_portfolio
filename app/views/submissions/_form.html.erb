@@ -1,0 +1,16 @@
+<%= form_with model: submission, url: submissions_path, local: true do |f| %>
+  <div class="mb-3">
+    <%= f.label :name %>
+    <%= f.text_field :name, required: true, class: "form-control" %>
+  </div>
+  <div class="mb-3">
+    <%= f.label :instagram_handle, "Instagram Handle" %>
+    <%= f.text_field :instagram_handle, class: "form-control" %>
+  </div>
+  <div class="mb-3">
+    <%= f.label :message %>
+    <%= f.text_area :message, class: "form-control" %>
+  </div>
+  <%= f.submit "Send", class: "btn btn-primary" %>
+<% end %>
+<%= link_to "If you have any issues", new_submission_path %>

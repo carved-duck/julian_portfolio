@@ -1,0 +1,6 @@
+<% if @show_event_form %>
+  <%= render "form", submission: @submission %>
+  <%= link_to "If you have any issues", new_submission_path %>
+<% else %>
+  <h1>Sorry, no events right now</h1>
+<% end %>

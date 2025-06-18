@@ -1,5 +1,12 @@
 Rails.application.routes.draw do
+  # For the Public site
+  resources :projects, only: %i[index show]
+  resources :photos, only: %i[index show]
+  resources :blog_posts, only: %i[index show], path: "blog"
+  resources :submissions, only: %i[new create]
+  # Admin die
   namespace :admin do
+    root to: "dashboard#index"
     resources :projects
     resources :photos
     resources :blog_posts
