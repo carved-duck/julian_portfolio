@@ -1,0 +1,103 @@
+// Image Component Styles
+
+// General image improvements
+.img-fluid {
+  height: auto;
+  max-width: 100%;
+  transition: all 0.3s ease;
+}
+
+// Ensure images don't overflow
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+// Featured image styling
+.featured-image {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.featured-image:hover {
+  transform: scale(1.02);
+}
+
+// Gallery images
+.gallery-image {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.gallery-image:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+// Avatar/profile images
+.avatar {
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatar-sm {
+  width: 40px;
+  height: 40px;
+}
+
+.avatar-md {
+  width: 80px;
+  height: 80px;
+}
+
+.avatar-lg {
+  width: 120px;
+  height: 120px;
+}
+
+// Mobile image adjustments
+@media (max-width: 768px) {
+  .featured-image {
+    height: 200px;
+  }
+
+  .gallery-image {
+    height: 180px;
+  }
+}
+
+
+
+// Image gallery styles
+.image-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
+
+  .gallery-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    aspect-ratio: 4/3;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    &:hover img {
+      transform: scale(1.05);
+    }
+  }
+}

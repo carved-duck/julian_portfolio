@@ -1,0 +1,173 @@
+// Browser Window Component for Cloudinary Images
+
+.browser-window {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.browser-window:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 50px rgba(0, 0, 0, 0.15);
+}
+
+// Browser header with traffic lights and URL bar
+.browser-header {
+  background: #f5f5f7;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+}
+
+// macOS-style traffic lights
+.browser-controls {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.control-button {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+}
+
+.control-close {
+  background: #ff5f57;
+}
+
+.control-minimize {
+  background: #ffbd2e;
+}
+
+.control-maximize {
+  background: #28ca42;
+}
+
+// URL bar
+.browser-url-bar {
+  flex: 1;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 12px;
+  color: #666;
+  font-family: $body-font;
+  text-decoration: none;
+  display: block;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0; // Allow shrinking
+}
+
+// Clickable URL bar (secret functionality)
+.clickable-url {
+  cursor: pointer;
+}
+
+.clickable-url:hover {
+  background: #f8f9fa;
+  color: #555;
+  text-decoration: none;
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+.clickable-url:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+// Website content area
+.browser-content {
+  position: relative;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.browser-image {
+  width: 100%;
+  border: none;
+  display: block;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.browser-window:hover .browser-image {
+  transform: scale(1.02);
+}
+
+// Different sizes for different contexts
+.browser-window-card {
+  height: 250px;
+
+  .browser-image {
+    height: 210px; // More space for header
+  }
+}
+
+.browser-window-showcase {
+  height: 400px;
+
+  .browser-image {
+    height: 360px; // More space for header
+  }
+}
+
+.browser-window-full {
+  height: 500px;
+
+  .browser-image {
+    height: 460px; // More space for header
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .browser-window-card {
+    height: 200px;
+
+    .browser-image {
+      height: 160px;
+    }
+  }
+
+  .browser-window-showcase {
+    height: 300px;
+
+    .browser-image {
+      height: 260px;
+    }
+  }
+
+  .browser-header {
+    padding: 6px 8px;
+    gap: 6px;
+  }
+
+  .browser-controls {
+    gap: 4px;
+  }
+
+  .control-button {
+    width: 10px;
+    height: 10px;
+  }
+
+  .browser-url-bar {
+    font-size: 10px;
+    padding: 4px 6px;
+  }
+}

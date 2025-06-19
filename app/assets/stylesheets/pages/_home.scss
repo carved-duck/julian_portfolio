@@ -1,1 +1,21 @@
-// Specific CSS for your home-page
+// Home Page Specific Styles
+
+// Featured Projects Section
+.featured-projects {
+  padding: 4rem 0;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 3rem;
+  font-size: 2rem;
+  color: #1a202c;
+}
+
+// Mobile responsiveness for home page
+@media (max-width: 768px) {
+  .section-title {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+  }
+}

@@ -1,0 +1,75 @@
+// Card Component Styles
+
+.card {
+  transition: all 0.3s ease;
+  border: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+}
+
+.card-img-top {
+  transition: all 0.3s ease;
+  border-radius: 0;
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+.card-title {
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  line-height: 1.3;
+}
+
+.card-title a {
+  color: #1a202c !important;
+  transition: color 0.2s ease;
+}
+
+.card-title a:hover {
+  color: #2d3748 !important;
+}
+
+.card-text {
+  color: #4a5568;
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+// Live site link in bottom right
+.live-site-link {
+  color: #6b7280;
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.live-site-link:hover {
+  color: #3b82f6;
+  text-decoration: none;
+}
+
+.live-site-link i {
+  font-size: 0.75rem;
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .card-body {
+    padding: 1.25rem;
+  }
+
+  .live-site-link {
+    font-size: 0.8rem;
+  }
+}

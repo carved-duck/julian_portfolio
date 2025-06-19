@@ -1,2 +1,40 @@
-<h1>Featured Projects</h1>
-<%= render "projects/grid" %>
+<!-- For the hero -->
+<section class="hero-section">
+  <div class="hero-content">
+    <h1 class="hero-greeting">
+      <span class="word" data-word="Hey,">
+        <span class="letter">H</span>
+        <span class="letter">e</span>
+        <span class="letter">y</span>
+        <span class="letter">,</span>
+      </span>
+      <span class="word" data-word="I'm">
+        <span class="letter">I</span>
+        <span class="letter">'</span>
+        <span class="letter">m</span>
+      </span>
+      <span class="word" data-word="Julian">
+        <span class="letter">J</span>
+        <span class="letter">u</span>
+        <span class="letter">l</span>
+        <span class="letter">i</span>
+        <span class="letter">a</span>
+        <span class="letter">n</span>
+      </span>
+    </h1>
+    <p class="hero-description">
+      I build things for the web <br>
+      take photos<br>
+      <span class="hero-description-small">sometimes host events</span>
+    </p>
+    <%# <div class="hero-cta" onclick="document.getElementById('projects').scrollIntoView({behavior: 'smooth'})"> %>
+    <%# <span class="hero-arrow">↓</span> %>
+    <%# <span class="hero-cta-text">View my work</span> %>
+    <%# </div> %>
+  </div>
+</section>
+<!-- Featured Projects -->
+<section class="featured-projects" id="projects">
+  <h2 class="section-title">Featured Projects</h2>
+  <%= render "projects/grid" %>
+</section>

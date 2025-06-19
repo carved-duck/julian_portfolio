@@ -1,0 +1,77 @@
+// Button Component Styles
+
+.btn {
+  font-family: $headers-font;
+  font-weight: $font-medium;
+  letter-spacing: 0.01em;
+  border-radius: 8px;
+  padding: 10px 20px;
+  transition: all 0.2s ease;
+  border: none;
+  text-decoration: none;
+  display: inline-block;
+}
+
+// Primary button
+.btn-primary {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  border: none;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+// Secondary button
+.btn-secondary {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  color: #495057;
+}
+
+.btn-secondary:hover {
+  background: #e9ecef;
+  border-color: #adb5bd;
+  transform: translateY(-1px);
+}
+
+// Outline button
+.btn-outline-primary {
+  border: 2px solid #007bff;
+  color: #007bff;
+  background: transparent;
+}
+
+.btn-outline-primary:hover {
+  background: #007bff;
+  color: white;
+  transform: translateY(-1px);
+}
+
+// Small button
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 0.875rem;
+}
+
+// Mobile button improvements
+@media (max-width: 768px) {
+  .btn {
+    min-height: 44px;
+    padding: 12px 20px;
+    font-size: 16px; // Prevents zoom on iOS
+  }
+
+  .btn-group {
+    flex-direction: column;
+    width: 100%;
+
+    .btn {
+      margin-bottom: 10px;
+      border-radius: 0.375rem !important;
+    }
+  }
+}

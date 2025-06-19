@@ -4,7 +4,25 @@
       <h1 class="mb-4"><%= @project.title %></h1>
       <% if @project.featured_image.attached? %>
         <div class="mb-4">
-          <%= cl_image_tag @project.featured_image.key, width: 800, height: 600, crop: :limit, quality: :auto, fetch_format: :auto, class: "img-fluid rounded shadow", alt: @project.title %>
+          <div class="browser-window browser-window-showcase">
+            <div class="browser-header">
+              <div class="browser-controls">
+                <div class="control-button control-close"></div>
+                <div class="control-button control-minimize"></div>
+                <div class="control-button control-maximize"></div>
+              </div>
+              <% if @project.live_url.present? %>
+                <%= link_to format_url(@project.live_url, add_www: true), target: "_blank", class: "browser-url-bar clickable-url" do %>
+                  <%= @project.live_url.gsub(/^https?:\/\//, '').gsub(/^www\./, '') %>
+                <% end %>
+              <% else %>
+                <div class="browser-url-bar"><%= @project.title.downcase.gsub(' ', '') + '.com' %></div>
+              <% end %>
+            </div>
+            <div class="browser-content">
+              <%= cl_image_tag @project.featured_image.key, width: 1200, height: 510, crop: :fill, quality: :auto, fetch_format: :auto, class: "browser-image" %>
+            </div>
+          </div>
         </div>
       <% end %>
       <div class="mb-4">
@@ -18,11 +36,6 @@
             <% if @project.github_url.present? %>
               <%= link_to format_url(@project.github_url), target: "_blank", class: "btn btn-outline-dark" do %>
                 <i class="fab fa-github"></i> View Code
-              <% end %>
-            <% end %>
-            <% if @project.live_url.present? %>
-              <%= link_to format_url(@project.live_url, add_www: true), target: "_blank", class: "btn btn-primary" do %>
-                <i class="fas fa-external-link-alt"></i> Website
               <% end %>
             <% end %>
           </div>
