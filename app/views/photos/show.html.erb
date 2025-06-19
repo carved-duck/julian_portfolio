@@ -1,2 +1,26 @@
-<h1>Photos#show</h1>
-<p>Find me in app/views/photos/show.html.erb</p>
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-8 mx-auto">
+      <% if @photo.image.attached? %>
+        <div class="text-center mb-4">
+          <%= cl_image_tag @photo.image.key,
+                           width: 800,
+                           height: 800,
+                           crop: :limit,
+                           quality: :auto,
+                           fetch_format: :auto,
+                           class: "img-fluid rounded shadow",
+                           alt: "Photo in #{@photo.category}" %>
+        </div>
+      <% end %>
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Category: <%= @photo.category.titleize %></h2>
+        <span class="badge bg-primary"><%= @photo.category %></span>
+      </div>
+      <div class="d-flex justify-content-between">
+        <%= link_to "← Back to Gallery", photos_path, class: "btn btn-outline-secondary" %>
+        <%= link_to "View #{@photo.category.titleize} Photos", photos_path(category: @photo.category), class: "btn btn-primary" %>
+      </div>
+    </div>
+  </div>
+</div>
