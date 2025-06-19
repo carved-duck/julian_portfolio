@@ -3,14 +3,7 @@
     <div class="col-md-8 mx-auto">
       <% if @photo.image.attached? %>
         <div class="text-center mb-4">
-          <%= cl_image_tag @photo.image.key,
-                           width: 800,
-                           height: 800,
-                           crop: :limit,
-                           quality: :auto,
-                           fetch_format: :auto,
-                           class: "img-fluid rounded shadow",
-                           alt: "Photo in #{@photo.category}" %>
+          <%= cl_image_tag @photo.image.key, width: 800, height: 800, crop: :limit, quality: :auto, fetch_format: :auto, class: "img-fluid rounded shadow", alt: "Photo in #{@photo.category}" %>
         </div>
       <% end %>
       <div class="d-flex justify-content-between align-items-center mb-4">
