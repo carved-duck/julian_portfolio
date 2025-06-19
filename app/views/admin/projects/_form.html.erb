@@ -5,7 +5,7 @@
     <%= f.input :description %>
     <%= f.input :github_url %>
     <%= f.input :live_url %>
-    <%= f.input :featured_image, as: :file, hint: (@project.featured_image.attached? ? image_tag(@project.featured_image.variant(resize: "200x200")) : "") %>
+    <%= f.input :featured_image, as: :file, hint: (@project.featured_image.attached? ? cl_image_tag(@project.featured_image.key, width: 200, height: 200, crop: :fill) : "") %>
     <%= f.input :tags %>
   </div>
   <div class="form-actions">
