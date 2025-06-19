@@ -27,24 +27,24 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  font-size: 3rem;
+  font-size: 2.0rem;
   font-weight: $font-bold;
   letter-spacing: -0.02em;
 }
 
 h2 {
-  font-size: 2.25rem;
+  font-size: 1.75rem;
   font-weight: $font-semibold;
   letter-spacing: -0.01em;
 }
 
 h3 {
-  font-size: 1.875rem;
+  font-size: 1.5rem;
   font-weight: $font-medium;
 }
 
 h4 {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: $font-medium;
 }
 
@@ -104,11 +104,11 @@ p {
 
   // Typography adjustments for mobile
   h1 {
-    font-size: 2.5rem;
+    font-size: 2.0rem;
   }
 
   h2 {
-    font-size: 2rem;
+    font-size: 1.75rem;
   }
 
   h3 {
