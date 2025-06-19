@@ -69,6 +69,11 @@ p {
 
 // Mobile-specific improvements
 @media (max-width: 768px) {
+  // Center rows on mobile
+  .row {
+    justify-content: center;
+  }
+
   // Improve touch targets
   .btn {
     min-height: 44px;
@@ -105,6 +110,9 @@ p {
   // Typography adjustments for mobile
   h1 {
     font-size: 2.0rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   h2 {
