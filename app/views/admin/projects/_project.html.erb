@@ -1,8 +1,8 @@
 <div id="<%= dom_id project %>">
   <p><strong>Title:</strong> <%= project.title %></p>
   <p><strong>Description:</strong> <%= project.description %></p>
-  <p><strong>GitHub URL:</strong> <%= link_to project.github_url, project.github_url, target: "_blank" if project.github_url.present? %></p>
-  <p><strong>Live URL:</strong> <%= link_to project.live_url, project.live_url, target: "_blank" if project.live_url.present? %></p>
+  <p><strong>GitHub URL:</strong> <%= link_to format_url(project.github_url), format_url(project.github_url), target: "_blank" if project.github_url.present? %></p>
+  <p><strong>Live URL:</strong> <%= link_to format_url(project.live_url, add_www: true), format_url(project.live_url, add_www: true), target: "_blank" if project.live_url.present? %></p>
   <p><strong>Featured Image:</strong></p>
   <% if project.featured_image.attached? %>
     <%= image_tag project.featured_image.variant(resize_to_limit: [300, 300]) %>

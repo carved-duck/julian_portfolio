@@ -16,13 +16,13 @@
           <h4>Links</h4>
           <div class="d-flex gap-2 flex-wrap">
             <% if @project.github_url.present? %>
-              <%= link_to @project.github_url, target: "_blank", class: "btn btn-outline-dark" do %>
+              <%= link_to format_url(@project.github_url), target: "_blank", class: "btn btn-outline-dark" do %>
                 <i class="fab fa-github"></i> View Code
               <% end %>
             <% end %>
             <% if @project.live_url.present? %>
-              <%= link_to @project.live_url, target: "_blank", class: "btn btn-primary" do %>
-                <i class="fas fa-external-link-alt"></i> Live Demo
+              <%= link_to format_url(@project.live_url, add_www: true), target: "_blank", class: "btn btn-primary" do %>
+                <i class="fas fa-external-link-alt"></i> Website
               <% end %>
             <% end %>
           </div>

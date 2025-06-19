@@ -3,8 +3,8 @@
 <div>
   <p><strong>Description:</strong><br>
     <%= simple_format(@project.description) %></p>
-  <p><strong>GitHub:</strong> <%= link_to @project.github_url, @project.github_url, target: "_blank" if @project.github_url.present? %></p>
-  <p><strong>Live:</strong> <%= link_to @project.live_url, @project.live_url, target: "_blank" if @project.live_url.present? %></p>
+  <p><strong>GitHub:</strong> <%= link_to format_url(@project.github_url), format_url(@project.github_url), target: "_blank" if @project.github_url.present? %></p>
+  <p><strong>Live:</strong> <%= link_to format_url(@project.live_url, add_www: true), format_url(@project.live_url, add_www: true), target: "_blank" if @project.live_url.present? %></p>
   <p><strong>Tags:</strong> <%= @project.tags %></p>
 </div>
 <%= link_to "Edit", edit_admin_project_path(@project), class: "btn btn-primary" %> |
