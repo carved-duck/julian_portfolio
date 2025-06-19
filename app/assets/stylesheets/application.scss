@@ -19,6 +19,22 @@ body {
   color: #333;
 }
 
+// Main content alignment - matches navbar spacing
+.main-content {
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+// Increase padding on very small screens for better touch targets
+@media (max-width: 480px) {
+  .main-content {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-family: $headers-font;
   font-weight: $font-semibold;
@@ -88,8 +104,8 @@ p {
 
   // Better spacing on mobile
   .container-fluid {
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-left: 20px;
+    padding-right: 20px;
   }
 
   // Card improvements for mobile
