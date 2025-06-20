@@ -15,16 +15,6 @@
           </p>
         </div>
       </div>
-      <% if @event.capacity_warning_message %>
-        <div class="alert alert-warning mt-3">
-          <h5><i class="fas fa-exclamation-triangle"></i> Important Notice</h5>
-          <%= @event.capacity_warning_message %>
-          <hr>
-          <small class="text-muted">
-            <strong>How it works:</strong> BBQ tables seat exactly 10 people. If we don't reach the next table threshold, pending attendees will be notified and may not be able to attend this event.
-          </small>
-        </div>
-      <% end %>
       <div class="card mt-4">
         <div class="card-header">
           <h3>Sign Up for This Event</h3>
@@ -50,3 +40,64 @@
     </div>
   </div>
 </div>
+<!-- Pending Signup Confirmation Modal -->
+<% if params[:show_pending_modal] && session[:pending_signup] %>
+  <div class="modal fade" id="pendingModal" tabindex="-1" aria-labelledby="pendingModalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-warning text-dark">
+          <h5 class="modal-title" id="pendingModalLabel">
+            <i class="fas fa-info-circle"></i> Almost there, <%= session[:pending_signup][:attendee_name] %>!
+          </h5>
+        </div>
+        <div class="modal-body">
+          <p class="mb-3">
+            <strong>Great news!</strong> You're signed up for <strong><%= session[:pending_signup][:event_title] %></strong>! 🎉
+          </p>
+          <p class="mb-3">
+            Here's the friendly heads up: We're currently between table sizes (BBQ tables seat 10 people each).
+            <strong>As long as we get enough people to fill the next table, you're all set!</strong>
+          </p>
+          <div class="alert alert-info">
+            <h6><i class="fas fa-handshake"></i> How it works:</h6>
+            <ul class="mb-0">
+              <li>If we reach the next table threshold → You're confirmed! 🎉</li>
+              <li>If we don't → We'll reach out to pending folks to see if you'd like to split the table cost</li>
+              <li>No pressure at all - we just want everyone to have a great time!</li>
+            </ul>
+          </div>
+          <p class="text-muted small">
+            <strong>Bottom line:</strong> We're optimistic we'll get enough people, and we'll keep you posted either way!
+          </p>
+        </div>
+        <div class="modal-footer d-flex justify-content-center" style="padding: 20px;">
+          <%= form_with url: confirm_pending_event_attendees_path(@event), method: :post, local: true do |f| %>
+            <%= f.submit "I Understand - Confirm My Signup!", class: "btn btn-warning" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(function() {
+        var modalElement = document.getElementById('pendingModal');
+        if (modalElement && typeof bootstrap !== 'undefined') {
+          var pendingModal = new bootstrap.Modal(modalElement);
+          pendingModal.show();
+        }
+      }, 100);
+    });
+
+    // Also try on turbo:load for single-page app behavior
+    document.addEventListener('turbo:load', function() {
+      setTimeout(function() {
+        var modalElement = document.getElementById('pendingModal');
+        if (modalElement && typeof bootstrap !== 'undefined') {
+          var pendingModal = new bootstrap.Modal(modalElement);
+          pendingModal.show();
+        }
+      }, 100);
+    });
+  </script>
+<% end %>

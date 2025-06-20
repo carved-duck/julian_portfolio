@@ -16,11 +16,6 @@
                   <% end %>
                 </small>
               </p>
-              <% if event.in_pending_zone? %>
-                <div class="alert alert-warning alert-sm p-2 mb-2">
-                  <i class="fas fa-clock"></i> Pending list active - <%= event.spots_until_next_table %> spots until next table
-                </div>
-              <% end %>
               <div class="mt-3">
                 <%= link_to "View & Sign Up", event_path(event), class: "btn btn-primary" %>
               </div>

@@ -4,7 +4,11 @@ Rails.application.routes.draw do
   resources :photos, only: %i[index show]
   resources :blog_posts, only: %i[index show], path: "blog"
   resources :events, only: %i[index show] do
-    resources :attendees, only: %i[new create]
+    resources :attendees, only: %i[new create] do
+      collection do
+        post :confirm_pending
+      end
+    end
   end
   post 'contact', to: 'pages#contact'
   # Admin die

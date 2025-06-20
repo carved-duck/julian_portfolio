@@ -14,7 +14,7 @@
   <body class="<%= body_class %>">
     <%= render 'shared/navbar' %>
     <% flash.each do |type, message| %>
-      <div class="alert alert-<%= type == 'notice' ? 'success' : type == 'alert' ? 'danger' : type %> alert-dismissible fade show flash-message" role="alert">
+      <div class="alert alert-<%= type == 'notice' ? 'success' : type == 'alert' ? 'warning' : type %> alert-dismissible fade show flash-message" role="alert">
         <i class="fas fa-<%= type == 'notice' ? 'check-circle' : type == 'alert' ? 'exclamation-triangle' : 'info-circle' %>"></i>
         <%= message %>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>

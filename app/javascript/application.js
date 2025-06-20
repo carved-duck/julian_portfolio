@@ -37,4 +37,19 @@ document.addEventListener('turbo:load', function() {
       }, 400);
     }, 5000);
   });
+
+  // Fix form submission issues - re-enable submit buttons after form submission
+  const forms = document.querySelectorAll('form');
+  forms.forEach(function(form) {
+    form.addEventListener('submit', function() {
+      // Re-enable submit button after a short delay to prevent permanent disabling
+      setTimeout(function() {
+        const submitButtons = form.querySelectorAll('input[type="submit"], button[type="submit"]');
+        submitButtons.forEach(function(button) {
+          button.disabled = false;
+          button.classList.remove('disabled');
+        });
+      }, 100);
+    });
+  });
 });
