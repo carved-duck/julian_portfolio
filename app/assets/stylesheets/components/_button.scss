@@ -2,7 +2,7 @@
 
 .btn {
   font-family: $headers-font;
-  font-weight: $font-medium;
+  font-weight: 500;
   letter-spacing: 0.01em;
   border-radius: 8px;
   padding: 10px 20px;
@@ -10,19 +10,32 @@
   border: none;
   text-decoration: none;
   display: inline-block;
+  box-shadow: var(--shadow-sm);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+  }
 }
 
 // Primary button
 .btn-primary {
-  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  background: linear-gradient(45deg, var(--burgundy), #a30d4f);
   border: none;
-  color: white;
+  color: var(--cream);
+  font-weight: 600;
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+  background: linear-gradient(45deg, #a30d4f, var(--burgundy));
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  color: var(--cream);
 }
 
 // Secondary button

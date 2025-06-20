@@ -1,0 +1,39 @@
+<p style="color: green"><%= notice %></p>
+<h1>Admin - Events</h1>
+<% if @events.any? %>
+  <div id="events">
+    <% @events.each do |event| %>
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">
+            <%= event.title %>
+            <% if event.active? %>
+              <span class="badge bg-success">Active</span>
+            <% else %>
+              <span class="badge bg-secondary">Inactive</span>
+            <% end %>
+          </h5>
+          <p class="card-text"><%= truncate(event.description, length: 150) %></p>
+          <p class="card-text">
+            <strong>Attendees:</strong> <%= event.attendee_count %>
+          </p>
+          <small class="text-muted">Created: <%= event.created_at.strftime("%B %d, %Y") %></small>
+          <div class="mt-2">
+            <%= link_to "View Details", admin_event_path(event), class: "btn btn-primary btn-sm" %>
+            <%= link_to "Edit", edit_admin_event_path(event), class: "btn btn-secondary btn-sm" %>
+            <%= link_to "Delete", admin_event_path(event),
+                        method: :delete,
+                        data: { confirm: "Are you sure? This will delete the event and all signups." },
+                        class: "btn btn-danger btn-sm" %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <div class="alert alert-info">
+    <h4>No events yet</h4>
+    <p>Create your first event to start collecting signups!</p>
+  </div>
+<% end %>
+<%= link_to "New Event", new_admin_event_path, class: "btn btn-success" %>

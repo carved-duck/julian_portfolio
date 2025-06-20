@@ -1,11 +1,11 @@
 class PhotosController < ApplicationController
   def index
-    @photos = if params[:category].present?
-        Photo.by_category(params[:category]).recent
-      else
-        Photo.recent
-      end
-      @categories = Photo.categories
+    @categories = Photo.categories
+
+    # Show first category by default, or selected category
+    selected_category = params[:category].presence || @categories.first
+    @photos = selected_category ? Photo.by_category(selected_category).recent : Photo.none
+    @selected_category = selected_category
   end
 
   def show

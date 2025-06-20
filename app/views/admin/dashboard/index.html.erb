@@ -39,14 +39,15 @@
         </div>
       </div>
     </div>
-    <!-- Submissions -->
+    <!-- Events -->
     <div class="col-md-6 col-lg-3 mb-4">
       <div class="card h-100">
         <div class="card-body text-center">
-          <i class="fas fa-envelope fa-3x text-info mb-3"></i>
-          <h5 class="card-title">Submissions</h5>
-          <p class="card-text fs-2 fw-bold text-info"><%= @submissions_count %></p>
-          <%= link_to "View Submissions", admin_submissions_path, class: "btn btn-info" %>
+          <i class="fas fa-calendar-alt fa-3x text-info mb-3"></i>
+          <h5 class="card-title">Events</h5>
+          <p class="card-text fs-2 fw-bold text-info"><%= @events_count %></p>
+          <p class="card-text"><small class="text-muted"><%= @total_attendees %> total attendees</small></p>
+          <%= link_to "Manage Events", admin_events_path, class: "btn btn-info" %>
         </div>
       </div>
     </div>
@@ -60,6 +61,7 @@
             <%= link_to "New Project", new_admin_project_path, class: "btn btn-outline-primary" %>
             <%= link_to "New Photo", new_admin_photo_path, class: "btn btn-outline-success" %>
             <%= link_to "New Blog Post", new_admin_blog_post_path, class: "btn btn-outline-warning" %>
+            <%= link_to "New Event", new_admin_event_path, class: "btn btn-outline-info" %>
             <%= link_to "View Public Site", root_path, class: "btn btn-outline-secondary", target: "_blank" %>
           </div>
         </div>

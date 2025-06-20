@@ -1,0 +1,7 @@
+<h1>Editing Event</h1>
+<%= render "form", event: @event %>
+<br>
+<div>
+  <%= link_to "Show this event", admin_event_path(@event), class: "btn btn-secondary" %> |
+  <%= link_to "Back to events", admin_events_path, class: "btn btn-secondary" %>
+</div>

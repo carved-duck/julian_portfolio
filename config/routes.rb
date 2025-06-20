@@ -3,7 +3,9 @@ Rails.application.routes.draw do
   resources :projects, only: %i[index show]
   resources :photos, only: %i[index show]
   resources :blog_posts, only: %i[index show], path: "blog"
-  resources :submissions, only: %i[new create]
+  resources :events, only: %i[index show] do
+    resources :attendees, only: %i[new create]
+  end
   post 'contact', to: 'pages#contact'
   # Admin die
   namespace :admin do
@@ -11,7 +13,9 @@ Rails.application.routes.draw do
     resources :projects
     resources :photos
     resources :blog_posts
-    resources :submissions, only: [:index, :show, :destroy]
+    resources :events do
+      resources :attendees, only: [:show, :edit, :update, :destroy]
+    end
   end
   root to: "pages#home"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

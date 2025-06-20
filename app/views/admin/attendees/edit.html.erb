@@ -1,0 +1,19 @@
+<h1>Edit Attendee</h1>
+<p class="lead">Editing attendee for: <strong><%= @event.title %></strong></p>
+<%= simple_form_for([@event, @attendee], url: admin_event_attendee_path(@event, @attendee)) do |f| %>
+  <%= f.error_notification %>
+  <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+  <div class="form-inputs">
+    <%= f.input :name %>
+    <%= f.input :instagram_handle %>
+    <%= f.input :message, as: :text, input_html: { rows: 4 } %>
+  </div>
+  <div class="form-actions">
+    <%= f.button :submit, "Update Attendee" %>
+  </div>
+<% end %>
+<br>
+<div>
+  <%= link_to "Show this attendee", admin_event_attendee_path(@event, @attendee), class: "btn btn-secondary" %> |
+  <%= link_to "Back to event", admin_event_path(@event), class: "btn btn-secondary" %>
+</div>

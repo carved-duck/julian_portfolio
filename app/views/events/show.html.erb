@@ -1,0 +1,37 @@
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-body">
+          <h1 class="card-title"><%= @event.title %></h1>
+          <p class="card-text"><%= simple_format(@event.description) %></p>
+          <p class="text-muted">
+            <small><%= pluralize(@event.attendee_count, 'person') %> already signed up</small>
+          </p>
+        </div>
+      </div>
+      <div class="card mt-4">
+        <div class="card-header">
+          <h3>Sign Up for This Event</h3>
+        </div>
+        <div class="card-body">
+          <%= simple_form_for([@event, @attendee]) do |f| %>
+            <%= f.error_notification %>
+            <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+            <div class="form-inputs">
+              <%= f.input :name, required: true, hint: "Your full name" %>
+              <%= f.input :instagram_handle, required: true, hint: "Your Instagram username (without @)" %>
+              <%= f.input :message, as: :text, input_html: { rows: 3 }, hint: "Optional: Tell us why you're interested or ask any questions" %>
+            </div>
+            <div class="form-actions">
+              <%= f.button :submit, "Sign Me Up!", class: "btn btn-primary btn-lg" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+      <div class="mt-3">
+        <%= link_to "← Back to Events", events_path, class: "btn btn-outline-secondary" %>
+      </div>
+    </div>
+  </div>
+</div>

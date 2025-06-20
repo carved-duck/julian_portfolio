@@ -1,0 +1,27 @@
+// Modal styling
+.modal-content {
+  border: none;
+  box-shadow: var(--shadow-2xl);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  background: var(--cream);
+
+  .modal-header {
+    background: linear-gradient(135deg, var(--sage) 0%, rgba(214, 207, 180, 0.8) 100%);
+    border-bottom: 1px solid rgba(141, 11, 65, 0.1);
+    border-radius: 16px 16px 0 0;
+
+    .modal-title {
+      font-weight: 700;
+      background: linear-gradient(45deg, var(--burgundy), #a30d4f);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  }
+
+  .modal-body {
+    padding: 2rem;
+    background: var(--cream);
+  }
+}

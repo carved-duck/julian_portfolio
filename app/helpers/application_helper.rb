@@ -12,4 +12,19 @@ module ApplicationHelper
       "https://#{url}"
     end
   end
+
+  def body_class
+    case controller_name
+    when 'projects'
+      'projects-page'  # Spring - Cherry Blossom
+    when 'photos'
+      'photos-page'    # Summer - Warm Gold Sunset
+    when 'blog_posts'
+      'blog-page'      # Fall - Maple Leaves
+    when 'submissions'
+      'events-page'    # Winter - Cool Blues
+    else
+      'default-page'
+    end
+  end
 end

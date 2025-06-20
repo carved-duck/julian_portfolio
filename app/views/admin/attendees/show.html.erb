@@ -1,0 +1,44 @@
+<p style="color: green"><%= notice %></p>
+<div class="row">
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-header">
+        <h4>Attendee for: <%= @event.title %></h4>
+      </div>
+      <div class="card-body">
+        <h5 class="card-title"><%= @attendee.name %></h5>
+        <p class="card-text">
+          <strong>Instagram:</strong>
+          <a href="https://instagram.com/<%= @attendee.instagram_handle %>" target="_blank" rel="noopener">
+            @<%= @attendee.instagram_handle %>
+          </a>
+        </p>
+        <% if @attendee.message.present? %>
+          <p class="card-text">
+            <strong>Message:</strong><br>
+            <%= simple_format(@attendee.message) %>
+          </p>
+        <% else %>
+          <p class="text-muted">No message included</p>
+        <% end %>
+        <small class="text-muted">
+          Signed up: <%= @attendee.created_at.strftime("%B %d, %Y at %I:%M %p") %>
+        </small>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-header">
+        <h5>Actions</h5>
+      </div>
+      <div class="card-body">
+        <%= link_to "Edit Attendee", edit_admin_event_attendee_path(@event, @attendee), class: "btn btn-primary btn-block mb-2" %>
+        <%= link_to "Back to Event", admin_event_path(@event), class: "btn btn-secondary btn-block mb-2" %>
+        <%= button_to "Delete Attendee", admin_event_attendee_path(@event, @attendee), method: :delete,
+            data: { confirm: "Are you sure? This will remove #{@attendee.name} from #{@event.title}." },
+            class: "btn btn-danger btn-block" %>
+      </div>
+    </div>
+  </div>
+</div>

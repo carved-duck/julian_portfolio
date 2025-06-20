@@ -1,0 +1,74 @@
+<p style="color: green"><%= notice %></p>
+<div class="row">
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-body">
+        <h1 class="card-title">
+          <%= @event.title %>
+          <% if @event.active? %>
+            <span class="badge bg-success">Active</span>
+          <% else %>
+            <span class="badge bg-secondary">Inactive</span>
+          <% end %>
+        </h1>
+        <p class="card-text"><%= simple_format(@event.description) %></p>
+        <p class="text-muted">
+          <strong>Created:</strong> <%= @event.created_at.strftime("%B %d, %Y at %I:%M %p") %><br>
+          <strong>Total Attendees:</strong> <%= @event.attendee_count %>
+        </p>
+      </div>
+    </div>
+    <div class="card mt-4">
+      <div class="card-header">
+        <h3>Event Attendees (<%= @attendees.count %>)</h3>
+      </div>
+      <div class="card-body">
+        <% if @attendees.any? %>
+          <% @attendees.each do |attendee| %>
+            <div class="card mb-2">
+              <div class="card-body py-2">
+                <div class="row align-items-center">
+                  <div class="col-md-6">
+                    <h6 class="mb-1"><%= attendee.name %></h6>
+                    <small class="text-muted">@<%= attendee.instagram_handle %></small>
+                  </div>
+                  <div class="col-md-4">
+                    <% if attendee.message.present? %>
+                      <small><%= truncate(attendee.message, length: 50) %></small>
+                    <% else %>
+                      <small class="text-muted">No message</small>
+                    <% end %>
+                  </div>
+                  <div class="col-md-2 text-end">
+                    <%= link_to "View", admin_event_attendee_path(@event, attendee), class: "btn btn-sm btn-outline-primary" %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        <% else %>
+          <div class="alert alert-info">
+            <h5>No attendees yet</h5>
+            <p>When people sign up for this event, they'll appear here.</p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-header">
+        <h5>Actions</h5>
+      </div>
+      <div class="card-body">
+        <%= link_to "Edit Event", edit_admin_event_path(@event), class: "btn btn-primary btn-block mb-2" %>
+        <%= link_to "View Public Page", event_path(@event), class: "btn btn-outline-secondary btn-block mb-2", target: "_blank" %>
+        <hr>
+        <%= link_to "Back to Events", admin_events_path, class: "btn btn-secondary btn-block mb-2" %>
+        <%= button_to "Delete Event", admin_event_path(@event), method: :delete,
+            data: { confirm: "Are you sure? This will delete the event and all #{@event.attendee_count} attendees." },
+            class: "btn btn-danger btn-block" %>
+      </div>
+    </div>
+  </div>
+</div>

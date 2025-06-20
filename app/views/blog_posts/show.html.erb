@@ -1,2 +1,22 @@
-<h1>Blogposts#show</h1>
-<p>Find me in app/views/blogposts/show.html.erb</p>
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <article class="blog-post">
+        <header class="mb-4">
+          <h1 class="blog-title"><%= @blog_post.title %></h1>
+          <% if @blog_post.published? %>
+            <p class="text-muted">
+              <small>Published on <%= @blog_post.published_at.strftime("%B %d, %Y") %></small>
+            </p>
+          <% end %>
+        </header>
+        <div class="blog-content">
+          <%= simple_format(@blog_post.body) %>
+        </div>
+        <footer class="mt-5 pt-4 border-top">
+          <%= link_to "← Back to Blog", blog_posts_path, class: "btn btn-outline-primary" %>
+        </footer>
+      </article>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,32 @@
+// Form elements styling
+.form-control {
+  border: 1px solid var(--sage);
+  box-shadow: var(--shadow-inner);
+  transition: all 0.2s ease;
+  border-radius: 8px;
+  background: rgba(255, 248, 230, 0.5);
+  color: var(--burgundy);
+
+  &:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(211, 157, 85, 0.15), var(--shadow-md);
+    transform: translateY(-1px);
+    background: var(--cream);
+  }
+
+  &:hover:not(:focus) {
+    box-shadow: var(--shadow-sm);
+    border-color: var(--gold);
+    background: var(--cream);
+  }
+
+  &::placeholder {
+    color: rgba(141, 11, 65, 0.6);
+  }
+}
+
+.form-label {
+  font-weight: 600;
+  color: var(--burgundy);
+  text-shadow: 0 1px 2px rgba(255, 248, 230, 0.8);
+}

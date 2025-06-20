@@ -4,9 +4,8 @@
     <div class="mb-4">
       <h4>Filter by Category</h4>
       <div class="btn-group" role="group">
-        <%= link_to "All", photos_path, class: "btn #{'btn-primary' if params[:category].blank?} #{'btn-outline-primary' unless params[:category].blank?}" %>
         <% @categories.each do |category| %>
-          <%= link_to category.titleize, photos_path(category: category), class: "btn #{'btn-primary' if params[:category] == category} #{'btn-outline-primary' unless params[:category] == category}" %>
+          <%= link_to category.titleize, photos_path(category: category), class: "btn #{'btn-primary' if @selected_category == category} #{'btn-outline-primary' unless @selected_category == category}" %>
         <% end %>
       </div>
     </div>
