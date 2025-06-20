@@ -3,7 +3,18 @@
   bottom: 16px;
   right: 16px;
   z-index: 1000;
+  width: 405px;
 }
+
+
+// Mobile positioning for static alerts to avoid navbar collision
+@media (max-width: 991px) {
+  .alert:not(.flash-message) {
+    margin-top: 500px; //
+    width: 360px;
+  }
+}
+
 
 .flash-message {
   position: fixed;
