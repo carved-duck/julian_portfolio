@@ -5,6 +5,16 @@
     <%= f.input :title, hint: "The name of your event (e.g., 'Photography Workshop')" %>
     <%= f.input :description, as: :text, input_html: { rows: 5 }, hint: "Describe what this event is about, when it's happening, etc." %>
     <%= f.input :active, hint: "Only active events will be visible to users for signup" %>
+    <div class="capacity-section mt-4">
+      <h6>BBQ Table Management (Optional)</h6>
+      <p class="text-muted small">
+        <strong>How it works:</strong> Tables seat 10 people each ($200/table).<br>
+        If you set a target, people signing up OVER table limits (11+, 21+, etc.) will get pending warnings until you reach the next table.
+      </p>
+      <%= f.input :target_capacity,
+          label: "Target Attendees",
+          hint: "How many people do you want? (10, 20, 30, etc.) Leave blank to disable pending warnings." %>
+    </div>
   </div>
   <div class="form-actions">
     <%= f.button :submit %>

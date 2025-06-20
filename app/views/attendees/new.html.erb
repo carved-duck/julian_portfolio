@@ -7,6 +7,11 @@
           <p class="card-text"><%= simple_format(@event.description) %></p>
         </div>
       </div>
+      <% if @event.capacity_warning_message %>
+        <div class="alert alert-warning mt-3">
+          <%= @event.capacity_warning_message %>
+        </div>
+      <% end %>
       <div class="card mt-4">
         <div class="card-body">
           <%= simple_form_for([@event, @attendee]) do |f| %>

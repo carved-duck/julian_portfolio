@@ -15,7 +15,30 @@
         <p class="text-muted">
           <strong>Created:</strong> <%= @event.created_at.strftime("%B %d, %Y at %I:%M %p") %><br>
           <strong>Total Attendees:</strong> <%= @event.attendee_count %>
+          <% if @event.target_capacity.present? %>
+            / <%= @event.target_capacity %> target
+          <% end %>
         </p>
+        <% if @event.target_capacity.present? %>
+          <div class="capacity-info mt-3">
+            <h6>BBQ Table Capacity</h6>
+            <% if @event.in_pending_zone? %>
+              <div class="alert alert-warning">
+                <strong>⚠️ Pending Zone Active</strong><br>
+                <%= @event.capacity_warning_message %>
+              </div>
+            <% else %>
+              <div class="alert alert-success">
+                <strong>✅ Table Status Good</strong><br>
+                Current count (<%= @event.attendee_count %>) is at a good table boundary.
+              </div>
+            <% end %>
+            <small class="text-muted">
+              Next table threshold: <%= @event.next_table_threshold %> people<br>
+              Target capacity: <%= @event.target_capacity || "Not set" %>
+            </small>
+          </div>
+        <% end %>
       </div>
     </div>
     <div class="card mt-4">
