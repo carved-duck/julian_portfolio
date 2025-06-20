@@ -3,6 +3,24 @@
   <head>
     <title>Julian's Portfolio</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- SEO & Social Media Meta Tags -->
+    <meta name="description" content="Julian Schoenfeld's portfolio - Photographer, web developer, and creative professional showcasing projects, photography, and events in Japan.">
+    <meta name="keywords" content="Julian Schoenfeld, portfolio, photography, web development, Japan, creative">
+    <meta name="author" content="Julian Schoenfeld">
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="<%= request.original_url %>">
+    <meta property="og:title" content="Julian's Portfolio">
+    <meta property="og:description" content="Julian Schoenfeld's portfolio - Photographer, web developer, and creative professional showcasing projects, photography, and events in Japan.">
+    <meta property="og:image" content="<%= request.base_url + asset_path('icons/apple-icon.png') %>">
+    <meta property="og:image:width" content="180">
+    <meta property="og:image:height" content="180">
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="<%= request.original_url %>">
+    <meta property="twitter:title" content="Julian's Portfolio">
+    <meta property="twitter:description" content="Julian Schoenfeld's portfolio - Photographer, web developer, and creative professional showcasing projects, photography, and events in Japan.">
+    <meta property="twitter:image" content="<%= request.base_url + asset_path('icons/apple-icon.png') %>">
     <link rel="manifest" href="<%= asset_path 'manifest.json.erb' %>">
     <%= render 'shared/ios_pwa_links' %>
     <%= csrf_meta_tags %>
