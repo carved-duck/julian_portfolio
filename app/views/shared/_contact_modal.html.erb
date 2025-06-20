@@ -1,0 +1,47 @@
+<!-- Contact Modal -->
+<div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true" data-controller="contact-form">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="contactModalLabel">Get in Touch</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <%= form_with url: contact_path, method: :post, remote: true, id: "contactForm", class: "needs-validation", novalidate: true do |form| %>
+        <div class="modal-body">
+          <div class="mb-3">
+            <%= form.label :name, class: "form-label" %>
+            <%= form.text_field :name, class: "form-control", placeholder: "Your name", required: true %>
+            <div class="invalid-feedback">
+              Please provide your name.
+            </div>
+          </div>
+          <div class="mb-3">
+            <%= form.label :email, class: "form-label" %>
+            <%= form.email_field :email, class: "form-control", placeholder: "your.email@example.com", required: true %>
+            <div class="invalid-feedback">
+              Please provide a valid email address.
+            </div>
+          </div>
+          <div class="mb-3">
+            <%= form.label :subject, class: "form-label" %>
+            <%= form.text_field :subject, class: "form-control", placeholder: "What's this about?", required: true %>
+            <div class="invalid-feedback">
+              Please provide a subject.
+            </div>
+          </div>
+          <div class="mb-3">
+            <%= form.label :message, class: "form-label" %>
+            <%= form.text_area :message, class: "form-control", rows: 4, placeholder: "Your message...", required: true %>
+            <div class="invalid-feedback">
+              Please provide a message.
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <%= form.submit "Send Message", class: "btn btn-primary", id: "sendButton" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

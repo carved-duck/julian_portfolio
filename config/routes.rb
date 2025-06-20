@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   resources :photos, only: %i[index show]
   resources :blog_posts, only: %i[index show], path: "blog"
   resources :submissions, only: %i[new create]
+  post 'contact', to: 'pages#contact'
   # Admin die
   namespace :admin do
     root to: "dashboard#index"
