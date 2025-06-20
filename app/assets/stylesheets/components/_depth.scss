@@ -67,6 +67,54 @@ body {
       width: 60%;
     }
   }
+
+  // Hamburger menu styling
+  .navbar-toggler {
+    border: none;
+    padding: 0.25rem 0.5rem;
+
+    &:focus {
+      box-shadow: none;
+    }
+
+    .navbar-toggler-icon-custom {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--burgundy);
+      border-radius: 1px;
+      position: relative;
+      transition: all 0.3s ease;
+
+      &::before,
+      &::after {
+        content: '';
+        position: absolute;
+        width: 22px;
+        height: 2px;
+        background: var(--burgundy);
+        border-radius: 1px;
+        transition: all 0.3s ease;
+      }
+
+      &::before {
+        top: -6px;
+      }
+
+      &::after {
+        top: 6px;
+      }
+    }
+
+    &:hover .navbar-toggler-icon-custom {
+      background: var(--gold);
+
+      &::before,
+      &::after {
+        background: var(--gold);
+      }
+    }
+  }
 }
 
 // Clean minimal dropdown
