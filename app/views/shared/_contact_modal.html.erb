@@ -1,12 +1,12 @@
 <!-- Contact Modal -->
-<div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true" data-controller="contact-form">
+<div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="contactModalLabel">Get in Touch</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <%= form_with url: contact_path, method: :post, remote: true, id: "contactForm", class: "needs-validation", novalidate: true do |form| %>
+      <%= form_with url: contact_path, method: :post, id: "contactForm", class: "needs-validation", novalidate: true, data: { controller: "contact-form", action: "submit->contact-form#handleSubmit", turbo: false } do |form| %>
         <div class="modal-body">
           <div class="mb-3">
             <%= form.label :name, class: "form-label" %>
@@ -35,6 +35,10 @@
             <div class="invalid-feedback">
               Please provide a message.
             </div>
+          </div>
+          <!-- Honeypot field - invisible to humans, bots will fill it out -->
+          <div style="position: absolute; left: -9999px; top: -9999px; visibility: hidden;">
+            <%= form.text_field :website, placeholder: "Leave this empty", tabindex: "-1", autocomplete: "off" %>
           </div>
         </div>
         <div class="modal-footer">

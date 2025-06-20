@@ -1,14 +1,10 @@
 import { Controller } from "@hotwired/stimulus"
-import { Modal } from "bootstrap"
 
 export default class extends Controller {
-  static targets = ["form", "submitButton", "name", "email", "subject", "message"]
-
   connect() {
-    this.modal = new Modal(document.getElementById('contactModal'))
-    this.form = document.getElementById('contactForm')
+    // Bootstrap is available globally when loaded via importmap
+    this.modal = new bootstrap.Modal(document.getElementById('contactModal'))
     this.setupFormValidation()
-    this.setupFormSubmission()
   }
 
   setupFormValidation() {
@@ -24,33 +20,79 @@ export default class extends Controller {
     })
   }
 
-  setupFormSubmission() {
-    this.form.addEventListener('ajax:success', (event) => {
-      const [data, status, xhr] = event.detail
-      this.handleSuccess(data)
-    })
+    async handleSubmit(event) {
+    console.log('handleSubmit called, preventing default...')
+    event.preventDefault()
+    event.stopPropagation()
 
-    this.form.addEventListener('ajax:error', (event) => {
-      this.handleError()
-    })
+    const form = event.target
+    console.log('Form:', form)
+
+    if (!form.checkValidity()) {
+      console.log('Form validation failed')
+      form.classList.add('was-validated')
+      return
+    }
+
+    console.log('Form is valid, proceeding with fetch...')
+
+    const submitButton = form.querySelector('#sendButton')
+    submitButton.disabled = true
+    submitButton.textContent = 'Sending...'
+
+    try {
+      const formData = new FormData(form)
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content
+        }
+      })
+
+      const result = await response.json()
+
+      if (response.ok && result.status === 'success') {
+        this.handleSuccess(result)
+      } else {
+        this.handleError(result)
+      }
+    } catch (error) {
+      console.error('Form submission error:', error)
+      this.handleError({ message: 'Network error. Please try again.' })
+    } finally {
+      submitButton.disabled = false
+      submitButton.textContent = 'Send Message'
+    }
   }
 
-  handleSuccess(data) {
+        handleSuccess(data) {
+    console.log('Contact form success:', data)
+
     // Show success message
     this.showMessage('Message sent successfully! I\'ll get back to you soon.', 'success')
 
     // Reset form
-    this.form.reset()
-    this.form.classList.remove('was-validated')
+    const form = document.getElementById('contactForm')
+    form.reset()
+    form.classList.remove('was-validated')
 
-    // Close modal after a short delay
+        // Close modal after a short delay
     setTimeout(() => {
-      this.modal.hide()
-    }, 2000)
+      console.log('Timer fired - attempting to close modal...')
+      const modalElement = document.getElementById('contactModal')
+
+      // Direct approach: trigger Bootstrap's data attribute
+      modalElement.querySelector('[data-bs-dismiss="modal"]').click()
+
+      console.log('Modal close attempted via button click')
+    }, 1500)
   }
 
-  handleError() {
-    this.showMessage('Failed to send message. Please try again or email me directly.', 'error')
+  handleError(data) {
+    console.log('Contact form error:', data)
+    const message = data.message || 'Failed to send message. Please try again.'
+    this.showMessage(message, 'error')
   }
 
   showMessage(message, type) {

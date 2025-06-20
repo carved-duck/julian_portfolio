@@ -1,0 +1,254 @@
+// For Depth and Shadow Effects
+
+:root {
+  // Color palette
+  --burgundy: #8D0B41;
+  --gold: #D39D55;
+  --sage: #D6CFB4;
+  --cream: #FFF8E6;
+
+  // Shadow system with warm tones
+  --shadow-sm: 0 1px 2px 0 rgba(141, 11, 65, 0.08);
+  --shadow-md: 0 4px 6px -1px rgba(141, 11, 65, 0.15), 0 2px 4px -1px rgba(141, 11, 65, 0.08);
+  --shadow-lg: 0 10px 15px -3px rgba(141, 11, 65, 0.15), 0 4px 6px -2px rgba(141, 11, 65, 0.08);
+  --shadow-xl: 0 20px 25px -5px rgba(141, 11, 65, 0.15), 0 10px 10px -5px rgba(141, 11, 65, 0.06);
+  --shadow-2xl: 0 25px 50px -12px rgba(141, 11, 65, 0.25);
+  --shadow-inner: inset 0 2px 4px 0 rgba(141, 11, 65, 0.06);
+}
+
+// Global background - subtle off-white
+body {
+  background: #fefcf8;
+  min-height: 100vh;
+  color: var(--burgundy);
+}
+
+// Invisible/seamless navbar
+.navbar {
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  border-bottom: none !important;
+  transition: all 0.3s ease;
+
+  .navbar-brand {
+    font-weight: 600;
+    color: var(--burgundy) !important;
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: var(--gold) !important;
+    }
+  }
+
+  .nav-link {
+    position: relative;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    color: var(--burgundy) !important;
+
+    &:hover {
+      color: var(--gold) !important;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 50%;
+      width: 0;
+      height: 1px;
+      background: var(--gold);
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+
+    &:hover::after {
+      width: 60%;
+    }
+  }
+}
+
+// Clean minimal dropdown
+.dropdown-menu {
+  border: 1px solid rgba(141, 11, 65, 0.08);
+  box-shadow: 0 8px 25px rgba(141, 11, 65, 0.12);
+  background: rgba(254, 252, 248, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 8px;
+  overflow: hidden;
+
+  .dropdown-item {
+    transition: all 0.2s ease;
+    border-radius: 4px;
+    margin: 2px 6px;
+    color: var(--burgundy);
+
+    &:hover {
+      background: rgba(141, 11, 65, 0.05);
+      color: var(--gold);
+    }
+
+    i {
+      transition: all 0.2s ease;
+      opacity: 0.8;
+    }
+
+    &:hover i {
+      opacity: 1;
+    }
+  }
+}
+
+// Modal depth
+.modal-content {
+  border: none;
+  box-shadow: var(--shadow-2xl);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  background: var(--cream);
+
+  .modal-header {
+    background: linear-gradient(135deg, var(--sage) 0%, rgba(214, 207, 180, 0.8) 100%);
+    border-bottom: 1px solid rgba(141, 11, 65, 0.1);
+    border-radius: 16px 16px 0 0;
+
+    .modal-title {
+      font-weight: 700;
+      background: linear-gradient(45deg, var(--burgundy), #a30d4f);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  }
+
+  .modal-body {
+    padding: 2rem;
+    background: var(--cream);
+  }
+}
+
+// Form elements depth
+.form-control {
+  border: 1px solid var(--sage);
+  box-shadow: var(--shadow-inner);
+  transition: all 0.2s ease;
+  border-radius: 8px;
+  background: rgba(255, 248, 230, 0.5);
+  color: var(--burgundy);
+
+  &:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(211, 157, 85, 0.15), var(--shadow-md);
+    transform: translateY(-1px);
+    background: var(--cream);
+  }
+
+  &:hover:not(:focus) {
+    box-shadow: var(--shadow-sm);
+    border-color: var(--gold);
+    background: var(--cream);
+  }
+
+  &::placeholder {
+    color: rgba(141, 11, 65, 0.6);
+  }
+}
+
+.form-label {
+  font-weight: 600;
+  color: var(--burgundy);
+  text-shadow: 0 1px 2px rgba(255, 248, 230, 0.8);
+}
+
+// Button depth
+.btn {
+  transition: all 0.2s ease;
+  font-weight: 500;
+  box-shadow: var(--shadow-sm);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+  }
+}
+
+.btn-primary {
+  background: linear-gradient(45deg, var(--burgundy), #a30d4f);
+  border: none;
+  color: var(--cream);
+  font-weight: 600;
+
+  &:hover {
+    background: linear-gradient(45deg, #a30d4f, #7a0a39);
+    color: var(--cream);
+  }
+}
+
+.btn-secondary {
+  background: linear-gradient(45deg, var(--gold), #e6b066);
+  border: none;
+  color: var(--burgundy);
+  font-weight: 600;
+
+  &:hover {
+    background: linear-gradient(45deg, #e6b066, var(--gold));
+    color: var(--burgundy);
+  }
+}
+
+// Alert depth
+.alert {
+  border: none;
+  box-shadow: var(--shadow-md);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+
+  &.alert-success {
+    background: linear-gradient(45deg, rgba(40, 167, 69, 0.1), rgba(25, 135, 84, 0.1));
+    color: #155724;
+    border-left: 4px solid #28a745;
+  }
+
+  &.alert-danger {
+    background: linear-gradient(45deg, rgba(220, 53, 69, 0.1), rgba(176, 42, 55, 0.1));
+    color: #721c24;
+    border-left: 4px solid #dc3545;
+  }
+}
+
+// Card depth (for future use)
+.card {
+  border: none;
+  box-shadow: var(--shadow-md);
+  transition: all 0.3s ease;
+  border-radius: 12px;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+  }
+}
+
+// Subtle animations
+@keyframes gentle-float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-2px); }
+}
+
+.gentle-float {
+  animation: gentle-float 3s ease-in-out infinite;
+}
+
+// Glass morphism effect
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: var(--shadow-lg);
+}
