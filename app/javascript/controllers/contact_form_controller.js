@@ -5,6 +5,10 @@ export default class extends Controller {
     // Bootstrap is available globally when loaded via importmap
     this.modal = new bootstrap.Modal(document.getElementById('contactModal'))
     this.setupFormValidation()
+    this.formStartTime = Date.now()
+
+    // Log form interaction for timing analysis
+    this.setupInteractionTracking()
   }
 
   setupFormValidation() {
@@ -20,13 +24,44 @@ export default class extends Controller {
     })
   }
 
-    async handleSubmit(event) {
+  setupInteractionTracking() {
+    // Track if user actually interacts with form fields (not just programmatically fills them)
+    this.hasUserInteraction = false
+    const form = document.getElementById('contactForm')
+    const realFields = form.querySelectorAll('input[name="name"], input[name="email"], input[name="subject"], textarea[name="message"]')
+
+    realFields.forEach(field => {
+      // Track keyboard events
+      field.addEventListener('keydown', () => {
+        this.hasUserInteraction = true
+      })
+
+      // Track focus events
+      field.addEventListener('focus', () => {
+        this.hasUserInteraction = true
+      })
+
+      // Track paste events
+      field.addEventListener('paste', () => {
+        this.hasUserInteraction = true
+      })
+    })
+  }
+
+  async handleSubmit(event) {
     console.log('handleSubmit called, preventing default...')
     event.preventDefault()
     event.stopPropagation()
 
     const form = event.target
     console.log('Form:', form)
+
+    // Client-side bot detection
+    if (this.detectBotBehavior()) {
+      console.log('Bot behavior detected, blocking submission')
+      this.handleError({ message: 'Please try again later.' })
+      return
+    }
 
     if (!form.checkValidity()) {
       console.log('Form validation failed')
@@ -42,11 +77,19 @@ export default class extends Controller {
 
     try {
       const formData = new FormData(form)
+
+      // Add client-side timing info
+      const submissionTime = Date.now()
+      const timeTaken = submissionTime - this.formStartTime
+      formData.append('client_timing', timeTaken)
+      formData.append('has_interaction', this.hasUserInteraction)
+
       const response = await fetch(form.action, {
         method: 'POST',
         body: formData,
         headers: {
-          'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content
+          'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content,
+          'X-Requested-With': 'XMLHttpRequest'
         }
       })
 
@@ -66,7 +109,55 @@ export default class extends Controller {
     }
   }
 
-        handleSuccess(data) {
+  detectBotBehavior() {
+    const form = document.getElementById('contactForm')
+
+    // Check if honeypot fields are filled
+    const honeypotFields = ['website', 'url', 'company_website', 'phone_number']
+    for (const fieldName of honeypotFields) {
+      const field = form.querySelector(`[name="${fieldName}"]`)
+      if (field && field.value.trim() !== '') {
+        console.log(`Honeypot field ${fieldName} is filled:`, field.value)
+        return true
+      }
+    }
+
+    // Check if form was submitted too quickly (less than 2 seconds)
+    const timeTaken = Date.now() - this.formStartTime
+    if (timeTaken < 2000) {
+      console.log('Form submitted too quickly:', timeTaken, 'ms')
+      return true
+    }
+
+    // Check if user never interacted with form
+    if (!this.hasUserInteraction) {
+      console.log('No user interaction detected')
+      return true
+    }
+
+    // Check for suspicious patterns in the message
+    const messageField = form.querySelector('[name="message"]')
+    if (messageField) {
+      const message = messageField.value.toLowerCase()
+
+      // Check for common spam patterns
+      const spamPatterns = [
+        /https?:\/\/.*https?:\/\//, // Multiple URLs
+        /seo.*ranking.*google/i,
+        /website.*design.*affordable/i,
+        /traffic.*increase.*guaranteed/i
+      ]
+
+      if (spamPatterns.some(pattern => pattern.test(message))) {
+        console.log('Suspicious message content detected')
+        return true
+      }
+    }
+
+    return false
+  }
+
+  handleSuccess(data) {
     console.log('Contact form success:', data)
 
     // Show success message
@@ -77,7 +168,11 @@ export default class extends Controller {
     form.reset()
     form.classList.remove('was-validated')
 
-        // Close modal after a short delay
+    // Reset interaction tracking
+    this.hasUserInteraction = false
+    this.formStartTime = Date.now()
+
+    // Close modal after a short delay
     setTimeout(() => {
       console.log('Timer fired - attempting to close modal...')
       const modalElement = document.getElementById('contactModal')

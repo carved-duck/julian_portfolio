@@ -8,12 +8,19 @@
       </div>
       <%= form_with url: contact_path, method: :post, id: "contactForm", class: "needs-validation", novalidate: true, data: { controller: "contact-form", action: "submit->contact-form#handleSubmit", turbo: false } do |form| %>
         <div class="modal-body">
+          <!-- Form start time for timing protection -->
+          <%= form.hidden_field :form_start_time, value: Time.current.to_f %>
           <div class="mb-3">
             <%= form.label :name, class: "form-label" %>
             <%= form.text_field :name, class: "form-control", placeholder: "Your name", required: true %>
             <div class="invalid-feedback">
               Please provide your name.
             </div>
+          </div>
+          <!-- First honeypot field - looks like a real field but positioned off-screen -->
+          <div class="mb-3" style="position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden;">
+            <label for="website" class="form-label">Website URL (optional)</label>
+            <%= form.text_field :website, class: "form-control", placeholder: "https://your-website.com", tabindex: "-1", autocomplete: "new-password" %>
           </div>
           <div class="mb-3">
             <%= form.label :email, class: "form-label" %>
@@ -22,12 +29,18 @@
               Please provide a valid email address.
             </div>
           </div>
+          <!-- Second honeypot field - hidden with CSS -->
+          <input type="text" name="url" value="" style="display: none !important;" tabindex="-1" autocomplete="nope">
           <div class="mb-3">
             <%= form.label :subject, class: "form-label" %>
             <%= form.text_field :subject, class: "form-control", placeholder: "What's this about?", required: true %>
             <div class="invalid-feedback">
               Please provide a subject.
             </div>
+          </div>
+          <!-- Third honeypot field - looks like company website -->
+          <div style="opacity: 0; position: absolute; top: 0; left: 0; height: 0; width: 0; z-index: -1;">
+            <%= form.text_field :company_website, placeholder: "Company website", tabindex: "-1", autocomplete: "off" %>
           </div>
           <div class="mb-3">
             <%= form.label :message, class: "form-label" %>
@@ -36,9 +49,10 @@
               Please provide a message.
             </div>
           </div>
-          <!-- Honeypot field - invisible to humans, bots will fill it out -->
-          <div style="position: absolute; left: -9999px; top: -9999px; visibility: hidden;">
-            <%= form.text_field :website, placeholder: "Leave this empty", tabindex: "-1", autocomplete: "off" %>
+          <!-- Fourth honeypot field - phone number trap -->
+          <div class="d-none">
+            <label for="phone_number">Phone Number</label>
+            <%= form.text_field :phone_number, class: "form-control", tabindex: "-1", autocomplete: "new-password" %>
           </div>
         </div>
         <div class="modal-footer">

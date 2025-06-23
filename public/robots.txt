@@ -1,1 +1,46 @@
 # See https://www.robotstxt.org/robotstxt.html for documentation on how to use the robots.txt file
+
+# Robots.txt - Be more restrictive to discourage spam bots
+User-agent: *
+Disallow: /contact
+Disallow: /admin/
+Disallow: /admin
+Disallow: /*?*
+Crawl-delay: 10
+
+# Allow legitimate search engines to crawl main content
+User-agent: Googlebot
+Allow: /
+Allow: /projects
+Allow: /photos
+Allow: /blog
+Allow: /events
+Disallow: /contact
+Disallow: /admin/
+Crawl-delay: 5
+
+User-agent: Bingbot
+Allow: /
+Allow: /projects
+Allow: /photos
+Allow: /blog
+Allow: /events
+Disallow: /contact
+Disallow: /admin/
+Crawl-delay: 5
+
+# Block known spam bots
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+# Sitemap location (you should create this if you haven't)
+# Sitemap: https://julianschoenfeld.com/sitemap.xml
