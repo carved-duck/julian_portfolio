@@ -35,5 +35,12 @@
 <!-- Featured Projects -->
 <section class="featured-projects" id="projects">
   <h2 class="section-title">Featured Projects</h2>
-  <%= render "projects/grid" %>
+  <% if @projects.any? %>
+    <%= render "projects/grid", projects: @projects %>
+  <% else %>
+    <div class="text-center py-5">
+      <p class="text-muted">No featured projects yet. Check back soon!</p>
+      <%= link_to "View All Projects", projects_path, class: "btn btn-outline-primary" %>
+    </div>
+  <% end %>
 </section>

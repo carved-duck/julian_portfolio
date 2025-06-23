@@ -1,4 +1,13 @@
 <div class="container mt-4">
+  <!-- Breadcrumb Navigation -->
+  <nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <%= link_to "Home", root_path, class: "text-decoration-none" %>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">Photos</li>
+    </ol>
+  </nav>
   <h1 class="mb-4">Photo Gallery</h1>
   <% if @categories.any? %>
     <div class="mb-4">

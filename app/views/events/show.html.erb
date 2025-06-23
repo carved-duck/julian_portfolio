@@ -1,4 +1,16 @@
 <div class="container mt-4">
+  <!-- Breadcrumb Navigation -->
+  <nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <%= link_to "Home", root_path, class: "text-decoration-none" %>
+      </li>
+      <li class="breadcrumb-item">
+        <%= link_to "Events", events_path, class: "text-decoration-none" %>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page"><%= truncate(@event.title, length: 50) %></li>
+    </ol>
+  </nav>
   <div class="row justify-content-center">
     <div class="col-lg-8">
       <div class="card">

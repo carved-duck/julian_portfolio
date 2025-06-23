@@ -108,7 +108,7 @@ module ApplicationHelper
     if project.featured_image.attached?
       data["image"] = {
         "@type": "ImageObject",
-        "url": cl_image_url(project.featured_image.key, width: 1200, height: 630, crop: :fill)
+        "url": request.base_url + rails_blob_path(project.featured_image, only_path: true)
       }
     end
 

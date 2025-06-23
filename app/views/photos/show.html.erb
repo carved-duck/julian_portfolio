@@ -1,4 +1,16 @@
 <div class="container mt-4">
+  <!-- Breadcrumb Navigation -->
+  <nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <%= link_to "Home", root_path, class: "text-decoration-none" %>
+      </li>
+      <li class="breadcrumb-item">
+        <%= link_to "Photos", photos_path, class: "text-decoration-none" %>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page"><%= @photo.category.titleize %></li>
+    </ol>
+  </nav>
   <div class="row">
     <div class="col-md-8 mx-auto">
       <% if @photo.image.attached? %>

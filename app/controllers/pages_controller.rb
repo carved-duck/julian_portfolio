@@ -3,7 +3,7 @@ class PagesController < ApplicationController
   @@submission_times = {}
 
   def home
-    @projects = Project.all
+    @projects = Project.featured.recent
   end
 
   def sitemap

@@ -5,6 +5,7 @@ class Project < ApplicationRecord
   validates :description, presence: true
 
   scope :recent, -> { order(created_at: :desc) }
+  scope :featured, -> { where(featured: true) }
 
   def has_links?
     github_url.present? || live_url.present?

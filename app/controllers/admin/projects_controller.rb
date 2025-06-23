@@ -63,6 +63,6 @@ class Admin::ProjectsController < Admin::BaseController
 
     # Only allow a list of trusted parameters through.
     def project_params
-      params.require(:project).permit(:title, :description, :github_url, :live_url, :featured_image, :tags)
+      params.require(:project).permit(:title, :description, :github_url, :live_url, :featured_image, :tags, :featured)
     end
 end
