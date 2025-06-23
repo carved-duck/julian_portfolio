@@ -1,7 +1,7 @@
 <div class="row">
   <% @projects.each do |project| %>
-    <article class="col-lg-4 col-md-6 mb-4" itemscope itemtype="https://schema.org/CreativeWork">
-      <div class="card h-100">
+    <div class="col-lg-4 col-md-6 mb-4" itemscope itemtype="https://schema.org/CreativeWork">
+      <article class="card h-100 shadow-sm">
         <% if project.featured_image.attached? %>
           <div class="browser-window browser-window-card">
             <div class="browser-header">
@@ -10,70 +10,66 @@
                 <div class="control-button control-minimize"></div>
                 <div class="control-button control-maximize"></div>
               </div>
-              <% if project.live_url.present? %>
-                <%= link_to format_url(project.live_url, add_www: true), target: "_blank", class: "browser-url-bar clickable-url", rel: "noopener noreferrer", itemprop: "url" do %>
-                  <%= project.live_url.gsub(/^https?:\/\//, '').gsub(/^www\./, '') %>
-                <% end %>
-              <% else %>
-                <div class="browser-url-bar"><%= project.title.downcase.gsub(' ', '') + '.com' %></div>
-              <% end %>
+              <div class="browser-url-bar">
+                <%= project.title.downcase.gsub(' ', '') + '.com' %>
+              </div>
             </div>
             <div class="browser-content">
-              <%= cl_image_tag project.featured_image.key,
-                  width: 600, height: 285, crop: :fill, quality: :auto, fetch_format: :auto,
-                  class: "browser-image",
-                  alt: "#{project.title} - Web development project screenshot",
-                  itemprop: "image" %>
+              <%= link_to project_path(project) do %>
+                <%= cl_image_tag project.featured_image.key,
+                    width: 400, height: 200, crop: :fill, quality: :auto, fetch_format: :auto,
+                    class: "browser-image",
+                    alt: "#{project.title} project preview",
+                    itemprop: "image" %>
+              <% end %>
             </div>
-          </div>
-        <% else %>
-          <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
-            <i class="fas fa-image text-muted" style="font-size: 3rem;" aria-hidden="true"></i>
-            <span class="visually-hidden">No image available for <%= project.title %></span>
           </div>
         <% end %>
         <div class="card-body d-flex flex-column">
           <header>
             <h3 class="card-title h5" itemprop="name">
-              <%= link_to project.title, project_path(project), class: "text-decoration-none text-dark" %>
+              <%= link_to project.title, project_path(project), class: "text-decoration-none stretched-link" %>
             </h3>
           </header>
-          <p class="card-text flex-grow-1" itemprop="description">
+          <p class="card-text text-muted flex-grow-1" itemprop="description">
             <%= truncate(project.description, length: 120) %>
           </p>
-          <% if project.tags.present? %>
-            <div class="mb-2">
-              <% project.tag_list.first(3).each do |tag| %>
-                <span class="badge bg-light text-dark me-1" style="font-size: 0.75rem;" itemprop="keywords"><%= tag %></span>
-              <% end %>
-              <% if project.tag_list.length > 3 %>
-                <span class="badge bg-light text-muted" style="font-size: 0.75rem;">+<%= project.tag_list.length - 3 %> more</span>
-              <% end %>
+          <% if project.tag_list.any? %>
+            <div class="mt-auto pt-2">
+              <small class="text-muted d-block" title="<%= project.tag_list.join(', ') %>">
+                <i class="fas fa-tags me-1"></i>
+                <%= project.display_tags_inline %>
+              </small>
             </div>
           <% end %>
-          <footer class="mt-auto">
-            <div class="d-flex justify-content-between align-items-center">
-              <%= link_to "View Project", project_path(project), class: "btn btn-primary btn-sm" %>
+        </div>
+        <% if project.has_links? %>
+          <div class="card-footer bg-transparent border-top-0 pt-0">
+            <div class="btn-group w-100" role="group" aria-label="Project links">
               <% if project.live_url.present? %>
-                <%= link_to format_url(project.live_url, add_www: true), target: "_blank", class: "live-site-link", rel: "noopener noreferrer", itemprop: "url" do %>
-                  <i class="fas fa-external-link-alt" aria-hidden="true"></i>
-                  <span>Live Site</span>
+                <%= link_to format_url(project.live_url),
+                    target: "_blank",
+                    class: "btn btn-outline-primary btn-sm",
+                    style: "position: relative; z-index: 2;",
+                    rel: "noopener noreferrer",
+                    title: "View live site" do %>
+                  <i class="fas fa-external-link-alt me-1"></i>Live
+                <% end %>
+              <% end %>
+              <% if project.github_url.present? %>
+                <%= link_to format_url(project.github_url),
+                    target: "_blank",
+                    class: "btn btn-outline-dark btn-sm",
+                    style: "position: relative; z-index: 2;",
+                    rel: "noopener noreferrer",
+                    title: "View source code" do %>
+                  <i class="fab fa-github me-1"></i>Code
                 <% end %>
               <% end %>
             </div>
-          </footer>
-        </div>
-        <!-- Hidden structured data -->
-        <div style="display: none;">
-          <span itemprop="creator" itemscope itemtype="https://schema.org/Person">
-            <span itemprop="name">Julian Schoenfeld</span>
-          </span>
-          <time itemprop="dateCreated" datetime="<%= project.created_at.iso8601 %>">
-            <%= project.created_at.strftime("%Y-%m-%d") %>
-          </time>
-          <meta itemprop="url" content="<%= project_url(project) %>">
-        </div>
-      </div>
-    </article>
+          </div>
+        <% end %>
+      </article>
+    </div>
   <% end %>
 </div>

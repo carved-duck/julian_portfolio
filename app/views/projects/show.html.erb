@@ -43,12 +43,24 @@
             <%= simple_format(@project.description) %>
           </div>
         </div>
-        <% if @project.tags.present? %>
+        <% if @project.categorized_tags.any? %>
           <div class="mb-4">
-            <h3>Technologies Used</h3>
-            <div class="tags-container">
-              <% @project.tag_list.each do |tag| %>
-                <span class="badge bg-secondary me-2 mb-2" itemprop="keywords"><%= tag %></span>
+            <h3>Technologies & Features</h3>
+            <div class="technologies-grid">
+              <% @project.categorized_tags.each do |category, tags| %>
+                <div class="technology-category mb-3">
+                  <h6 class="category-label text-muted mb-2">
+                    <i class="fas fa-<%= category_icon(category) %> me-2"></i>
+                    <%= category %>
+                  </h6>
+                  <div class="category-tags">
+                    <% tags.each do |tag| %>
+                      <span class="badge bg-primary bg-opacity-10 text-primary me-2 mb-2" itemprop="keywords">
+                        <%= tag %>
+                      </span>
+                    <% end %>
+                  </div>
+                </div>
               <% end %>
             </div>
           </div>
@@ -136,6 +148,11 @@
                 <p class="card-text">
                   <%= truncate(project.description, length: 100) %>
                 </p>
+                <% if project.tag_list.any? %>
+                  <div class="mb-3">
+                    <small class="text-muted"><%= project.display_tags_inline %></small>
+                  </div>
+                <% end %>
                 <%= link_to "View Project", project_path(project), class: "btn btn-sm btn-outline-primary" %>
               </div>
             </div>

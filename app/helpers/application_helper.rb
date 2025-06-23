@@ -1,15 +1,13 @@
 module ApplicationHelper
   def format_url(url, add_www: false)
-    return nil if url.blank?
+    return url if url.blank?
 
-    if url.start_with?('http://', 'https://')
-      url
-    elsif add_www && !url.start_with?('www.')
-      "https://www.#{url}"
-    elsif url.start_with?('www.')
-      "https://#{url}"
+    formatted_url = url.start_with?('http') ? url : "https://#{url}"
+
+    if add_www && !formatted_url.match?(/https?:\/\/(www\.|localhost|[\d.]+)/)
+      formatted_url.sub(/https?:\/\//, '\0www.')
     else
-      "https://#{url}"
+      formatted_url
     end
   end
 
@@ -90,7 +88,9 @@ module ApplicationHelper
   end
 
   def structured_data_for_project(project)
-    {
+    return '' unless project
+
+    data = {
       "@context": "https://schema.org",
       "@type": "CreativeWork",
       "name": project.title,
@@ -99,35 +99,38 @@ module ApplicationHelper
         "@type": "Person",
         "name": "Julian Schoenfeld"
       },
-      "url": project_url(project),
-      "image": project.featured_image.attached? ? url_for(project.featured_image) : nil,
-      "dateCreated": project.created_at.iso8601,
-      "dateModified": project.updated_at.iso8601
-    }.compact.to_json.html_safe
+      "dateCreated": project.created_at.iso8601
+    }
+
+    data["url"] = project.live_url if project.live_url.present?
+    data["keywords"] = project.tag_list.join(', ') if project.tag_list.any?
+
+    if project.featured_image.attached?
+      data["image"] = {
+        "@type": "ImageObject",
+        "url": cl_image_url(project.featured_image.key, width: 1200, height: 630, crop: :fill)
+      }
+    end
+
+    data.to_json.html_safe
   end
 
   def structured_data_for_blog_post(blog_post)
+    return '' unless blog_post
+
     {
       "@context": "https://schema.org",
       "@type": "BlogPosting",
       "headline": blog_post.title,
-      "description": truncate(strip_tags(blog_post.body), length: 160),
+      "description": truncate(blog_post.content, length: 160),
       "author": {
         "@type": "Person",
         "name": "Julian Schoenfeld"
       },
-      "publisher": {
-        "@type": "Person",
-        "name": "Julian Schoenfeld"
-      },
-      "datePublished": blog_post.published_at&.iso8601,
+      "datePublished": blog_post.created_at.iso8601,
       "dateModified": blog_post.updated_at.iso8601,
-      "url": blog_post_url(blog_post),
-      "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": blog_post_url(blog_post)
-      }
-    }.compact.to_json.html_safe
+      "url": blog_post_url(blog_post)
+    }.to_json.html_safe
   end
 
   def structured_data_for_event(event)
@@ -151,27 +154,76 @@ module ApplicationHelper
       "@context": "https://schema.org",
       "@type": "Person",
       "name": "Julian Schoenfeld",
-      "jobTitle": "Web Developer & Photographer",
-      "description": "Tokyo-based web developer and photographer specializing in Ruby on Rails applications and creative photography.",
-      "url": root_url,
+      "jobTitle": "Full-Stack Developer",
+      "url": request.base_url,
       "sameAs": [
-        # Add your social media URLs here
-        # "https://github.com/your-username",
-        # "https://linkedin.com/in/your-profile",
-        # "https://instagram.com/your-handle"
-      ].compact,
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Tokyo",
-        "addressCountry": "JP"
-      },
+        "https://github.com/your-github-username",
+        "https://linkedin.com/in/your-linkedin"
+      ],
       "knowsAbout": [
-        "Web Development",
         "Ruby on Rails",
-        "Photography",
         "JavaScript",
-        "HTML/CSS"
+        "Web Development",
+        "Full-Stack Development"
       ]
     }.to_json.html_safe
+  end
+
+  def full_title(page_title = '')
+    base_title = "Julian Schoenfeld - Full-Stack Developer"
+    if page_title.empty?
+      base_title
+    else
+      "#{page_title} | #{base_title}"
+    end
+  end
+
+  def meta_keywords(keywords = nil)
+    base_keywords = "Julian Schoenfeld, Full-Stack Developer, Ruby on Rails, JavaScript, Web Development, Portfolio"
+    keywords ? "#{keywords}, #{base_keywords}" : base_keywords
+  end
+
+  def category_icon(category)
+    case category
+    when "Core Stack"
+      "code"
+    when "Frontend"
+      "palette"
+    when "Services"
+      "cloud"
+    when "Features"
+      "star"
+    else
+      "tag"
+    end
+  end
+
+  def breadcrumb_structured_data(items)
+    list_items = items.map.with_index do |item, index|
+      {
+        "@type": "ListItem",
+        "position": index + 1,
+        "name": item[:name],
+        "item": item[:url] ? request.base_url + item[:url] : nil
+      }.compact
+    end
+
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": list_items
+    }.to_json.html_safe
+  end
+
+  def page_title_for_project(project)
+    "#{project.title} - Portfolio Project"
+  end
+
+  def page_description_for_project(project)
+    truncate(project.description, length: 160)
+  end
+
+  def page_keywords_for_project(project)
+    project.tag_list.join(', ')
   end
 end
