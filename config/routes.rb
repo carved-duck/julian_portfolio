@@ -11,6 +11,10 @@ Rails.application.routes.draw do
     end
   end
   post 'contact', to: 'pages#contact'
+
+  # SEO Routes
+  get 'sitemap.xml', to: 'pages#sitemap', defaults: { format: 'xml' }
+
   # Admin die
   namespace :admin do
     root to: "dashboard#index"

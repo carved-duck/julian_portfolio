@@ -1,62 +1,147 @@
-<div class="container mt-4">
-  <div class="row">
-    <div class="col-md-8 mx-auto">
-      <h1 class="mb-4"><%= @project.title %></h1>
-      <% if @project.featured_image.attached? %>
-        <div class="mb-4">
-          <div class="browser-window browser-window-showcase">
-            <div class="browser-header">
-              <div class="browser-controls">
-                <div class="control-button control-close"></div>
-                <div class="control-button control-minimize"></div>
-                <div class="control-button control-maximize"></div>
-              </div>
-              <% if @project.live_url.present? %>
-                <%= link_to format_url(@project.live_url, add_www: true), target: "_blank", class: "browser-url-bar clickable-url" do %>
-                  <%= @project.live_url.gsub(/^https?:\/\//, '').gsub(/^www\./, '') %>
+<% content_for :structured_data do %>
+  <script type="application/ld+json">
+    <%= structured_data_for_project(@project) %>
+  </script>
+<% end %>
+<article itemscope itemtype="https://schema.org/CreativeWork">
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-md-8 mx-auto">
+        <header>
+          <h1 class="mb-4" itemprop="name"><%= @project.title %></h1>
+        </header>
+        <% if @project.featured_image.attached? %>
+          <div class="mb-4">
+            <div class="browser-window browser-window-showcase">
+              <div class="browser-header">
+                <div class="browser-controls">
+                  <div class="control-button control-close"></div>
+                  <div class="control-button control-minimize"></div>
+                  <div class="control-button control-maximize"></div>
+                </div>
+                <% if @project.live_url.present? %>
+                  <%= link_to format_url(@project.live_url, add_www: true), target: "_blank", class: "browser-url-bar clickable-url", rel: "noopener noreferrer" do %>
+                    <%= @project.live_url.gsub(/^https?:\/\//, '').gsub(/^www\./, '') %>
+                  <% end %>
+                <% else %>
+                  <div class="browser-url-bar"><%= @project.title.downcase.gsub(' ', '') + '.com' %></div>
                 <% end %>
-              <% else %>
-                <div class="browser-url-bar"><%= @project.title.downcase.gsub(' ', '') + '.com' %></div>
-              <% end %>
-            </div>
-            <div class="browser-content">
-              <%= cl_image_tag @project.featured_image.key, width: 1200, height: 510, crop: :fill, quality: :auto, fetch_format: :auto, class: "browser-image" %>
+              </div>
+              <div class="browser-content">
+                <%= cl_image_tag @project.featured_image.key,
+                    width: 1200, height: 510, crop: :fill, quality: :auto, fetch_format: :auto,
+                    class: "browser-image",
+                    alt: "Screenshot of #{@project.title} project",
+                    itemprop: "image" %>
+              </div>
             </div>
           </div>
-        </div>
-      <% end %>
-      <div class="mb-4">
-        <h3>Description</h3>
-        <p class="lead"><%= simple_format(@project.description) %></p>
-      </div>
-      <% if @project.has_links? %>
+        <% end %>
         <div class="mb-4">
-          <h4>Links</h4>
-          <div class="d-flex gap-2 flex-wrap">
-            <% if @project.live_url.present? %>
-              <%= link_to format_url(@project.live_url, add_www: true), target: "_blank", class: "btn btn-primary" do %>
-                <i class="fas fa-external-link-alt"></i> Visit Site
-              <% end %>
-            <% end %>
-            <% if @project.github_url.present? %>
-              <%= link_to format_url(@project.github_url), target: "_blank", class: "btn btn-outline-dark" do %>
-                <i class="fab fa-github"></i> View Code
-              <% end %>
-            <% end %>
+          <h2>Description</h2>
+          <div class="lead" itemprop="description">
+            <%= simple_format(@project.description) %>
           </div>
         </div>
-      <% end %>
-      <% if @project.tags.present? %>
-        <div class="mb-4">
-          <h4>Technologies</h4>
-          <% @project.tag_list.each do |tag| %>
-            <span class="badge bg-secondary me-1"><%= tag %></span>
-          <% end %>
-        </div>
-      <% end %>
-      <div class="mt-5">
-        <%= link_to "← Back to Projects", projects_path, class: "btn btn-outline-secondary" %>
+        <% if @project.tags.present? %>
+          <div class="mb-4">
+            <h3>Technologies Used</h3>
+            <div class="tags-container">
+              <% @project.tag_list.each do |tag| %>
+                <span class="badge bg-secondary me-2 mb-2" itemprop="keywords"><%= tag %></span>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+        <% if @project.has_links? %>
+          <div class="mb-4">
+            <h3>Project Links</h3>
+            <div class="d-flex flex-wrap gap-3">
+              <% if @project.live_url.present? %>
+                <%= link_to format_url(@project.live_url, add_www: true),
+                    target: "_blank",
+                    class: "btn btn-primary",
+                    rel: "noopener noreferrer",
+                    itemprop: "url" do %>
+                  <i class="fas fa-external-link-alt me-2"></i>View Live Site
+                <% end %>
+              <% end %>
+              <% if @project.github_url.present? %>
+                <%= link_to format_url(@project.github_url),
+                    target: "_blank",
+                    class: "btn btn-outline-dark",
+                    rel: "noopener noreferrer" do %>
+                  <i class="fab fa-github me-2"></i>View Code
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+        <footer class="mt-5 pt-4 border-top">
+          <div class="d-flex justify-content-between align-items-center">
+            <%= link_to "← Back to Projects", projects_path, class: "btn btn-outline-primary" %>
+            <div class="project-meta text-muted">
+              <small>
+                <span itemprop="creator" itemscope itemtype="https://schema.org/Person">
+                  <span itemprop="name">Julian Schoenfeld</span>
+                </span>
+                <time itemprop="dateCreated" datetime="<%= @project.created_at.iso8601 %>">
+                  · <%= @project.created_at.strftime("%B %Y") %>
+                </time>
+              </small>
+            </div>
+          </div>
+        </footer>
       </div>
     </div>
   </div>
-</div>
+</article>
+<!-- Related Projects Section -->
+<% if @related_projects = Project.where.not(id: @project.id).limit(3) and @related_projects.any? %>
+  <section class="related-projects mt-5 pt-5 border-top">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <h2 class="text-center mb-4">More Projects</h2>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <% @related_projects.each do |project| %>
+          <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+              <% if project.featured_image.attached? %>
+                <div class="browser-window browser-window-card">
+                  <div class="browser-header">
+                    <div class="browser-controls">
+                      <div class="control-button control-close"></div>
+                      <div class="control-button control-minimize"></div>
+                      <div class="control-button control-maximize"></div>
+                    </div>
+                    <div class="browser-url-bar">
+                      <%= project.title.downcase.gsub(' ', '') + '.com' %>
+                    </div>
+                  </div>
+                  <div class="browser-content">
+                    <%= cl_image_tag project.featured_image.key,
+                        width: 400, height: 200, crop: :fill, quality: :auto, fetch_format: :auto,
+                        class: "browser-image",
+                        alt: "#{project.title} project preview" %>
+                  </div>
+                </div>
+              <% end %>
+              <div class="card-body">
+                <h5 class="card-title">
+                  <%= link_to project.title, project_path(project), class: "text-decoration-none text-dark" %>
+                </h5>
+                <p class="card-text">
+                  <%= truncate(project.description, length: 100) %>
+                </p>
+                <%= link_to "View Project", project_path(project), class: "btn btn-sm btn-outline-primary" %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </section>
+<% end %>

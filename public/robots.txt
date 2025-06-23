@@ -42,5 +42,5 @@ Disallow: /
 User-agent: DotBot
 Disallow: /
 
-# Sitemap location (you should create this if you haven't)
-# Sitemap: https://julianschoenfeld.com/sitemap.xml
+# Sitemap location
+Sitemap: https://julianschoenfeld.com/sitemap.xml

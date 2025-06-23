@@ -1,22 +1,101 @@
-<div class="container mt-4">
-  <div class="row justify-content-center">
-    <div class="col-lg-8">
-      <article class="blog-post">
+<% content_for :structured_data do %>
+  <script type="application/ld+json">
+    <%= structured_data_for_blog_post(@blog_post) %>
+  </script>
+<% end %>
+<article class="blog-post" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="container mt-4">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
         <header class="mb-4">
-          <h1 class="blog-title"><%= @blog_post.title %></h1>
+          <h1 class="blog-title" itemprop="headline"><%= @blog_post.title %></h1>
           <% if @blog_post.published? %>
-            <p class="text-muted">
-              <small>Published on <%= @blog_post.published_at.strftime("%B %d, %Y") %></small>
-            </p>
+            <div class="blog-meta text-muted mb-3">
+              <small>
+                Published by
+                <span itemprop="author" itemscope itemtype="https://schema.org/Person">
+                  <span itemprop="name">Julian Schoenfeld</span>
+                </span>
+                on
+                <time itemprop="datePublished" datetime="<%= @blog_post.published_at.iso8601 %>">
+                  <%= @blog_post.published_at.strftime("%B %d, %Y") %>
+                </time>
+                <% if @blog_post.updated_at > @blog_post.published_at %>
+                  <span class="ms-2">
+                    · Updated
+                    <time itemprop="dateModified" datetime="<%= @blog_post.updated_at.iso8601 %>">
+                      <%= @blog_post.updated_at.strftime("%B %d, %Y") %>
+                    </time>
+                  </span>
+                <% end %>
+              </small>
+            </div>
           <% end %>
         </header>
-        <div class="blog-content">
+        <div class="blog-content" itemprop="articleBody">
           <%= simple_format(@blog_post.body) %>
         </div>
+        <!-- Hidden structured data -->
+        <div style="display: none;">
+          <span itemprop="publisher" itemscope itemtype="https://schema.org/Person">
+            <span itemprop="name">Julian Schoenfeld</span>
+          </span>
+          <div itemprop="mainEntityOfPage" itemscope itemtype="https://schema.org/WebPage">
+            <meta itemprop="@id" content="<%= blog_post_url(@blog_post) %>">
+          </div>
+        </div>
         <footer class="mt-5 pt-4 border-top">
-          <%= link_to "← Back to Blog", blog_posts_path, class: "btn btn-outline-primary" %>
+          <div class="d-flex justify-content-between align-items-center">
+            <%= link_to "← Back to Blog", blog_posts_path, class: "btn btn-outline-primary" %>
+            <div class="share-buttons">
+              <small class="text-muted me-3">Share:</small>
+              <%= link_to "https://twitter.com/intent/tweet?text=#{CGI.escape(@blog_post.title)}&url=#{CGI.escape(blog_post_url(@blog_post))}",
+                      target: "_blank",
+                      class: "btn btn-sm btn-outline-info me-2",
+                      rel: "noopener noreferrer" do %>
+                <i class="fab fa-twitter"></i>
+              <% end %>
+              <%= link_to "https://www.linkedin.com/sharing/share-offsite/?url=#{CGI.escape(blog_post_url(@blog_post))}",
+                      target: "_blank",
+                      class: "btn btn-sm btn-outline-primary",
+                      rel: "noopener noreferrer" do %>
+                <i class="fab fa-linkedin"></i>
+              <% end %>
+            </div>
+          </div>
         </footer>
-      </article>
+      </div>
     </div>
   </div>
-</div>
+</article>
+<!-- Related Blog Posts Section -->
+<% if @related_posts = BlogPost.published.where.not(id: @blog_post.id).recent.limit(3) and @related_posts.any? %>
+  <section class="related-posts mt-5 pt-5 border-top">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <h2 class="mb-4">Related Articles</h2>
+          <div class="row">
+            <% @related_posts.each do |post| %>
+              <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                  <div class="card-body">
+                    <h6 class="card-title">
+                      <%= link_to post.title, blog_post_path(post), class: "text-decoration-none" %>
+                    </h6>
+                    <p class="card-text small">
+                      <%= truncate(strip_tags(post.body), length: 80) %>
+                    </p>
+                    <small class="text-muted">
+                      <%= post.published_at.strftime("%b %d, %Y") if post.published? %>
+                    </small>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+<% end %>

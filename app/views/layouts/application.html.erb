@@ -1,26 +1,37 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>Julian's Portfolio</title>
+    <title><%= page_title %></title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- SEO & Social Media Meta Tags -->
-    <meta name="description" content="Julian Schoenfeld's portfolio - Photographer, web developer, and creative professional showcasing projects, photography, and events in Japan.">
-    <meta name="keywords" content="Julian Schoenfeld, portfolio, photography, web development, Japan, creative">
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="<%= meta_description %>">
+    <meta name="keywords" content="Julian Schoenfeld, web developer, photographer, Tokyo, Japan, Ruby on Rails, portfolio, photography, creative">
     <meta name="author" content="Julian Schoenfeld">
+    <link rel="canonical" href="<%= canonical_url %>">
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="<%= request.original_url %>">
-    <meta property="og:title" content="Julian's Portfolio">
-    <meta property="og:description" content="Julian Schoenfeld's portfolio - Photographer, web developer, and creative professional showcasing projects, photography, and events in Japan.">
+    <meta property="og:url" content="<%= canonical_url %>">
+    <meta property="og:title" content="<%= page_title %>">
+    <meta property="og:description" content="<%= meta_description %>">
     <meta property="og:image" content="<%= request.base_url + asset_path('icons/apple-icon.png') %>">
     <meta property="og:image:width" content="180">
     <meta property="og:image:height" content="180">
+    <meta property="og:site_name" content="Julian Schoenfeld Portfolio">
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="<%= request.original_url %>">
-    <meta property="twitter:title" content="Julian's Portfolio">
-    <meta property="twitter:description" content="Julian Schoenfeld's portfolio - Photographer, web developer, and creative professional showcasing projects, photography, and events in Japan.">
+    <meta property="twitter:url" content="<%= canonical_url %>">
+    <meta property="twitter:title" content="<%= page_title %>">
+    <meta property="twitter:description" content="<%= meta_description %>">
     <meta property="twitter:image" content="<%= request.base_url + asset_path('icons/apple-icon.png') %>">
+    <meta property="twitter:creator" content="@julianschoenfeld">
+    <!-- Structured Data -->
+    <% if content_for?(:structured_data) %>
+      <%= yield(:structured_data) %>
+    <% else %>
+      <script type="application/ld+json">
+        <%= structured_data_for_person %>
+      </script>
+    <% end %>
     <link rel="manifest" href="<%= asset_path 'manifest.json.erb' %>">
     <%= render 'shared/ios_pwa_links' %>
     <%= csrf_meta_tags %>
@@ -28,6 +39,14 @@
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <%= javascript_importmap_tags %>
+    <!-- Google tag (gtag.js) - Add your Google Analytics ID here -->
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'GA_MEASUREMENT_ID');
+    </script> -->
   </head>
   <body class="<%= body_class %>">
     <%= render 'shared/navbar' %>

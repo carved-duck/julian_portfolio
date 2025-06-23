@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <% @static_pages.each do |page| %>
+      <url>
+        <loc><%= request.protocol + request.host_with_port + page[:path] %></loc>
+        <changefreq><%= page[:changefreq] %></changefreq>
+        <priority><%= page[:priority] %></priority>
+        <lastmod><%= Date.current.iso8601 %></lastmod>
+      </url>
+    <% end %>
+    <% @projects.each do |project| %>
+      <url>
+        <loc><%= request.protocol + request.host_with_port + project_path(project) %></loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+        <lastmod><%= project.updated_at.iso8601 %></lastmod>
+      </url>
+    <% end %>
+    <% @blog_posts.each do |blog_post| %>
+      <url>
+        <loc><%= request.protocol + request.host_with_port + blog_post_path(blog_post) %></loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+        <lastmod><%= blog_post.updated_at.iso8601 %></lastmod>
+      </url>
+    <% end %>
+    <% @events.each do |event| %>
+      <url>
+        <loc><%= request.protocol + request.host_with_port + event_path(event) %></loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+        <lastmod><%= event.updated_at.iso8601 %></lastmod>
+      </url>
+    <% end %>
+  </urlset>

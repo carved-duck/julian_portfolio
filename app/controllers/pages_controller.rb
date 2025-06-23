@@ -6,6 +6,23 @@ class PagesController < ApplicationController
     @projects = Project.all
   end
 
+  def sitemap
+    @projects = Project.all
+    @blog_posts = BlogPost.published
+    @events = Event.where(active: true)
+    @static_pages = [
+      { path: root_path, priority: 1.0, changefreq: 'weekly' },
+      { path: projects_path, priority: 0.9, changefreq: 'weekly' },
+      { path: photos_path, priority: 0.8, changefreq: 'monthly' },
+      { path: blog_posts_path, priority: 0.8, changefreq: 'weekly' },
+      { path: events_path, priority: 0.7, changefreq: 'weekly' }
+    ]
+
+    respond_to do |format|
+      format.xml { render layout: false }
+    end
+  end
+
   def contact
     # Multi-layer spam protection
     return render_spam_response if spam_detected?

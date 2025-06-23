@@ -34,8 +34,8 @@ module SpamProtection
   ].freeze
 
   # Configuration
-  MAX_SUBMISSIONS_PER_HOUR = 3
-  MIN_FORM_FILL_TIME = 3.seconds
+  MAX_SUBMISSIONS_PER_HOUR = 2
+  MIN_FORM_FILL_TIME = 10.seconds
   MIN_MESSAGE_LENGTH = 10
   MAX_SPAM_SCORE = 2
   MAX_URLS_IN_MESSAGE = 1
