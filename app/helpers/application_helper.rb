@@ -191,6 +191,8 @@ module ApplicationHelper
       "palette"
     when "Services"
       "cloud"
+    when "Tools & Libraries"
+      "tools"
     when "Features"
       "star"
     else
