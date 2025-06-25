@@ -23,7 +23,7 @@ class PagesController < ApplicationController
     end
   end
 
-  def contact
+    def contact
     # Multi-layer spam protection
     return render_spam_response if spam_detected?
 

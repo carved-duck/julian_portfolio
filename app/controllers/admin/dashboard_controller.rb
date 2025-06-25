@@ -7,7 +7,25 @@ class Admin::DashboardController < Admin::BaseController
     @events_count = Event.count
     @total_attendees = Attendee.count
 
-    # Get visitor count
+    # Enhanced visitor analytics
     @visitor_count = ApplicationController.visitor_count
+    @total_page_views = ApplicationController.total_page_views
+    @recent_visitors = ApplicationController.recent_visitors.first(10)
+    @popular_pages = ApplicationController.popular_pages
+
+    # Calculate some additional metrics
+    @avg_pages_per_visitor = @visitor_count > 0 ? (@total_page_views.to_f / @visitor_count).round(2) : 0
+    @visitors_today = count_visitors_today
+  end
+
+  private
+
+  def count_visitors_today
+    today_start = Time.current.beginning_of_day
+    ApplicationController.recent_visitors.count do |visitor|
+      Time.parse(visitor[:timestamp]) >= today_start
+    end
+  rescue
+    0
   end
 end

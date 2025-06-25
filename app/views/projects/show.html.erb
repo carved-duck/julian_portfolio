@@ -3,6 +3,15 @@
     <%= structured_data_for_project(@project) %>
   </script>
 <% end %>
+<% content_for :page_title, page_title_for_project(@project) %>
+<script>
+  // Track project view in Google Analytics
+  document.addEventListener('DOMContentLoaded', function() {
+    if (typeof window.trackProjectView === 'function') {
+      window.trackProjectView('<%= @project.title %>');
+    }
+  });
+</script>
 <article itemscope itemtype="https://schema.org/CreativeWork">
   <div class="container mt-4">
     <div class="row">
@@ -74,7 +83,8 @@
                     target: "_blank",
                     class: "btn btn-primary",
                     rel: "noopener noreferrer",
-                    itemprop: "url" do %>
+                    itemprop: "url",
+                    onclick: "if(typeof trackExternalLink === 'function') trackExternalLink('#{@project.live_url}', 'View Live Site')" do %>
                   <i class="fas fa-external-link-alt me-2"></i>View Live Site
                 <% end %>
               <% end %>
@@ -82,7 +92,8 @@
                 <%= link_to format_url(@project.github_url),
                     target: "_blank",
                     class: "btn btn-outline-dark",
-                    rel: "noopener noreferrer" do %>
+                    rel: "noopener noreferrer",
+                    onclick: "if(typeof trackExternalLink === 'function') trackExternalLink('#{@project.github_url}', 'View Code')" do %>
                   <i class="fab fa-github me-2"></i>View Code
                 <% end %>
               <% end %>

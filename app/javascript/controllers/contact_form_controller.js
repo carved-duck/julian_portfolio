@@ -9,6 +9,13 @@ export default class extends Controller {
 
     // Log form interaction for timing analysis
     this.setupInteractionTracking()
+
+    // Track analytics when modal opens
+    document.getElementById('contactModal').addEventListener('shown.bs.modal', () => {
+      if (typeof window.trackContactFormOpen === 'function') {
+        window.trackContactFormOpen()
+      }
+    })
   }
 
   setupFormValidation() {
@@ -159,6 +166,11 @@ export default class extends Controller {
 
   handleSuccess(data) {
     console.log('Contact form success:', data)
+
+    // Track successful submission
+    if (typeof window.trackContactFormSubmit === 'function') {
+      window.trackContactFormSubmit()
+    }
 
     // Show success message
     this.showMessage('Message sent successfully! I\'ll get back to you soon.', 'success')

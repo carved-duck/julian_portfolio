@@ -2,21 +2,58 @@
   <div class="row">
     <div class="col-12">
       <h1 class="mb-4">Admin Dashboard</h1>
-      <p class="lead">Manage your portfolio content</p>
+      <p class="lead">Manage your portfolio content and view analytics</p>
     </div>
   </div>
+  <!-- Analytics Row -->
   <div class="row">
-    <!-- Visitor Counter -->
+    <!-- Unique Visitors -->
     <div class="col-md-6 col-lg-3 col-xl-2 mb-4">
       <div class="card h-100">
         <div class="card-body text-center">
           <i class="fas fa-users fa-3x text-secondary mb-3"></i>
-          <h5 class="card-title">Visitors</h5>
+          <h5 class="card-title">Unique Visitors</h5>
           <p class="card-text fs-2 fw-bold text-secondary"><%= @visitor_count %></p>
-          <small class="text-muted">Unique visitors</small>
+          <small class="text-muted">24h unique fingerprints</small>
         </div>
       </div>
     </div>
+    <!-- Page Views -->
+    <div class="col-md-6 col-lg-3 col-xl-2 mb-4">
+      <div class="card h-100">
+        <div class="card-body text-center">
+          <i class="fas fa-eye fa-3x text-info mb-3"></i>
+          <h5 class="card-title">Page Views</h5>
+          <p class="card-text fs-2 fw-bold text-info"><%= @total_page_views %></p>
+          <small class="text-muted">Total page views</small>
+        </div>
+      </div>
+    </div>
+    <!-- Today's Visitors -->
+    <div class="col-md-6 col-lg-3 col-xl-2 mb-4">
+      <div class="card h-100">
+        <div class="card-body text-center">
+          <i class="fas fa-calendar-day fa-3x text-warning mb-3"></i>
+          <h5 class="card-title">Today</h5>
+          <p class="card-text fs-2 fw-bold text-warning"><%= @visitors_today %></p>
+          <small class="text-muted">Visitors today</small>
+        </div>
+      </div>
+    </div>
+    <!-- Avg Pages/Visitor -->
+    <div class="col-md-6 col-lg-3 col-xl-2 mb-4">
+      <div class="card h-100">
+        <div class="card-body text-center">
+          <i class="fas fa-chart-line fa-3x text-success mb-3"></i>
+          <h5 class="card-title">Engagement</h5>
+          <p class="card-text fs-2 fw-bold text-success"><%= @avg_pages_per_visitor %></p>
+          <small class="text-muted">Avg pages/visitor</small>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Content Management Row -->
+  <div class="row">
     <!-- Projects -->
     <div class="col-md-6 col-lg-3 col-xl-2 mb-4">
       <div class="card h-100">
@@ -63,6 +100,96 @@
       </div>
     </div>
   </div>
+  <!-- Analytics Details Row -->
+  <div class="row mt-4">
+    <!-- Popular Pages -->
+    <div class="col-md-6 mb-4">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">
+            <i class="fas fa-chart-bar me-2"></i>Popular Pages
+          </h5>
+        </div>
+        <div class="card-body">
+          <% if @popular_pages.any? %>
+            <div class="table-responsive">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th>Page</th>
+                    <th class="text-end">Views</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @popular_pages.each do |page| %>
+                    <tr>
+                      <td>
+                        <code><%= page[:path] == '/' ? 'Home' : page[:path] %></code>
+                      </td>
+                      <td class="text-end">
+                        <span class="badge bg-primary"><%= page[:views] %></span>
+                      </td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          <% else %>
+            <p class="text-muted">No page views recorded yet</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <!-- Recent Visitors -->
+    <div class="col-md-6 mb-4">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">
+            <i class="fas fa-users me-2"></i>Recent Visitors
+          </h5>
+        </div>
+        <div class="card-body">
+          <% if @recent_visitors.any? %>
+            <div class="table-responsive">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Location</th>
+                    <th>Landing Page</th>
+                    <th>Browser</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @recent_visitors.each do |visitor| %>
+                    <tr>
+                      <td>
+                        <small><%= Time.parse(visitor[:timestamp]).strftime("%m/%d %H:%M") %></small>
+                      </td>
+                      <td>
+                        <small class="text-muted"><%= visitor[:ip] %></small>
+                      </td>
+                      <td>
+                        <small><code><%= visitor[:landing_page] == '/' ? 'Home' : visitor[:landing_page] %></code></small>
+                      </td>
+                      <td>
+                        <small class="text-muted" title="<%= visitor[:user_agent] %>">
+                          <%= visitor[:user_agent].to_s.split(' ').first&.split('/')&.first || 'Unknown' %>
+                        </small>
+                      </td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          <% else %>
+            <p class="text-muted">No visitors recorded yet</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Quick Actions -->
   <div class="row mt-4">
     <div class="col-12">
       <div class="card">
