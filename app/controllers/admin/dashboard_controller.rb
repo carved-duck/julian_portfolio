@@ -6,5 +6,8 @@ class Admin::DashboardController < Admin::BaseController
     @blog_posts_count = BlogPost.count
     @events_count = Event.count
     @total_attendees = Attendee.count
+
+    # Get visitor count
+    @visitor_count = ApplicationController.visitor_count
   end
 end
