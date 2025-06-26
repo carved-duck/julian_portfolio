@@ -1,6 +1,8 @@
 // Photo Gallery Dark Mode - Full Page Coverage
-.photo-gallery-container {
-  background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
+// Override body background when photo gallery is present
+// Note: Using a more specific selector for better browser compatibility
+body .photo-gallery-container {
+  background: #000000 !important;
   min-height: 100vh;
   width: 100%;
   margin: 0;
@@ -17,6 +19,24 @@
     padding-bottom: 3rem;
     position: relative;
     z-index: 1;
+  }
+}
+
+// Additional override to ensure body background doesn't show through
+.photo-gallery-container {
+  // Ensure this container extends beyond viewport if needed
+  position: relative;
+
+  // Add a pseudo-element to cover any potential gaps
+  &::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #000000;
+    z-index: -1;
   }
 }
 
