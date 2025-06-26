@@ -1,4 +1,4 @@
-<div id="photo-content" class="row" data-controller="photo-navigation">
+<div id="photo-content" class="row" data-controller="photo-navigation photo-protection">
   <div class="col-12 col-md-10 col-lg-8 mx-auto">
     <!-- Photo Image with Film Border -->
     <% if @photo.image.attached? %>
@@ -7,7 +7,12 @@
           <%= cl_image_tag @photo.image.key,
               width: 800, height: 800, crop: :limit, quality: :auto, fetch_format: :auto,
               class: "img-fluid photo-main-image",
-              alt: "Photo in #{@photo.category}" %>
+              alt: "Photo in #{@photo.category}",
+              draggable: false,
+              oncontextmenu: "return false;",
+              onselectstart: "return false;",
+              ondragstart: "return false;",
+              style: "-webkit-touch-callout: none; -webkit-user-select: none; touch-action: manipulation;" %>
         </div>
       </div>
     <% end %>

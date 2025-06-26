@@ -1,4 +1,4 @@
-<div class="container mt-4">
+<div class="container mt-4" data-controller="photo-protection">
   <!-- Breadcrumb Navigation -->
   <nav aria-label="breadcrumb" class="mb-4">
     <ol class="breadcrumb">
@@ -26,7 +26,7 @@
           <div class="card h-100">
             <% if photo.image.attached? %>
               <%= link_to photo_path(photo) do %>
-                <%= cl_image_tag photo.image.key, width: 400, height: 300, crop: :fill, quality: :auto, fetch_format: :auto, class: "card-img-top", alt: "Photo in #{photo.category}" %>
+                <%= cl_image_tag photo.image.key, width: 400, height: 300, crop: :fill, quality: :auto, fetch_format: :auto, class: "card-img-top", alt: "Photo in #{photo.category}", draggable: false, oncontextmenu: "return false;", onselectstart: "return false;", ondragstart: "return false;", style: "-webkit-touch-callout: none; -webkit-user-select: none; touch-action: manipulation;" %>
               <% end %>
             <% end %>
             <div class="card-body">

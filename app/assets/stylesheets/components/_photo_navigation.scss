@@ -65,6 +65,18 @@ turbo-frame[busy] .nav-buttons {
     max-height: 75vh;
     object-fit: contain;
     display: block;
+
+    // Photo protection
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
+    pointer-events: auto; // Keep pointer events for navigation
   }
 }
 
@@ -220,4 +232,32 @@ turbo-frame[busy] .nav-buttons {
       cursor: grabbing;
     }
   }
+}
+
+// Photo Protection for Gallery and Individual Photos
+.card-img-top, .photo-main-image {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+
+  // Mobile-specific protection
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  pointer-events: auto; // Keep for navigation but override in JS
+  touch-action: manipulation; // Prevent zoom and other gestures
+}
+
+// Disable text selection on photo containers
+.photo-frame, .card {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-touch-callout: none;
 }
