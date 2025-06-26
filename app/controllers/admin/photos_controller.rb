@@ -26,7 +26,13 @@ class Admin::PhotosController < Admin::BaseController
 
   # POST /admin/photos or /admin/photos.json
   def create
-    @photo = Photo.new(photo_params)
+    @photo = Photo.new(photo_params.except(:image))
+
+    # Compress image if provided
+    if params[:photo][:image].present?
+      compressed_image = ImageCompressionService.compress(params[:photo][:image])
+      @photo.image.attach(compressed_image)
+    end
 
     respond_to do |format|
       if @photo.save
@@ -71,15 +77,24 @@ class Admin::PhotosController < Admin::BaseController
     error_messages = []
 
         valid_images.each do |image|
-      photo = Photo.new(category: category, location: location)
-      photo.image.attach(image)
+      begin
+        # Compress image if it's too large
+        compressed_image = ImageCompressionService.compress(image)
 
-      if photo.save
-        successful_uploads += 1
-      else
+        photo = Photo.new(category: category, location: location)
+        photo.image.attach(compressed_image)
+
+        if photo.save
+          successful_uploads += 1
+        else
+          failed_uploads += 1
+          filename = image.respond_to?(:original_filename) ? image.original_filename : "unknown file"
+          error_messages << "#{filename}: #{photo.errors.full_messages.join(', ')}"
+        end
+      rescue => e
         failed_uploads += 1
         filename = image.respond_to?(:original_filename) ? image.original_filename : "unknown file"
-        error_messages << "#{filename}: #{photo.errors.full_messages.join(', ')}"
+        error_messages << "#{filename}: Compression failed - #{e.message}"
       end
     end
 
