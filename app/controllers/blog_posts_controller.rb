@@ -4,6 +4,6 @@ class BlogPostsController < ApplicationController
   end
 
   def show
-    @blog_post = BlogPost.find_by!(slug: params[:id]) || BlogPost.find(params[:id])
+    @blog_post = BlogPost.find_by(slug: params[:id]) || BlogPost.find(params[:id])
   end
 end

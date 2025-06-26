@@ -60,7 +60,8 @@ class Admin::BlogPostsController < Admin::BaseController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_blog_post
-      @blog_post = BlogPost.find(params[:id])
+      # Try to find by slug first, then by id
+      @blog_post = BlogPost.find_by(slug: params[:id]) || BlogPost.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
