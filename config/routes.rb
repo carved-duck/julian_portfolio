@@ -19,7 +19,12 @@ Rails.application.routes.draw do
   namespace :admin do
     root to: "dashboard#index"
     resources :projects
-    resources :photos
+    resources :photos do
+      collection do
+        get :bulk_upload
+        post :bulk_create
+      end
+    end
     resources :blog_posts
     resources :events do
       resources :attendees, only: [:show, :edit, :update, :destroy]

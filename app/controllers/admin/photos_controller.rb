@@ -13,6 +13,11 @@ class Admin::PhotosController < Admin::BaseController
   # GET /admin/photos/new
   def new
     @photo = Photo.new
+    @photo.category = params[:category] if params[:category].present?
+  end
+
+  # GET /admin/photos/bulk_upload
+  def bulk_upload
   end
 
   # GET /admin/photos/1/edit
@@ -44,6 +49,41 @@ class Admin::PhotosController < Admin::BaseController
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @photo.errors, status: :unprocessable_entity }
       end
+    end
+  end
+
+  # POST /admin/photos/bulk_create
+  def bulk_create
+    category = params[:category]
+    images = params[:images]
+
+    if category.blank? || images.blank?
+      redirect_to admin_photos_bulk_upload_path, alert: "Please provide a category and select at least one image."
+      return
+    end
+
+    successful_uploads = 0
+    failed_uploads = 0
+    error_messages = []
+
+    images.each do |image|
+      photo = Photo.new(category: category)
+      photo.image.attach(image)
+
+      if photo.save
+        successful_uploads += 1
+      else
+        failed_uploads += 1
+        error_messages << "#{image.original_filename}: #{photo.errors.full_messages.join(', ')}"
+      end
+    end
+
+    if failed_uploads == 0
+      redirect_to admin_photos_path, notice: "Successfully uploaded #{successful_uploads} photos to '#{category}' category."
+    else
+      flash_message = "Uploaded #{successful_uploads} photos successfully."
+      flash_message += " #{failed_uploads} failed: #{error_messages.join('; ')}" if failed_uploads > 0
+      redirect_to admin_photos_path, alert: flash_message
     end
   end
 

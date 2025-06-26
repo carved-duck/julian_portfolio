@@ -1,0 +1,80 @@
+<h1>Bulk Photo Upload</h1>
+<%= form_with url: admin_photos_bulk_create_path, method: :post, multipart: true, local: true, class: "mb-4" do |f| %>
+  <div class="mb-3">
+    <%= f.label :category, "Category for all photos", class: "form-label" %>
+    <%= f.text_field :category,
+        list: "categories",
+        class: "form-control",
+        placeholder: "Enter category name",
+        required: true,
+        autocomplete: "off" %>
+    <datalist id="categories">
+      <% Photo.categories.each do |category| %>
+        <option value="<%= category %>">
+        <% end %>
+      </datalist>
+      <div class="form-text">
+        <strong>Existing categories:</strong>
+        <% if Photo.categories.any? %>
+          <%= Photo.categories.map { |cat| content_tag(:span, cat, class: "badge bg-secondary me-1") }.join.html_safe %>
+        <% else %>
+          <em>No categories yet</em>
+        <% end %>
+      </div>
+    </div>
+    <div class="mb-3">
+      <%= f.label :images, "Select multiple photos", class: "form-label" %>
+      <%= f.file_field :images,
+        multiple: true,
+        accept: "image/*",
+        class: "form-control",
+        required: true %>
+      <div class="form-text">Hold Ctrl/Cmd to select multiple photos at once</div>
+    </div>
+    <div class="mb-3">
+      <div class="preview-container" id="imagePreview" style="display: none;">
+        <h5>Selected Photos:</h5>
+        <div class="row" id="previewGrid"></div>
+      </div>
+    </div>
+    <%= f.submit "Upload All Photos", class: "btn btn-primary btn-lg" %>
+  <% end %>
+  <div class="mt-4">
+    <%= link_to "← Back to Photos", admin_photos_path, class: "btn btn-outline-secondary" %>
+    <%= link_to "Single Photo Upload", new_admin_photo_path, class: "btn btn-outline-primary" %>
+  </div>
+  <script>
+    document.getElementById('images').addEventListener('change', function(e) {
+      const previewContainer = document.getElementById('imagePreview');
+      const previewGrid = document.getElementById('previewGrid');
+
+      // Clear previous previews
+      previewGrid.innerHTML = '';
+
+      if (e.target.files.length > 0) {
+        previewContainer.style.display = 'block';
+
+        Array.from(e.target.files).forEach((file, index) => {
+          if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+              const col = document.createElement('div');
+              col.className = 'col-md-3 col-sm-6 mb-3';
+              col.innerHTML = `
+                <div class="card">
+                  <img src="${e.target.result}" class="card-img-top" style="height: 150px; object-fit: cover;">
+                  <div class="card-body p-2">
+                    <small class="text-muted">${file.name}</small>
+                  </div>
+                </div>
+              `;
+              previewGrid.appendChild(col);
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+      } else {
+        previewContainer.style.display = 'none';
+      }
+    });
+  </script>

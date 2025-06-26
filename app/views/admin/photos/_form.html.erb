@@ -1,9 +1,29 @@
 <%= simple_form_for [:admin, @photo], html: { multipart: true } do |f| %>
-  <%= f.input :category %>
-  <%= f.input :image,
+  <div class="mb-3">
+    <%= f.label :category, class: "form-label" %>
+    <%= f.input_field :category,
+        list: "categories",
+        class: "form-control",
+        placeholder: "Enter category or select existing",
+        autocomplete: "off" %>
+    <datalist id="categories">
+      <% Photo.categories.each do |category| %>
+        <option value="<%= category %>">
+        <% end %>
+      </datalist>
+      <div class="form-text">
+        <strong>Existing categories:</strong>
+        <% if Photo.categories.any? %>
+          <%= Photo.categories.map { |cat| content_tag(:span, cat, class: "badge bg-secondary me-1") }.join.html_safe %>
+        <% else %>
+          <em>No categories yet</em>
+        <% end %>
+      </div>
+    </div>
+    <%= f.input :image,
         as: :file,
         hint: (@photo.image.attached? ?
           cl_image_tag(@photo.image.key, width: 150, height: 150, crop: :fill) :
           "") %>
-  <%= f.button :submit, class: "btn btn-primary" %>
-<% end %>
+    <%= f.button :submit, class: "btn btn-primary" %>
+  <% end %>
