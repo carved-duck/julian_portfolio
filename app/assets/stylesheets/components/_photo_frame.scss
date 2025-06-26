@@ -1,0 +1,52 @@
+// ========================================
+// PHOTO FRAME & IMAGE STYLING
+// ========================================
+
+// Film Photography Aesthetic - Black Border with White Frame
+.photo-frame {
+  background: #000000; // black background for the border
+  border-radius: 2px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+  display: inline-block;
+  margin-top: 1.5rem; // Extra space from navbar
+
+  // white outer frame
+  border: 4px solid #ffffff;
+
+  // Mobile centering
+  @media (max-width: 768px) {
+    display: block;
+    margin: 1.5rem auto;
+    text-align: center;
+    max-width: calc(100vw - 60px); // Account for padding and borders
+  }
+
+  .photo-main-image {
+    border: none; // Remove border from image itself
+    border-radius: 0;
+    box-shadow: none;
+    transition: opacity 0.3s ease-in-out;
+    max-height: 75vh;
+    object-fit: contain;
+    display: block;
+
+    @media (max-width: 768px) {
+      max-height: 60vh;
+      width: 100%;
+      height: auto;
+      margin: 0 auto;
+    }
+
+    // Photo protection
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
+    pointer-events: auto; // Keep pointer events for navigation
+  }
+}

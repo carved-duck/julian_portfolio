@@ -1,0 +1,112 @@
+// ========================================
+// PHOTO GALLERY - DARK THEME CONTAINER
+// ========================================
+
+// Photo Gallery Dark Mode - Full Page Coverage
+// Override body background when photo gallery is present
+body .photo-gallery-container {
+  background: #000000 !important;
+  min-height: 100vh;
+  width: 100%;
+  margin: 0;
+
+  // Responsive margin adjustments
+  margin-left: -20px;
+  margin-right: -20px;
+  padding-left: 20px;
+  padding-right: 20px;
+
+  // Mobile-specific adjustments
+  @media (max-width: 768px) {
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  // Inner container for content
+  .container {
+    padding-top: 4rem;
+    padding-bottom: 3rem;
+    position: relative;
+    z-index: 1;
+
+    @media (max-width: 768px) {
+      padding-top: 2rem;
+      padding-bottom: 2rem;
+      max-width: 100%;
+      margin: 0 auto;
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+}
+
+// Additional override to ensure body background doesn't show through
+.photo-gallery-container {
+  // Ensure this container extends beyond viewport edges if needed
+  position: relative;
+  overflow-x: hidden;
+
+  // Create a pseudo-element that covers the entire viewport
+  &::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #000000;
+    z-index: -1;
+    pointer-events: none;
+  }
+}
+
+// Loading states for turbo frame navigation
+turbo-frame[busy] #photo-content {
+  opacity: 0.7;
+}
+
+turbo-frame[busy] .nav-buttons {
+  pointer-events: none;
+}
+
+// Photo info styling for dark background
+.photo-info-dark {
+  color: #e0e0e0;
+
+  // Custom badge styling to match burgundy theme
+  .badge {
+    &.bg-primary {
+      background: linear-gradient(135deg, #8d0c41 0%, #7a0a37 100%) !important;
+      color: #ffffff;
+      border: 1px solid rgba(141, 12, 65, 0.3);
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      padding: 6px 12px;
+      font-size: 0.85rem;
+    }
+
+    &.bg-secondary {
+      background-color: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+  }
+}
+
+// Photo counter styling
+.photo-counter {
+  font-size: 0.9rem;
+  color: #ffffff !important;
+  font-weight: 500;
+
+  .text-muted {
+    color: #ffffff !important;
+  }
+
+  small {
+    color: #ffffff !important;
+    opacity: 0.8 !important;
+  }
+}
