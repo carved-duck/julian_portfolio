@@ -1,18 +1,8 @@
-<div class="container mt-4">
-  <!-- Breadcrumb Navigation -->
-  <nav aria-label="breadcrumb" class="mb-4">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item">
-        <%= link_to "Home", root_path, class: "text-decoration-none" %>
-      </li>
-      <li class="breadcrumb-item">
-        <%= link_to "Photos", photos_path, class: "text-decoration-none" %>
-      </li>
-      <li class="breadcrumb-item active" aria-current="page"><%= @photo.category.titleize %></li>
-    </ol>
-  </nav>
-  <!-- Turbo Frame for smooth photo navigation -->
-  <%= turbo_frame_tag "photo-frame" do %>
-    <%= render "photo_content" %>
-  <% end %>
+<div class="photo-gallery-container">
+  <div class="container">
+    <!-- Turbo Frame for smooth photo navigation -->
+    <%= turbo_frame_tag "photo-frame" do %>
+      <%= render "photo_content" %>
+    <% end %>
+  </div>
 </div>

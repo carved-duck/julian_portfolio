@@ -1,11 +1,5 @@
 <div class="mb-4">
-  <h2 class="mb-2">
-    <%= @photo.category.titleize %>
-    <% if @photo.location.present? %>
-      <small class="text-muted d-block d-md-inline">taken in <%= @photo.location %></small>
-    <% end %>
-  </h2>
-  <div class="d-flex flex-wrap gap-2">
+  <div class="d-flex flex-wrap gap-2 justify-content-center">
     <span class="badge bg-primary"><%= @photo.category %></span>
     <% if @photo.location.present? %>
       <span class="badge bg-secondary">

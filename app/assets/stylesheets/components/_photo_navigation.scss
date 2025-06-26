@@ -1,3 +1,27 @@
+// Photo Gallery Dark Mode - Full Page Coverage
+.photo-gallery-container {
+  background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
+  min-height: 100vh;
+  padding: 0;
+  margin: 0;
+
+  // Ensure full coverage by extending beyond viewport
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
+
+    // Inner container for content
+  .container {
+    padding-top: 4rem;
+    padding-bottom: 3rem;
+    position: relative;
+    z-index: 1;
+  }
+}
+
 // Photo navigation styles
 #photo-content {
   transition: opacity 0.2s ease-in-out;
@@ -9,6 +33,8 @@ turbo-frame[busy] #photo-content {
 
 .photo-counter {
   font-size: 0.9rem;
+  color: #ffffff;
+  font-weight: 500;
 }
 
 .nav-buttons .btn {
@@ -20,25 +46,123 @@ turbo-frame[busy] .nav-buttons {
   pointer-events: none;
 }
 
-// Smooth image transitions
-.photo-main-image {
-  transition: opacity 0.3s ease-in-out;
-  max-height: 70vh;
-  object-fit: contain;
+// Film Photography Aesthetic - Black Border with White Frame
+.photo-frame {
+  background: #000000; // Black background for the border
+  border-radius: 2px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+  display: inline-block;
+  margin-top: 1.5rem; // Extra space from navbar
+
+  // White outer frame
+  border: 8px solid #ffffff;
+
+  .photo-main-image {
+    border: none; // Remove border from image itself
+    border-radius: 0;
+    box-shadow: none;
+    transition: opacity 0.3s ease-in-out;
+    max-height: 75vh;
+    object-fit: contain;
+    display: block;
+  }
+}
+
+// Photo info styling for dark background
+.photo-info-dark {
+  color: #e0e0e0;
+
+  .badge {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+}
+
+// Photo counter and swipe hint styling
+.photo-counter {
+  color: #ffffff !important;
+
+  .text-muted {
+    color: #ffffff !important;
+  }
+
+  small {
+    color: #ffffff !important;
+    opacity: 0.8 !important;
+  }
+}
+
+// Navigation buttons for dark theme
+.nav-buttons-dark {
+  .btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    &:disabled {
+      background: rgba(255, 255, 255, 0.05);
+      color: #666;
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+// Action buttons for dark theme
+.action-buttons-dark {
+  .btn-outline-secondary {
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+    }
+  }
+
+  .btn-primary {
+    background: #0066cc;
+    border-color: #0066cc;
+
+    &:hover {
+      background: #0052a3;
+      border-color: #0052a3;
+    }
+  }
 }
 
 // Mobile-specific photo navigation
 @media (max-width: 768px) {
+    .photo-gallery-container {
+    // Full page coverage maintained on mobile
+    .container {
+      padding-top: 3rem;
+      padding-bottom: 2rem;
+    }
+  }
+
+  .photo-frame {
+    margin-top: 1rem; // Slightly less margin on mobile
+    padding: 3px; // Slightly thinner white border on mobile
+  }
+
   #photo-content {
     padding: 0 10px;
   }
 
-  .photo-main-image {
-    max-height: 60vh;
-    border-radius: 8px !important;
+  .photo-frame {
+    .photo-main-image {
+      max-height: 60vh;
+    }
   }
 
-  .nav-buttons {
+  .nav-buttons-dark, .nav-buttons {
     width: 100%;
 
     .btn {
@@ -51,9 +175,16 @@ turbo-frame[busy] .nav-buttons {
   .photo-counter {
     font-size: 0.8rem;
     white-space: nowrap;
+    color: #ffffff !important;
+
+    small {
+      color: #ffffff !important;
+      opacity: 0.9 !important;
+    }
   }
 
   // Stack action buttons on mobile
+  .action-buttons-dark .d-flex.flex-column.flex-sm-row,
   .d-flex.flex-column.flex-sm-row {
     gap: 0.75rem !important;
 
@@ -65,32 +196,24 @@ turbo-frame[busy] .nav-buttons {
   }
 
   // Mobile-friendly photo info
-  h2 {
-    font-size: 1.5rem;
-    line-height: 1.3;
-
-    small {
-      font-size: 0.8rem;
-      display: block !important;
-      margin-top: 0.25rem;
+  .photo-info-dark {
+    .badge {
+      font-size: 0.75rem;
+      padding: 0.4rem 0.6rem;
     }
-  }
-
-  .badge {
-    font-size: 0.75rem;
-    padding: 0.4rem 0.6rem;
   }
 }
 
 // Touch-friendly navigation on mobile
 @media (max-width: 768px) and (pointer: coarse) {
+  .nav-buttons-dark .btn,
   .nav-buttons .btn {
     min-height: 44px; // iOS touch target minimum
     min-width: 44px;
   }
 
   // Add swipe gesture hint
-  .photo-main-image {
+  .photo-frame .photo-main-image {
     cursor: grab;
 
     &:active {

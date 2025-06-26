@@ -101,7 +101,7 @@ export default class extends Controller {
         }
       }
 
-      startX = null
+            startX = null
       startY = null
     }, { passive: true })
   }
