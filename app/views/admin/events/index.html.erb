@@ -22,8 +22,10 @@
             <%= link_to "View Details", admin_event_path(event), class: "btn btn-primary btn-sm" %>
             <%= link_to "Edit", edit_admin_event_path(event), class: "btn btn-secondary btn-sm" %>
             <%= link_to "Delete", admin_event_path(event),
-                        method: :delete,
-                        data: { confirm: "Are you sure? This will delete the event and all signups." },
+                        data: {
+                          turbo_method: :delete,
+                          turbo_confirm: "Are you sure? This will delete the event and all signups."
+                        },
                         class: "btn btn-danger btn-sm" %>
           </div>
         </div>

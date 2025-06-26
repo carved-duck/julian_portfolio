@@ -130,7 +130,7 @@ module ApplicationHelper
       "@context": "https://schema.org",
       "@type": "BlogPosting",
       "headline": blog_post.title,
-      "description": truncate(blog_post.content, length: 160),
+      "description": truncate(blog_post.body, length: 160),
       "author": {
         "@type": "Person",
         "name": "Julian Schoenfeld"

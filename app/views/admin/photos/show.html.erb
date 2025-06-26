@@ -3,5 +3,8 @@
 <div>
   <%= link_to "Edit this photo", edit_admin_photo_path(@photo) %> |
   <%= link_to "Back to photos", admin_photos_path %>
-  <%= button_to "Destroy this photo", @photo, method: :delete %>
+  <%= button_to "Destroy this photo", admin_photo_path(@photo),
+      method: :delete,
+      data: { turbo_confirm: "Are you sure?" },
+      class: "btn btn-danger" %>
 </div>
