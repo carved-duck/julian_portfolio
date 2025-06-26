@@ -47,8 +47,20 @@ class Admin::PhotosController < Admin::BaseController
 
   # PATCH/PUT /admin/photos/1 or /admin/photos/1.json
   def update
+    # Handle image compression if a new image is being uploaded
+    if params[:photo][:image].present?
+      compressed_image = ImageCompressionService.compress(params[:photo][:image])
+      @photo.image.attach(compressed_image)
+
+      # Update other attributes separately (excluding image since we handled it above)
+      update_params = photo_params.except(:image)
+    else
+      # No new image, update all other attributes normally
+      update_params = photo_params
+    end
+
     respond_to do |format|
-      if @photo.update(photo_params)
+      if @photo.update(update_params)
         format.html { redirect_to admin_photo_path(@photo), notice: "Photo was successfully updated." }
         format.json { render :show, status: :ok, location: @photo }
       else
