@@ -43,8 +43,7 @@ class ImageCompressionService
       ActionDispatch::Http::UploadedFile.new(
         tempfile: temp_file,
         filename: "compressed_#{uploaded_file.original_filename}",
-        type: 'image/jpeg',
-        head: uploaded_file.head
+        type: 'image/jpeg'
       )
 
     rescue => e
