@@ -1,0 +1,47 @@
+// Mobile-specific improvements
+@media (max-width: 768px) {
+  // Center rows on mobile
+  .row {
+    justify-content: center;
+  }
+
+  .nav-link {
+    padding: 12px 16px;
+    font-size: 16px;
+  }
+
+  // Better spacing on mobile
+  .container-fluid {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  // Form improvements
+  .form-control, .form-select {
+    min-height: 44px;
+    font-size: 16px; // Prevents zoom on iOS
+  }
+
+  // Typography adjustments for mobile
+  h1 {
+    font-size: 2.0rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  h2 {
+    font-size: 1.75rem;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+  }
+
+  // Admin dashboard mobile improvements
+  .admin-dashboard {
+    .card {
+      text-align: center;
+    }
+  }
+}

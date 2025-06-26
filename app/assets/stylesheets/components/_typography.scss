@@ -1,0 +1,48 @@
+// Enhanced Typography System
+body {
+  font-family: $body-font;
+  font-weight: $font-regular;
+  line-height: 1.6;
+  color: #333;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: $headers-font;
+  font-weight: $font-semibold;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+h1 {
+  font-size: 2.0rem;
+  font-weight: $font-bold;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: 1.75rem;
+  font-weight: $font-semibold;
+  letter-spacing: -0.01em;
+}
+
+h3 {
+  font-size: 1.5rem;
+  font-weight: $font-medium;
+}
+
+h4 {
+  font-size: 1.25rem;
+  font-weight: $font-medium;
+}
+
+p {
+  font-size: 1.1rem;
+  font-weight: $font-regular;
+  margin-bottom: 1.5rem;
+}
+
+.lead {
+  font-size: 1.25rem;
+  font-weight: $font-light;
+  line-height: 1.7;
+}

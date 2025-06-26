@@ -1,0 +1,50 @@
+<!-- Photo Navigation -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div class="nav-buttons">
+    <% if @prev_photo %>
+      <%= link_to photo_path(@prev_photo),
+          class: "btn btn-outline-primary me-2",
+          data: {
+            turbo_frame: "photo-frame",
+            photo_navigation_target: "prevButton"
+          } do %>
+        <i class="fas fa-chevron-left"></i>
+        <span class="d-none d-md-inline">Previous</span>
+      <% end %>
+    <% else %>
+      <span class="btn btn-outline-secondary me-2 disabled"
+            data-photo-navigation-target="prevButton">
+        <i class="fas fa-chevron-left"></i>
+        <span class="d-none d-md-inline">Previous</span>
+      </span>
+    <% end %>
+    <% if @next_photo %>
+      <%= link_to photo_path(@next_photo),
+          class: "btn btn-outline-primary",
+          data: {
+            turbo_frame: "photo-frame",
+            photo_navigation_target: "nextButton"
+          } do %>
+        <span class="d-none d-md-inline">Next</span>
+        <i class="fas fa-chevron-right"></i>
+      <% end %>
+    <% else %>
+      <span class="btn btn-outline-secondary disabled"
+            data-photo-navigation-target="nextButton">
+        <span class="d-none d-md-inline">Next</span>
+        <i class="fas fa-chevron-right"></i>
+      </span>
+    <% end %>
+  </div>
+  <div class="photo-counter text-muted">
+    <% if @current_index %>
+      <span class="d-none d-sm-inline"><%= @current_index + 1 %> of <%= @category_photos.count %></span>
+      <span class="d-sm-none">
+        <%= @current_index + 1 %>/<%= @category_photos.count %>
+        <small class="d-block" style="font-size: 0.7rem; opacity: 0.7;">
+          <i class="fas fa-hand-paper"></i> Swipe to navigate
+        </small>
+      </span>
+    <% end %>
+  </div>
+</div>

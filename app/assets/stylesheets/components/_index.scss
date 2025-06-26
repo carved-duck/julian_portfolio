@@ -11,3 +11,12 @@
 @import "navbar";
 @import "browser_window";
 @import "depth";
+
+// Layout and base styles
+@import "typography";
+@import "layout";
+@import "mobile";
+
+// Feature-specific components
+@import "tags";
+@import "photo_navigation";
