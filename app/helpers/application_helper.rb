@@ -43,7 +43,10 @@ module ApplicationHelper
       when 'photos#index'
         "Photography Portfolio | #{base_title}"
       when 'photos#show'
-        "#{@photo.title if @photo&.title} - Photo | #{base_title}"
+        photos_in_category = Photo.by_category(@photo.category).count
+        category_display = @photo.category if @photo&.category
+        photo_or_photos = photos_in_category > 1 ? "Photos" : "Photo"
+        "#{category_display} #{photo_or_photos} | Julian Schoenfeld"
       when 'blog_posts#index'
         "Blog & Articles | #{base_title}"
       when 'blog_posts#show'
@@ -61,25 +64,30 @@ module ApplicationHelper
   def meta_description
     case "#{controller_name}##{action_name}"
     when 'pages#home'
-      "Julian Schoenfeld - Tokyo-based web developer and photographer. Explore my portfolio of web development projects, photography, and creative events in Japan."
+      "Julian Schoenfeld - #{SeoConfig::LOCATION[:full_location]}-based web developer and photographer. Explore my portfolio of web development projects, photography, and creative events in #{SeoConfig::LOCATION[:country]}."
     when 'projects#index'
       "Browse Julian's web development projects including Ruby on Rails applications, responsive websites, and creative digital solutions."
     when 'projects#show'
       truncate(strip_tags(@project.description), length: 160) if @project
     when 'photos#index'
-      "Explore Julian's photography portfolio capturing life in Tokyo, Japan. Street photography, portraits, and creative visual storytelling."
+      "Explore Julian's photography portfolio capturing life in #{SeoConfig::LOCATION[:full_location]}. Street photography, portraits, and creative visual storytelling."
     when 'photos#show'
-      @photo&.description ? truncate(strip_tags(@photo.description), length: 160) : "Photography by Julian Schoenfeld"
+      base_desc = "#{@photo.category if @photo&.category} photography by Julian Schoenfeld"
+      if @photo&.location.present?
+        "#{base_desc} taken in #{@photo.location}."
+      else
+        "#{base_desc}."
+      end
     when 'blog_posts#index'
-      "Read Julian's blog about web development, photography, life in Japan, and creative insights from Tokyo."
+      "Read Julian's blog about web development, photography, life in #{SeoConfig::LOCATION[:country]}, and creative insights from #{SeoConfig::LOCATION[:city]}."
     when 'blog_posts#show'
       truncate(strip_tags(@blog_post.body), length: 160) if @blog_post
     when 'events#index'
-      "Join Julian's photography workshops, tech meetups, and creative events in Tokyo. Connect with like-minded creatives."
+      "Join Julian's photography workshops, tech meetups, and creative events in #{SeoConfig::LOCATION[:city]}. Connect with like-minded creatives."
     when 'events#show'
       truncate(strip_tags(@event.description), length: 160) if @event
     else
-      "Julian Schoenfeld - Tokyo-based web developer and photographer showcasing projects, photography, and events in Japan."
+      "Julian Schoenfeld - #{SeoConfig::LOCATION[:full_location]}-based web developer and photographer showcasing projects, photography, and events in #{SeoConfig::LOCATION[:country]}."
     end
   end
 

@@ -18,9 +18,19 @@
           <%= cl_image_tag @photo.image.key, width: 800, height: 800, crop: :limit, quality: :auto, fetch_format: :auto, class: "img-fluid rounded shadow", alt: "Photo in #{@photo.category}" %>
         </div>
       <% end %>
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Category: <%= @photo.category.titleize %></h2>
-        <span class="badge bg-primary"><%= @photo.category %></span>
+      <div class="mb-4">
+        <h2>
+          <%= @photo.category.titleize %>
+          <% if @photo.location.present? %>
+            <small class="text-muted">taken in <%= @photo.location %></small>
+          <% end %>
+        </h2>
+        <div class="d-flex gap-2">
+          <span class="badge bg-primary"><%= @photo.category %></span>
+          <% if @photo.location.present? %>
+            <span class="badge bg-secondary"><i class="fas fa-map-marker-alt"></i> <%= @photo.location %></span>
+          <% end %>
+        </div>
       </div>
       <div class="d-flex justify-content-between">
         <%= link_to "← Back to Gallery", photos_path, class: "btn btn-outline-secondary" %>

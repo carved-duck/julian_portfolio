@@ -53,28 +53,33 @@ class Admin::PhotosController < Admin::BaseController
   end
 
   # POST /admin/photos/bulk_create
-  def bulk_create
+    def bulk_create
     category = params[:category]
+    location = params[:location]
     images = params[:images]
 
-    if category.blank? || images.blank?
-      redirect_to admin_photos_bulk_upload_path, alert: "Please provide a category and select at least one image."
+    # Filter out empty values and ensure we have actual file uploads
+    valid_images = images&.reject { |img| img.blank? || img.is_a?(String) } || []
+
+    if category.blank? || valid_images.empty?
+      redirect_to bulk_upload_admin_photos_path, alert: "Please provide a category and select at least one image."
       return
     end
 
-    successful_uploads = 0
+        successful_uploads = 0
     failed_uploads = 0
     error_messages = []
 
-    images.each do |image|
-      photo = Photo.new(category: category)
+        valid_images.each do |image|
+      photo = Photo.new(category: category, location: location)
       photo.image.attach(image)
 
       if photo.save
         successful_uploads += 1
       else
         failed_uploads += 1
-        error_messages << "#{image.original_filename}: #{photo.errors.full_messages.join(', ')}"
+        filename = image.respond_to?(:original_filename) ? image.original_filename : "unknown file"
+        error_messages << "#{filename}: #{photo.errors.full_messages.join(', ')}"
       end
     end
 
@@ -105,6 +110,6 @@ class Admin::PhotosController < Admin::BaseController
 
     # Only allow a list of trusted parameters through.
     def photo_params
-      params.require(:photo).permit(:image, :category)
+      params.require(:photo).permit(:image, :category, :location)
     end
 end

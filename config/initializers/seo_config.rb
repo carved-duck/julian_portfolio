@@ -3,7 +3,6 @@ module SeoConfig
   # Base settings
   SITE_NAME = "Julian Schoenfeld Portfolio"
   SITE_AUTHOR = "Julian Schoenfeld"
-  SITE_DESCRIPTION = "Tokyo-based web developer and photographer specializing in Ruby on Rails applications and creative photography."
 
   # Social media handles (update these with your actual handles)
   SOCIAL_HANDLES = {
@@ -16,14 +15,25 @@ module SeoConfig
   # Default images for social sharing
   DEFAULT_IMAGE_PATH = "icons/apple-icon.png"
 
+  # Location settings (update these when you move!)
+  # Examples:
+  # Moving to Berlin: { city: "Berlin", country: "Germany", full_location: "Berlin, Germany" }
+  # Moving to NYC: { city: "New York", country: "USA", full_location: "New York, USA" }
+  # Moving to London: { city: "London", country: "UK", full_location: "London, UK" }
+  LOCATION = {
+    city: "Tokyo",
+    country: "Japan",
+    full_location: "Tokyo, Japan"
+  }.freeze
+
+  # Dynamic descriptions based on location
+  SITE_DESCRIPTION = "#{LOCATION[:full_location]}-based web developer and photographer specializing in Ruby on Rails applications and creative photography."
+
   # Structured data configuration
   PERSON_SCHEMA = {
     name: SITE_AUTHOR,
     job_title: "Web Developer & Photographer",
-    location: {
-      city: "Tokyo",
-      country: "Japan"
-    },
+    location: LOCATION,
     skills: [
       "Ruby on Rails",
       "JavaScript",
@@ -36,8 +46,8 @@ module SeoConfig
   # Page-specific SEO settings
   PAGE_SETTINGS = {
     home: {
-      title_suffix: "Web Developer & Photographer in Tokyo",
-      keywords: %w[web developer photographer tokyo japan ruby rails portfolio]
+      title_suffix: "Web Developer & Photographer in #{LOCATION[:city]}",
+      keywords: ["web", "developer", "photographer", LOCATION[:city].downcase, LOCATION[:country].downcase, "ruby", "rails", "portfolio"]
     },
     projects: {
       title_suffix: "Web Development Portfolio",
@@ -45,21 +55,22 @@ module SeoConfig
     },
     blog: {
       title_suffix: "Blog & Articles",
-      keywords: %w[blog web development photography tokyo japan]
+      keywords: ["blog", "web", "development", "photography", LOCATION[:city].downcase, LOCATION[:country].downcase]
     },
     photos: {
       title_suffix: "Photography Portfolio",
-      keywords: %w[photography portfolio tokyo japan street photography]
+      keywords: ["photography", "portfolio", LOCATION[:city].downcase, LOCATION[:country].downcase, "street", "photography"]
     },
     events: {
       title_suffix: "Events & Workshops",
-      keywords: %w[events workshops photography tokyo meetups]
+      keywords: ["events", "workshops", "photography", LOCATION[:city].downcase, "meetups"]
     }
   }.freeze
 
   # Common meta keywords for all pages
-  GLOBAL_KEYWORDS = %w[
-    julian schoenfeld portfolio web developer photographer tokyo japan
-    ruby rails creative professional
+  GLOBAL_KEYWORDS = [
+    "julian", "schoenfeld", "portfolio", "web", "developer", "photographer",
+    LOCATION[:city].downcase, LOCATION[:country].downcase,
+    "ruby", "rails", "creative", "professional"
   ].freeze
 end

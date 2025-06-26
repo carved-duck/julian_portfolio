@@ -20,6 +20,16 @@
         <% end %>
       </div>
     </div>
+    <div class="mb-3">
+      <%= f.label :location, "Location (optional)", class: "form-label" %>
+      <%= f.input_field :location,
+        class: "form-control",
+        placeholder: "e.g., Tokyo, LA, Seoul, Taipei...",
+        autocomplete: "off" %>
+      <div class="form-text">
+        Add location if photos are from a specific place. Great for travel photography or location-specific shoots.
+      </div>
+    </div>
     <%= f.input :image,
         as: :file,
         hint: (@photo.image.attached? ?
