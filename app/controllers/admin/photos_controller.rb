@@ -47,15 +47,12 @@ class Admin::PhotosController < Admin::BaseController
 
   # PATCH/PUT /admin/photos/1 or /admin/photos/1.json
   def update
-    # Handle image compression if a new image is being uploaded
+    # Compress new image if provided
     if params[:photo][:image].present?
       compressed_image = ImageCompressionService.compress(params[:photo][:image])
       @photo.image.attach(compressed_image)
-
-      # Update other attributes separately (excluding image since we handled it above)
       update_params = photo_params.except(:image)
     else
-      # No new image, update all other attributes normally
       update_params = photo_params
     end
 
@@ -71,28 +68,27 @@ class Admin::PhotosController < Admin::BaseController
   end
 
   # POST /admin/photos/bulk_create
-    def bulk_create
+  def bulk_create
     category = params[:category]
     location = params[:location]
     images = params[:images]
 
-    # Filter out empty values and ensure we have actual file uploads
-    valid_images = images&.reject { |img| img.blank? || img.is_a?(String) } || []
-
-    if category.blank? || valid_images.empty?
+    if category.blank? || images.blank?
       redirect_to bulk_upload_admin_photos_path, alert: "Please provide a category and select at least one image."
       return
     end
 
-        successful_uploads = 0
+    successful_uploads = 0
     failed_uploads = 0
-    error_messages = []
 
-        valid_images.each do |image|
+    images.each do |image|
+      next if image.blank?
+
       begin
-        # Compress image if it's too large
+        # Compress image if needed
         compressed_image = ImageCompressionService.compress(image)
 
+        # Create photo
         photo = Photo.new(category: category, location: location)
         photo.image.attach(compressed_image)
 
@@ -100,22 +96,20 @@ class Admin::PhotosController < Admin::BaseController
           successful_uploads += 1
         else
           failed_uploads += 1
-          filename = image.respond_to?(:original_filename) ? image.original_filename : "unknown file"
-          error_messages << "#{filename}: #{photo.errors.full_messages.join(', ')}"
+          Rails.logger.error "Failed to save photo: #{photo.errors.full_messages.join(', ')}"
         end
       rescue => e
         failed_uploads += 1
-        filename = image.respond_to?(:original_filename) ? image.original_filename : "unknown file"
-        error_messages << "#{filename}: Compression failed - #{e.message}"
+        Rails.logger.error "Failed to process photo: #{e.message}"
       end
     end
 
-    if failed_uploads == 0
-      redirect_to admin_photos_path, notice: "Successfully uploaded #{successful_uploads} photos to '#{category}' category."
+    if successful_uploads > 0
+      notice = "Successfully uploaded #{successful_uploads} photos"
+      notice += " (#{failed_uploads} failed)" if failed_uploads > 0
+      redirect_to admin_photos_path, notice: notice
     else
-      flash_message = "Uploaded #{successful_uploads} photos successfully."
-      flash_message += " #{failed_uploads} failed: #{error_messages.join('; ')}" if failed_uploads > 0
-      redirect_to admin_photos_path, alert: flash_message
+      redirect_to bulk_upload_admin_photos_path, alert: "Failed to upload any photos. Please try again."
     end
   end
 
