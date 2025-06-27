@@ -48,9 +48,9 @@
             <%= f.error_notification %>
             <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
             <div class="form-inputs">
-              <%= f.input :name, required: true, hint: "Your full name" %>
-              <%= f.input :instagram_handle, required: true, hint: "Your Instagram username (without @)" %>
-              <%= f.input :message, as: :text, input_html: { rows: 3 }, hint: "Optional: Tell us why you're interested or ask any questions" %>
+              <%= f.input :name, required: true, hint: "Your name" %>
+              <%= f.input :instagram_handle, required: true, hint: "Your Instagram username or name if you don't have one" %>
+              <%= f.input :message, as: :text, input_html: { rows: 3 }, hint: "Optional: Some kind of meaningful message :D" %>
             </div>
             <div class="form-actions">
               <%= f.button :submit, "Sign Me Up!", class: "btn btn-primary btn-lg" %>
