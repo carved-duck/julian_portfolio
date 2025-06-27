@@ -79,37 +79,31 @@ class Admin::PhotosController < Admin::BaseController
     end
 
     successful_uploads = 0
-    failed_uploads = 0
 
     images.each do |image|
       next if image.blank?
 
       begin
-        # Compress image if needed
-        compressed_image = ImageCompressionService.compress(image)
+        # Create blob first (fast) - no compression yet
+        blob = ActiveStorage::Blob.create_and_upload!(
+          io: image,
+          filename: image.original_filename,
+          content_type: image.content_type
+        )
 
-        # Create photo
-        photo = Photo.new(category: category, location: location)
-        photo.image.attach(compressed_image)
+        # Queue background job with blob ID (serializable)
+        BulkPhotoUploadJob.perform_later(blob.id, category, location)
+        successful_uploads += 1
 
-        if photo.save
-          successful_uploads += 1
-        else
-          failed_uploads += 1
-          Rails.logger.error "Failed to save photo: #{photo.errors.full_messages.join(', ')}"
-        end
       rescue => e
-        failed_uploads += 1
-        Rails.logger.error "Failed to process photo: #{e.message}"
+        Rails.logger.error "Failed to create blob for #{image.original_filename}: #{e.message}"
       end
     end
 
     if successful_uploads > 0
-      notice = "Successfully uploaded #{successful_uploads} photos"
-      notice += " (#{failed_uploads} failed)" if failed_uploads > 0
-      redirect_to admin_photos_path, notice: notice
+      redirect_to admin_photos_path, notice: "Queued #{successful_uploads} photos for background processing. They will appear in the gallery shortly."
     else
-      redirect_to bulk_upload_admin_photos_path, alert: "Failed to upload any photos. Please try again."
+      redirect_to bulk_upload_admin_photos_path, alert: "Failed to queue any photos for processing. Please try again."
     end
   end
 
@@ -121,6 +115,29 @@ class Admin::PhotosController < Admin::BaseController
       format.html { redirect_to admin_photos_path, status: :see_other, notice: "Photo was successfully destroyed." }
       format.json { head :no_content }
     end
+  end
+
+  # DELETE /admin/photos/categories/:category_name
+  def destroy_category
+    category_name = params[:category_name]
+
+    if category_name.blank?
+      redirect_to admin_photos_path, alert: "Category name is required."
+      return
+    end
+
+    photos_to_delete = Photo.where(category: category_name)
+    photo_count = photos_to_delete.count
+
+    if photo_count == 0
+      redirect_to admin_photos_path, alert: "No photos found in category '#{category_name}'."
+      return
+    end
+
+    # Delete all photos in the category (this will also delete attached images)
+    photos_to_delete.destroy_all
+
+    redirect_to admin_photos_path, notice: "Deleted #{photo_count} photos from category '#{category_name}'."
   end
 
   private
