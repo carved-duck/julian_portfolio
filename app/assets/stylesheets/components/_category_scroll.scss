@@ -1,4 +1,92 @@
 // ========================================
+// CATEGORY FILTER COMPONENTS
+// ========================================
+
+// Desktop category buttons - scrollable container
+.btn-group {
+  display: flex;
+  gap: 40px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  padding: 8px 0;
+
+  // Hide scrollbar but keep functionality
+  scrollbar-width: none; // Firefox
+  -ms-overflow-style: none; // IE/Edge
+
+  &::-webkit-scrollbar {
+    display: none; // Chrome/Safari
+  }
+
+  .btn {
+    // Override Bootstrap styling to match navbar
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--burgundy) !important;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    letter-spacing: -0.01em;
+    font-family: $body-font;
+    position: relative;
+    padding: 8px 16px;
+    border-radius: 8px;
+    background: transparent;
+    border: none;
+    white-space: nowrap; // Prevent text wrapping
+    flex-shrink: 0; // Prevent buttons from shrinking
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 50%;
+      width: 0;
+      height: 1px;
+      background: var(--gold);
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+
+    &:hover {
+      color: var(--gold) !important;
+      text-decoration: none;
+      background: transparent;
+      border: none;
+
+      &::after {
+        width: 60%;
+      }
+    }
+
+    // Active state (selected category)
+    &.btn-primary {
+      color: var(--gold) !important;
+      background: transparent;
+      border: none;
+
+      &::after {
+        width: 60%;
+        background: var(--gold);
+      }
+    }
+
+    // Override outline primary styling
+    &.btn-outline-primary {
+      color: var(--burgundy) !important;
+      background: transparent;
+      border: none;
+
+      &:hover {
+        color: var(--gold) !important;
+        background: transparent;
+        border: none;
+      }
+    }
+  }
+}
+
+// ========================================
 // MOBILE CATEGORY SCROLL COMPONENT
 // ========================================
 

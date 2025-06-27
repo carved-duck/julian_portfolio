@@ -52,11 +52,15 @@
   display: flex;
   align-items: center;
   gap: 4px;
+  position: relative;
+  z-index: 10;
+  pointer-events: auto;
 }
 
 .live-site-link:hover {
   color: #3b82f6;
   text-decoration: none;
+  transform: translateY(-1px);
 }
 
 .live-site-link i {
