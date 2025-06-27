@@ -1,0 +1,62 @@
+// ========================================
+// THREADS-STYLE PHOTO GRID
+// ========================================
+
+.photo-grid {
+  display: grid;
+  gap: 4px; // Small gaps like Threads
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+
+  // Mobile responsive
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 2px; // Even smaller gaps on mobile
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: repeat(2, 1fr); // Always 2 columns on small mobile
+    gap: 2px;
+  }
+}
+
+.photo-grid-item {
+  display: block;
+  text-decoration: none;
+  position: relative;
+  aspect-ratio: 1; // Square images
+  overflow: hidden;
+  border-radius: 8px;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.02);
+    text-decoration: none;
+  }
+
+  // Mobile - remove hover effect
+  @media (max-width: 768px) {
+    border-radius: 4px; // Smaller radius on mobile
+
+    &:hover {
+      transform: none;
+    }
+  }
+}
+
+.photo-grid-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.95;
+  }
+
+  // Mobile - remove hover effect
+  @media (max-width: 768px) {
+    &:hover {
+      opacity: 1;
+    }
+  }
+}

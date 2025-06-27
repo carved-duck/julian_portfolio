@@ -1,0 +1,56 @@
+// ========================================
+// MOBILE CATEGORY SCROLL COMPONENT
+// ========================================
+
+// Container for horizontal scrolling
+.category-scroll-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+// Scrollable container
+.category-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 8px 0;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch; // Smooth scrolling on iOS
+
+  // Hide scrollbar but keep functionality
+  scrollbar-width: none; // Firefox
+  -ms-overflow-style: none; // IE/Edge
+
+  &::-webkit-scrollbar {
+    display: none; // Chrome/Safari
+  }
+}
+
+// Individual category pills - matching navbar button style
+.category-pill {
+  font-size: 0.85rem;
+  padding: 6px 12px;
+  text-align: center;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(141, 11, 65, 0.15);
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  color: var(--burgundy);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  flex-shrink: 0; // Prevent buttons from shrinking
+  font-weight: 500;
+  font-family: $body-font;
+
+    // Active state (selected category)
+  &.active {
+    background: var(--burgundy);
+    color: white;
+    border-color: var(--burgundy);
+    box-shadow: 0 4px 2px rgba(141, 11, 65, 0.3);
+  }
+}

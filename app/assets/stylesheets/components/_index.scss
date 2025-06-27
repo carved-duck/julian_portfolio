@@ -22,7 +22,9 @@
 
 // Photo Gallery Components (organized from general to specific)
 @import "photo_gallery";
+@import "photo_grid";
 @import "photo_frame";
 @import "photo_buttons";
 @import "photo_responsive";
 @import "photo_navigation";
+@import "category_scroll";

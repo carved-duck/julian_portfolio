@@ -12,29 +12,38 @@
   <% if @categories.any? %>
     <div class="mb-4">
       <h4>Filter by Category</h4>
-      <div class="btn-group" role="group">
+      <!-- Desktop category buttons -->
+      <div class="btn-group d-none d-md-flex" role="group">
         <% @categories.each do |category| %>
           <%= link_to category.titleize, photos_path(category: category), class: "btn #{'btn-primary' if @selected_category == category} #{'btn-outline-primary' unless @selected_category == category}" %>
         <% end %>
       </div>
+      <!-- Mobile horizontal scrollable category buttons -->
+      <div class="category-scroll-container d-md-none">
+        <div class="category-scroll">
+          <% @categories.each do |category| %>
+            <%= link_to category.titleize, photos_path(category: category), class: "category-pill #{'active' if @selected_category == category}" %>
+          <% end %>
+        </div>
+      </div>
     </div>
   <% end %>
   <% if @photos.any? %>
-    <div class="row">
+    <div class="photo-grid">
       <% @photos.each do |photo| %>
-        <div class="col-md-4 col-sm-6 mb-4">
-          <div class="card h-100">
-            <% if photo.image.attached? %>
-              <%= link_to photo_path(photo) do %>
-                <%= cl_image_tag photo.image.key, width: 400, height: 300, crop: :fill, quality: :auto, fetch_format: :auto, class: "card-img-top", alt: "Photo in #{photo.category}", draggable: false, oncontextmenu: "return false;", onselectstart: "return false;", ondragstart: "return false;", style: "-webkit-touch-callout: none; -webkit-user-select: none; touch-action: manipulation;" %>
-              <% end %>
-            <% end %>
-            <div class="card-body">
-              <h5 class="card-title"><%= photo.category.titleize %></h5>
-              <%= link_to "View", photo_path(photo), class: "btn btn-primary btn-sm" %>
-            </div>
-          </div>
-        </div>
+        <% if photo.image.attached? %>
+          <%= link_to photo_path(photo), class: "photo-grid-item" do %>
+            <%= cl_image_tag photo.image.key,
+                width: 400, height: 400, crop: :fill, quality: :auto, fetch_format: :auto,
+                class: "photo-grid-image",
+                alt: "Photo in #{photo.category}",
+                draggable: false,
+                oncontextmenu: "return false;",
+                onselectstart: "return false;",
+                ondragstart: "return false;",
+                style: "-webkit-touch-callout: none; -webkit-user-select: none; touch-action: manipulation;" %>
+          <% end %>
+        <% end %>
       <% end %>
     </div>
   <% else %>

@@ -87,7 +87,21 @@ export default class extends Controller {
 
   preventLongPress(event) {
     // Prevent long press context menu on mobile
+    // BUT allow quick taps for navigation
     if (event.target.tagName === 'IMG') {
+      const parentLink = event.target.closest('a')
+      if (parentLink && (parentLink.classList.contains('photo-grid-item') || parentLink.href.includes('/photos/'))) {
+        // For navigation images, only prevent long press, allow quick taps
+        if (event.type === 'touchstart') {
+          this.touchStartTime = Date.now()
+          return true // Allow touch start for navigation
+        } else if (event.type === 'touchend') {
+          const touchDuration = Date.now() - this.touchStartTime
+          if (touchDuration < 500) { // Quick tap (less than 500ms)
+            return true // Allow navigation
+          }
+        }
+      }
       event.preventDefault()
       event.stopPropagation()
       return false
@@ -96,7 +110,13 @@ export default class extends Controller {
 
   preventPointerEvents(event) {
     // Prevent pointer events that could lead to save actions
+    // BUT allow navigation clicks (check if parent link exists)
     if (event.target.tagName === 'IMG') {
+      const parentLink = event.target.closest('a')
+      if (parentLink && (parentLink.classList.contains('photo-grid-item') || parentLink.href.includes('/photos/'))) {
+        // Allow navigation clicks - don't prevent
+        return true
+      }
       event.preventDefault()
       return false
     }
