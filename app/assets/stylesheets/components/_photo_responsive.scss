@@ -36,7 +36,11 @@
     }
   }
 
-  // Photo frame mobile optimizations
+  // Photo container and frame mobile optimizations
+  .photo-container {
+    width: 100%;
+  }
+
   .photo-frame {
     padding: 0px;
     margin: 1rem auto;
@@ -53,6 +57,18 @@
     }
   }
 
+  // Hide side navigation on mobile (they'll use traditional buttons)
+  .side-nav-left,
+  .side-nav-right {
+    display: none !important;
+  }
+
+  // Adjust close button position for mobile
+  .close-button-container {
+    top: 70px; // Position below mobile navbar
+    left: 10px; // Move to left side on mobile too
+  }
+
   // Photo info centering
   .photo-info-dark {
     text-align: center !important;
@@ -60,41 +76,25 @@
     margin: 0 auto;
   }
 
-  // Navigation buttons mobile layout
+    // Hide navigation buttons and counter, keep only swipe hint
   .nav-buttons-dark {
-    margin-bottom: 1.5rem;
-    text-align: center !important;
-
     .d-flex {
-      justify-content: center !important;
-      align-items: center;
-      gap: 1rem;
-      margin: 0 auto;
+      display: none !important; // Hide the button container
     }
 
     .nav-buttons {
-      .btn {
-        min-width: 80px;
-        padding: 8px 12px;
-        font-size: 0.85rem;
-
-        // Hide text labels on very small screens
-        span {
-          display: none !important;
-        }
-
-        // Make icons more prominent
-        i {
-          font-size: 1rem;
-        }
-      }
+      display: none !important; // Hide all navigation buttons
     }
 
     .photo-counter {
-      text-align: center !important;
-      font-size: 0.85rem;
-      margin-top: 0.5rem;
+      display: none !important; // Hide counter numbers on mobile
     }
+  }
+
+  // Style the mobile swipe hint
+  .mobile-swipe-hint {
+    margin: 1rem 0;
+    text-align: center;
   }
 
   // Action buttons mobile layout
@@ -146,13 +146,9 @@
     }
   }
 
+  // Navigation remains hidden on extra small screens too
   .nav-buttons-dark {
-    .nav-buttons {
-      .btn {
-        min-width: 70px;
-        padding: 6px 10px;
-      }
-    }
+    display: none !important;
   }
 
   .action-buttons-dark {

@@ -2,6 +2,116 @@
 // PHOTO GALLERY BUTTONS
 // ========================================
 
+// Threads-style side navigation buttons (desktop only)
+.side-nav-left,
+.side-nav-right {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+}
+
+.side-nav-left {
+  left: -60px;
+}
+
+.side-nav-right {
+  right: -60px;
+}
+
+.btn-side-nav {
+  width: 44px;
+  height: 44px;
+  background: transparent !important;
+  border: none !important;
+  color: rgba(255, 255, 255, 0.6) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: none !important;
+
+  &:hover {
+    color: rgba(255, 255, 255, 0.6) !important;
+    transform: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+  }
+
+  &:active {
+    color: rgba(255, 255, 255, 0.6) !important;
+    transform: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+  }
+
+  &:focus {
+    color: rgba(255, 255, 255, 0.6) !important;
+    transform: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    outline: none !important;
+  }
+
+  &::before {
+    display: none !important;
+  }
+
+  i {
+    font-size: 24px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  }
+}
+
+// Close button (X) - positioned at top left
+.close-button-container {
+  top: 80px; // Position below navbar
+  left: 20px; // Move to left side to avoid contact dropdown
+  z-index: 1050; // Higher than navbar z-index
+}
+
+.btn-close-photo {
+  width: 40px;
+  height: 40px;
+  background: transparent !important;
+  border: none !important;
+  color: rgba(255, 255, 255, 0.6) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: none !important;
+
+  &:hover {
+    color: rgba(255, 255, 255, 0.6) !important;
+    transform: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+  }
+
+  &:active {
+    color: rgba(255, 255, 255, 0.6) !important;
+    transform: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+  }
+
+  &:focus {
+    color: rgba(255, 255, 255, 0.6) !important;
+    transform: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    outline: none !important;
+  }
+
+  &::before {
+    display: none !important;
+  }
+
+  i {
+    font-size: 20px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  }
+}
+
 // Navigation buttons for dark theme with enhanced depth
 .nav-buttons-dark {
   .btn {

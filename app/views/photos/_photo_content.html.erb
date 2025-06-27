@@ -1,37 +1,67 @@
 <div id="photo-content" class="row" data-controller="photo-navigation photo-protection">
   <div class="col-12 col-md-10 col-lg-8 mx-auto">
-    <!-- Photo Image with Film Border -->
-    <% if @photo.image.attached? %>
-      <div class="text-center mb-4">
-        <div class="photo-frame">
-          <%= cl_image_tag @photo.image.key,
-              width: 800, height: 800, crop: :limit, quality: :auto, fetch_format: :auto,
-              class: "img-fluid photo-main-image",
-              alt: "Photo in #{@photo.category}",
-              draggable: false,
-              oncontextmenu: "return false;",
-              onselectstart: "return false;",
-              ondragstart: "return false;",
-              style: "-webkit-touch-callout: none; -webkit-user-select: none; touch-action: manipulation;" %>
-        </div>
+    <!-- Desktop Side Navigation & Photo Container -->
+    <div class="position-relative d-flex align-items-center justify-content-center mb-4">
+      <!-- Left Navigation Button (Desktop Only) -->
+      <div class="side-nav-left d-none d-lg-block">
+        <% if @prev_photo %>
+          <%= link_to photo_path(@prev_photo),
+              class: "btn btn-side-nav",
+              data: {
+                turbo_frame: "photo-frame",
+                photo_navigation_target: "prevButton"
+              } do %>
+            <i class="fas fa-chevron-left"></i>
+          <% end %>
+        <% end %>
       </div>
-    <% end %>
-    <!-- Photo Information -->
-    <div class="photo-info-dark">
-      <%= render "photo_info" %>
+      <!-- Photo Image with Film Border -->
+      <% if @photo.image.attached? %>
+        <div class="text-center photo-container">
+          <div class="photo-frame">
+            <%= cl_image_tag @photo.image.key,
+                width: 800, height: 800, crop: :limit, quality: :auto, fetch_format: :auto,
+                class: "img-fluid photo-main-image",
+                alt: "Photo in #{@photo.category}",
+                draggable: false,
+                oncontextmenu: "return false;",
+                onselectstart: "return false;",
+                ondragstart: "return false;",
+                style: "-webkit-touch-callout: none; -webkit-user-select: none; touch-action: manipulation;" %>
+          </div>
+        </div>
+      <% end %>
+      <!-- Right Navigation Button (Desktop Only) -->
+      <div class="side-nav-right d-none d-lg-block">
+        <% if @next_photo %>
+          <%= link_to photo_path(@next_photo),
+              class: "btn btn-side-nav",
+              data: {
+                turbo_frame: "photo-frame",
+                photo_navigation_target: "nextButton"
+              } do %>
+            <i class="fas fa-chevron-right"></i>
+          <% end %>
+        <% end %>
+      </div>
     </div>
-    <!-- Navigation Controls -->
-    <div class="nav-buttons-dark">
+    <!-- Close Button (X) - Top Right -->
+    <div class="close-button-container position-fixed">
+      <%= link_to photos_path,
+          class: "btn btn-close-photo",
+          data: { turbo_frame: "_top" } do %>
+        <i class="fas fa-times"></i>
+      <% end %>
+    </div>
+    <!-- Mobile Navigation (Traditional buttons for mobile) -->
+    <div class="nav-buttons-dark d-lg-none">
       <%= render "photo_navigation" %>
     </div>
-    <!-- Action Buttons -->
-    <div class="d-flex flex-column flex-sm-row justify-content-between gap-2 action-buttons-dark">
-      <%= link_to "← Back to Gallery", photos_path,
-          class: "btn btn-outline-secondary order-2 order-sm-1",
-          data: { turbo_frame: "_top" } %>
-      <%= link_to "View All #{@photo.category.titleize}", photos_path(category: @photo.category),
-          class: "btn btn-primary order-1 order-sm-2",
-          data: { turbo_frame: "_top" } %>
+    <!-- Mobile Swipe Hint (separate from navigation) -->
+    <div class="mobile-swipe-hint d-lg-none text-center">
+      <small style="font-size: 0.7rem; opacity: 0.7; color: rgba(255, 255, 255, 0.7);">
+        Swipe to navigate
+      </small>
     </div>
   </div>
 </div>
