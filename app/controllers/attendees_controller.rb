@@ -5,24 +5,18 @@ class AttendeesController < ApplicationController
     @attendee = @event.attendees.build(attendee_params)
 
     # Check if this signup will put us in pending zone BEFORE saving
-    # We need to check the state after this attendee is added
+    # We need to simulate the state after this attendee is added
     will_be_pending = false
     if @event.target_capacity.present?
-      future_count = @event.attendee_count + 1
+      # Temporarily add 1 to simulate the new attendee
+      original_count = @event.attendee_count
+      @event.define_singleton_method(:attendee_count) { original_count + 1 }
 
-      # Don't warn if we haven't even reached the first table yet
-      if future_count > 10 && future_count <= @event.target_capacity
-        # Find which table "zone" we'll be in
-        current_table = ((future_count - 1) / 10) + 1
-        base_for_current_table = (current_table - 1) * 10
-        next_table_starts_at = current_table * 10
+      # Use the model's updated logic
+      will_be_pending = @event.in_pending_zone?
 
-        people_over_boundary = future_count - base_for_current_table
-        people_until_next_table = next_table_starts_at - future_count
-
-        # Will be pending if we're 1-7 people over a table boundary (leaving 3+ spots until next table)
-        will_be_pending = people_over_boundary > 0 && people_until_next_table >= 3
-      end
+      # Restore the original method
+      @event.define_singleton_method(:attendee_count) { original_count }
     end
 
     if @attendee.save

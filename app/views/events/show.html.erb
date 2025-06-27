@@ -27,6 +27,18 @@
           </p>
         </div>
       </div>
+      <% if @event.capacity_warning_message %>
+        <div class="card mt-4 border-warning">
+          <div class="card-body bg-warning bg-opacity-10">
+            <div class="d-flex align-items-center">
+              <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+              <div>
+                <%= @event.capacity_warning_message %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
       <div class="card mt-4">
         <div class="card-header">
           <h3>Sign Up for This Event</h3>
