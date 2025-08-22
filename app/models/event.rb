@@ -11,7 +11,7 @@ class Event < ApplicationRecord
   end
 
   # Capacity management for BBQ table limits (10/20/30 people per table)
-    def next_table_threshold
+  def next_table_threshold
     return nil unless target_capacity.present?
 
     current_count = attendee_count
@@ -19,7 +19,7 @@ class Event < ApplicationRecord
     ((current_count / 10.0).ceil * 10)
   end
 
-      def in_pending_zone?
+  def in_pending_zone?
     return false unless target_capacity.present?
 
     current_count = attendee_count
@@ -35,9 +35,9 @@ class Event < ApplicationRecord
 
     # Original logic for within target capacity
     # Find which table "zone" we're in
-    current_table = ((current_count - 1) / 10) + 1  # Which table number we're filling
-    base_for_current_table = (current_table - 1) * 10  # 0, 10, 20, 30...
-    next_table_starts_at = current_table * 10  # 10, 20, 30, 40...
+    current_table = ((current_count - 1) / 10) + 1 # Which table number we're filling
+    base_for_current_table = (current_table - 1) * 10 # 0, 10, 20, 30...
+    next_table_starts_at = current_table * 10 # 10, 20, 30, 40...
 
     # We're in pending if we're over a table boundary but not close to the next one
     # Example: 11-17 people (over 10, but not close to 20), 21-27 people (over 20, not close to 30)
@@ -45,7 +45,7 @@ class Event < ApplicationRecord
     people_until_next_table = next_table_starts_at - current_count
 
     # Pending if we're 1-7 people over a table boundary (leaving 3+ spots until next table)
-    people_over_boundary > 0 && people_until_next_table >= 3
+    people_over_boundary.positive? && people_until_next_table >= 3
   end
 
   def capacity_warning_message
@@ -60,17 +60,40 @@ class Event < ApplicationRecord
     # Different message if we're beyond target capacity
     if current_count > target_capacity
       "⚠️ This event is beyond its target capacity of #{target_capacity} people. " \
-      "You're over the #{exceeded_table == 1 ? '1st' : exceeded_table == 2 ? '2nd' : exceeded_table == 3 ? '3rd' : "#{exceeded_table}th"} table limit (#{exceeded_table * 10} people). " \
-      "You'll be on a pending list until we get #{people_until_next_table} more #{people_until_next_table == 1 ? 'person' : 'people'} to fill the #{current_table == 2 ? '2nd' : current_table == 3 ? '3rd' : "#{current_table}th"} table (#{next_table_starts_at} people total)."
+        "You're over the #{case exceeded_table
+                           when 1
+                             '1st'
+                           when 2
+                             '2nd'
+                           else
+                             exceeded_table == 3 ? '3rd' : "#{exceeded_table}th"
+                           end} table limit (#{exceeded_table * 10} people). " \
+      "You'll be on a pending list until we get #{people_until_next_table} more #{people_until_next_table == 1 ? 'person' : 'people'} to fill the #{if current_table == 2
+                                                                                                                                                      '2nd'
+                                                                                                                                                    else
+                                                                                                                                                      current_table == 3 ? '3rd' : "#{current_table}th"
+                                                                                                                                                    end} table (#{next_table_starts_at} people total)."
     else
       # Original message for within target capacity
-      "⚠️ You're over the #{exceeded_table == 1 ? '1st' : exceeded_table == 2 ? '2nd' : exceeded_table == 3 ? '3rd' : "#{exceeded_table}th"} table limit (#{exceeded_table * 10} people). " \
-      "You'll be on a pending list until we get #{people_until_next_table} more #{people_until_next_table == 1 ? 'person' : 'people'} to fill the #{current_table == 2 ? '2nd' : current_table == 3 ? '3rd' : "#{current_table}th"} table (#{next_table_starts_at} people total)."
+      "⚠️ You're over the #{case exceeded_table
+                            when 1
+                              '1st'
+                            when 2
+                              '2nd'
+                            else
+                              exceeded_table == 3 ? '3rd' : "#{exceeded_table}th"
+                            end} table limit (#{exceeded_table * 10} people). " \
+        "You'll be on a pending list until we get #{people_until_next_table} more #{people_until_next_table == 1 ? 'person' : 'people'} to fill the #{if current_table == 2
+                                                                                                                                                        '2nd'
+                                                                                                                                                      else
+                                                                                                                                                        current_table == 3 ? '3rd' : "#{current_table}th"
+                                                                                                                                                      end} table (#{next_table_starts_at} people total)."
     end
   end
 
   def spots_until_next_table
     return nil unless target_capacity.present?
+
     next_table_threshold - attendee_count
   end
 end

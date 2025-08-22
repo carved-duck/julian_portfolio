@@ -15,11 +15,15 @@ Rails.application.routes.draw do
   # SEO Routes
   get 'sitemap.xml', to: 'pages#sitemap', defaults: { format: 'xml' }
 
-  # Admin die
+  # Admin routes
   namespace :admin do
     root to: "dashboard#index"
     resources :projects
     resources :photos do
+      member do
+        patch :feature
+        patch :unfeature
+      end
       collection do
         get :bulk_upload
         post :bulk_create

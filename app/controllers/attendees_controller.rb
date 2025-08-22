@@ -30,7 +30,8 @@ class AttendeesController < ApplicationController
         }
         redirect_to event_path(@event, show_pending_modal: true)
       else
-        redirect_to events_path, notice: "🎉 Thanks #{@attendee.name}! You've successfully signed up for #{@event.title}. We'll be in touch soon!"
+        redirect_to events_path,
+                    notice: "🎉 Thanks #{@attendee.name}! You've successfully signed up for #{@event.title}. We'll be in touch soon!"
       end
     else
       flash.now[:alert] = "😔 Sorry, there was an issue with your signup. Please check the form and try again."
@@ -44,7 +45,8 @@ class AttendeesController < ApplicationController
       attendee_name = session[:pending_signup][:attendee_name]
       event_title = session[:pending_signup][:event_title]
       session.delete(:pending_signup)
-      redirect_to events_path, notice: "✅ Thanks #{attendee_name}! Your signup for #{event_title} is confirmed. We'll keep you updated!"
+      redirect_to events_path,
+                  notice: "✅ Thanks #{attendee_name}! Your signup for #{event_title} is confirmed. We'll keep you updated!"
     else
       redirect_to events_path
     end

@@ -50,7 +50,12 @@
         <div class="row">
           <% photos.each do |photo| %>
             <div class="col-md-3 col-sm-6 mb-3">
-              <div class="card">
+              <div class="card <%= 'border-warning' if photo.featured? %>">
+                <% if photo.featured? %>
+                  <div class="position-absolute top-0 start-0 m-2">
+                    <span class="badge bg-warning text-dark">Featured</span>
+                  </div>
+                <% end %>
                 <% if photo.image.attached? %>
                   <%= cl_image_tag photo.image.key,
                       width: 300, height: 200, crop: :fill,
@@ -58,15 +63,26 @@
                       style: "height: 200px; object-fit: cover;" %>
                 <% end %>
                 <div class="card-body p-2">
-                  <div class="btn-group w-100" role="group">
-                    <%= link_to "View", admin_photo_path(photo), class: "btn btn-outline-primary btn-sm" %>
-                    <%= link_to "Edit", edit_admin_photo_path(photo), class: "btn btn-outline-secondary btn-sm" %>
-                    <%= link_to "Delete", admin_photo_path(photo),
-                        data: {
-                          turbo_method: :delete,
-                          turbo_confirm: "Are you sure?"
-                        },
-                        class: "btn btn-outline-danger btn-sm" %>
+                  <div class="d-grid gap-1">
+                    <div class="btn-group" role="group">
+                      <%= link_to "View", admin_photo_path(photo), class: "btn btn-outline-primary btn-sm" %>
+                      <%= link_to "Edit", edit_admin_photo_path(photo), class: "btn btn-outline-secondary btn-sm" %>
+                      <%= link_to "Delete", admin_photo_path(photo),
+                          data: {
+                            turbo_method: :delete,
+                            turbo_confirm: "Are you sure?"
+                          },
+                          class: "btn btn-outline-danger btn-sm" %>
+                    </div>
+                    <% if photo.featured? %>
+                      <%= link_to "Unfeature", unfeature_admin_photo_path(photo),
+                          data: { turbo_method: :patch },
+                          class: "btn btn-warning btn-sm" %>
+                    <% else %>
+                      <%= link_to "Feature", feature_admin_photo_path(photo),
+                          data: { turbo_method: :patch },
+                          class: "btn btn-success btn-sm" %>
+                    <% end %>
                   </div>
                 </div>
               </div>

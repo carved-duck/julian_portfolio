@@ -3,7 +3,7 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static targets = ["image"]
 
-    connect() {
+  connect() {
     this.element.addEventListener('contextmenu', this.preventRightClick.bind(this))
     this.element.addEventListener('dragstart', this.preventDrag.bind(this))
     this.element.addEventListener('selectstart', this.preventSelect.bind(this))
@@ -48,7 +48,7 @@ export default class extends Controller {
     return false
   }
 
-    preventKeyboardShortcuts(event) {
+  preventKeyboardShortcuts(event) {
     // Disable Ctrl+S (Save), Ctrl+A (Select All), Ctrl+C (Copy), etc.
     if (event.ctrlKey || event.metaKey) {
       if (event.key === 's' || event.key === 'a' || event.key === 'c' ||

@@ -86,7 +86,7 @@ class Project < ApplicationRecord
     important_tags = tag_list.first(4)
     remaining_count = tag_list.length - 4
 
-    if remaining_count > 0
+    if remaining_count.positive?
       "#{important_tags.join(', ')} +#{remaining_count} more"
     else
       important_tags.join(', ')

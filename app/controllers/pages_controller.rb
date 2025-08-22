@@ -3,7 +3,7 @@ class PagesController < ApplicationController
   @@submission_times = {}
 
   def home
-    @projects = Project.featured.recent
+    @featured_photos = Photo.featured.recent
   end
 
   def sitemap
@@ -23,11 +23,12 @@ class PagesController < ApplicationController
     end
   end
 
-    def contact
+  def contact
     # Multi-layer spam protection
     return render_spam_response if spam_detected?
 
-    contact_params = params.permit(:name, :email, :subject, :message, :form_start_time, :client_timing, :has_interaction)
+    contact_params = params.permit(:name, :email, :subject, :message, :form_start_time, :client_timing,
+                                   :has_interaction)
 
     # Additional content validation
     return render_spam_response if suspicious_content?(contact_params)
@@ -36,7 +37,7 @@ class PagesController < ApplicationController
     ContactMailer.new_contact(contact_params).deliver_now
 
     render json: { status: 'success', message: 'Message sent successfully! I\'ll get back to you soon.' }
-  rescue => e
+  rescue StandardError => e
     Rails.logger.error "Contact form error: #{e.message}"
     render json: { status: 'error', message: 'Failed to send message. Please try again.' }
   end
@@ -76,7 +77,7 @@ class PagesController < ApplicationController
 
   def honeypot_filled?
     # Check multiple honeypot fields
-    honeypot_fields = [:website, :url, :company_website, :phone_number]
+    honeypot_fields = %i[website url company_website phone_number]
     honeypot_fields.any? { |field| params[field].present? }
   end
 
@@ -166,7 +167,7 @@ class PagesController < ApplicationController
     end
 
     # Check for URLs in message (common in spam)
-    url_count = message.scan(/https?:\/\/[^\s]+/).length
+    url_count = message.scan(%r{https?://[^\s]+}).length
     if url_count > SpamProtection::MAX_URLS_IN_MESSAGE
       Rails.logger.warn "Multiple URLs detected in message: #{url_count}"
       return true

@@ -127,13 +127,13 @@ class ApplicationController < ActionController::Base
       parts.join('.')
     else
       # For IPv6, just show first part
-      ip.split(':').first + ':xxxx'
+      "#{ip.split(':').first}:xxxx"
     end
   end
 
   def sanitize_path(path)
     # Convert path to cache-safe key
-    path.gsub(/[^a-zA-Z0-9\-_\/]/, '_')
+    path.gsub(%r{[^a-zA-Z0-9\-_/]}, '_')
   end
 
   def self.visitor_count
@@ -160,7 +160,7 @@ class ApplicationController < ActionController::Base
     end
 
     pages.sort_by { |p| -p[:views] }.first(10)
-  rescue
+  rescue StandardError
     []
   end
 end

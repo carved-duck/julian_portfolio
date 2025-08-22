@@ -1,0 +1,100 @@
+<div id="featuredPhotosCarousel" class="carousel slide" data-bs-ride="false">
+  <!-- Carousel items -->
+  <div class="carousel-inner">
+    <% photos.each_slice(3).each_with_index do |photo_group, index| %>
+      <div class="carousel-item <%= 'active' if index == 0 %>">
+        <div class="row">
+          <% photo_group.each do |photo| %>
+            <div class="col-lg-4 col-md-6 mb-4" itemscope itemtype="https://schema.org/Photograph">
+              <article class="card h-100 shadow-sm featured-photo-card">
+                <% if photo.image.attached? %>
+                  <div class="photo-frame">
+                    <%= link_to photo_path(photo), 
+                        data: { 
+                          bs_toggle: "modal", 
+                          bs_target: "#photoModal",
+                          photo_id: photo.id,
+                          photo_url: cl_image_path(photo.image.key, width: 1200, height: 800, crop: :fit, quality: :auto, fetch_format: :auto),
+                          category: photo.category
+                        } do %>
+                      <%= cl_image_tag photo.image.key,
+                          width: 400, height: 300, crop: :fill, quality: :auto, fetch_format: :auto,
+                          class: "card-img-top featured-photo-image",
+                          alt: "Featured photo from #{photo.category}",
+                          itemprop: "image" %>
+                    <% end %>
+                  </div>
+                <% end %>
+                <div class="card-body d-flex flex-column">
+                  <footer class="mt-auto text-center">
+                    <%= link_to photos_path(category: photo.category), 
+                        class: "btn btn-outline-primary btn-sm" do %>
+                      <i class="fas fa-camera me-1"></i>
+                      <%= photo.category %>
+                    <% end %>
+                  </footer>
+                </div>
+              </article>
+            </div>
+          <% end %>
+          <!-- Fill empty slots if less than 3 photos in group -->
+          <% (3 - photo_group.size).times do %>
+            <div class="col-lg-4 col-md-6 mb-4">
+              <!-- Empty slot -->
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+  
+  <!-- Carousel controls (only show if more than 3 photos) -->
+  <% if photos.size > 3 %>
+    <!-- Dots indicators -->
+    <div class="carousel-indicators position-static mt-4 mb-0">
+      <% photos.each_slice(3).each_with_index do |photo_group, index| %>
+        <button type="button" 
+                data-bs-target="#featuredPhotosCarousel" 
+                data-bs-slide-to="<%= index %>"
+                <%= 'class="active" aria-current="true"'.html_safe if index == 0 %>
+                aria-label="Slide <%= index + 1 %>"></button>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<!-- Photo Modal -->
+<div class="modal fade" id="photoModal" tabindex="-1" aria-labelledby="photoModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content bg-transparent border-0">
+      <div class="modal-body p-0 position-relative">
+        <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" 
+                data-bs-dismiss="modal" aria-label="Close" style="z-index: 1050;"></button>
+        <div class="text-center">
+          <img id="modalPhotoImage" src="" alt="" class="img-fluid rounded" 
+               style="max-height: 80vh; border: 8px solid white;">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Handle photo modal
+  const photoModal = document.getElementById('photoModal');
+  const modalImage = document.getElementById('modalPhotoImage');
+  
+  // Listen for modal trigger clicks
+  document.querySelectorAll('[data-bs-toggle="modal"][data-bs-target="#photoModal"]').forEach(function(trigger) {
+    trigger.addEventListener('click', function(e) {
+      e.preventDefault();
+      const photoUrl = this.dataset.photoUrl;
+      const category = this.dataset.category;
+      
+      modalImage.src = photoUrl;
+      modalImage.alt = `Featured photo from ${category}`;
+    });
+  });
+});
+</script>

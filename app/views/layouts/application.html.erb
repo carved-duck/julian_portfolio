@@ -1,41 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TNHQKW9B7D"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-TNHQKW9B7D', {
-        page_title: '<%= content_for?(:page_title) ? yield(:page_title) : page_title %>',
-        page_location: '<%= request.original_url %>',
-        custom_map: {
-          'custom_definition_1': 'visitor_type'
-        }
-      });
-
-      // Track custom events
-      function trackCustomEvent(event_name, parameters = {}) {
-        gtag('event', event_name, parameters);
-      }
-
-      // Track page views with custom parameters
-      function trackPageView(page_path, page_title) {
-        gtag('config', 'G-TNHQKW9B7D', {
-          page_path: page_path,
-          page_title: page_title
-        });
-      }
-    </script>
     <title><%= page_title %></title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
     <!-- SEO Meta Tags -->
     <meta name="description" content="<%= meta_description %>">
     <meta name="keywords" content="Julian Schoenfeld, web developer, photographer, Tokyo, Japan, Ruby on Rails, portfolio, photography, creative">
     <meta name="author" content="Julian Schoenfeld">
     <link rel="canonical" href="<%= canonical_url %>">
+    
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="<%= canonical_url %>">
@@ -45,6 +19,7 @@
     <meta property="og:image:width" content="180">
     <meta property="og:image:height" content="180">
     <meta property="og:site_name" content="Julian Schoenfeld Portfolio">
+    
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="<%= canonical_url %>">
@@ -52,6 +27,7 @@
     <meta property="twitter:description" content="<%= meta_description %>">
     <meta property="twitter:image" content="<%= request.base_url + asset_path('icons/apple-icon.png') %>">
     <meta property="twitter:creator" content="@julianschoenfeld">
+    
     <!-- Structured Data -->
     <% if content_for?(:structured_data) %>
       <%= yield(:structured_data) %>
@@ -60,20 +36,28 @@
         <%= structured_data_for_person %>
       </script>
     <% end %>
+    
+    <!-- PWA and Assets -->
     <link rel="manifest" href="<%= asset_path 'manifest.json.erb' %>">
     <%= render 'shared/ios_pwa_links' %>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" 
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+          integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" 
+          crossorigin="anonymous" 
+          referrerpolicy="no-referrer">
     <%= javascript_importmap_tags %>
-    <!-- Google tag (gtag.js) -->
+    
+    <!-- Google Analytics (Production Only) -->
     <% if Rails.env.production? %>
       <script async src="https://www.googletagmanager.com/gtag/js?id=<%= Rails.application.credentials.google_analytics_id %>"></script>
       <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
+        
         gtag('config', '<%= Rails.application.credentials.google_analytics_id %>', {
           page_title: '<%= content_for?(:page_title) ? yield(:page_title) : page_title %>',
           page_location: '<%= request.original_url %>',
@@ -99,16 +83,21 @@
   </head>
   <body class="<%= body_class %>">
     <%= render 'shared/navbar' %>
+    
+    <!-- Flash Messages -->
     <% flash.each do |type, message| %>
-      <div class="alert alert-<%= type == 'notice' ? 'success' : type == 'alert' ? 'warning' : type %> alert-dismissible fade show flash-message" role="alert">
+      <div class="alert alert-<%= type == 'notice' ? 'success' : type == 'alert' ? 'warning' : type %> alert-dismissible fade show flash-message" 
+           role="alert">
         <i class="fas fa-<%= type == 'notice' ? 'check-circle' : type == 'alert' ? 'exclamation-triangle' : 'info-circle' %>"></i>
         <%= message %>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
     <% end %>
+    
     <main class="container-fluid main-content">
       <%= yield %>
     </main>
+    
     <%= render 'shared/contact_modal' %>
   </body>
 </html>

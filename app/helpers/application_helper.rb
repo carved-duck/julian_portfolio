@@ -4,8 +4,8 @@ module ApplicationHelper
 
     formatted_url = url.start_with?('http') ? url : "https://#{url}"
 
-    if add_www && !formatted_url.match?(/https?:\/\/(www\.|localhost|[\d.]+)/)
-      formatted_url.sub(/https?:\/\//, '\0www.')
+    if add_www && !formatted_url.match?(%r{https?://(www\.|localhost|[\d.]+)})
+      formatted_url.sub(%r{https?://}, '\0www.')
     else
       formatted_url
     end
@@ -99,15 +99,15 @@ module ApplicationHelper
     return '' unless project
 
     data = {
-      "@context": "https://schema.org",
-      "@type": "CreativeWork",
-      "name": project.title,
-      "description": project.description,
-      "creator": {
-        "@type": "Person",
-        "name": "Julian Schoenfeld"
+      '@context': "https://schema.org",
+      '@type': "CreativeWork",
+      name: project.title,
+      description: project.description,
+      creator: {
+        '@type': "Person",
+        name: "Julian Schoenfeld"
       },
-      "dateCreated": project.created_at.iso8601
+      dateCreated: project.created_at.iso8601
     }
 
     data["url"] = project.live_url if project.live_url.present?
@@ -115,8 +115,8 @@ module ApplicationHelper
 
     if project.featured_image.attached?
       data["image"] = {
-        "@type": "ImageObject",
-        "url": request.base_url + rails_blob_path(project.featured_image, only_path: true)
+        '@type': "ImageObject",
+        url: request.base_url + rails_blob_path(project.featured_image, only_path: true)
       }
     end
 
@@ -127,48 +127,48 @@ module ApplicationHelper
     return '' unless blog_post
 
     {
-      "@context": "https://schema.org",
-      "@type": "BlogPosting",
-      "headline": blog_post.title,
-      "description": truncate(blog_post.body, length: 160),
-      "author": {
-        "@type": "Person",
-        "name": "Julian Schoenfeld"
+      '@context': "https://schema.org",
+      '@type': "BlogPosting",
+      headline: blog_post.title,
+      description: truncate(blog_post.body, length: 160),
+      author: {
+        '@type': "Person",
+        name: "Julian Schoenfeld"
       },
-      "datePublished": blog_post.created_at.iso8601,
-      "dateModified": blog_post.updated_at.iso8601,
-      "url": blog_post_url(blog_post)
+      datePublished: blog_post.created_at.iso8601,
+      dateModified: blog_post.updated_at.iso8601,
+      url: blog_post_url(blog_post)
     }.to_json.html_safe
   end
 
   def structured_data_for_event(event)
     {
-      "@context": "https://schema.org",
-      "@type": "Event",
-      "name": event.title,
-      "description": event.description,
-      "organizer": {
-        "@type": "Person",
-        "name": "Julian Schoenfeld"
+      '@context': "https://schema.org",
+      '@type': "Event",
+      name: event.title,
+      description: event.description,
+      organizer: {
+        '@type': "Person",
+        name: "Julian Schoenfeld"
       },
-      "url": event_url(event),
-      "eventStatus": "https://schema.org/EventScheduled",
-      "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode"
+      url: event_url(event),
+      eventStatus: "https://schema.org/EventScheduled",
+      eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode"
     }.compact.to_json.html_safe
   end
 
   def structured_data_for_person
     {
-      "@context": "https://schema.org",
-      "@type": "Person",
-      "name": "Julian Schoenfeld",
-      "jobTitle": "Full-Stack Developer",
-      "url": request.base_url,
-      "sameAs": [
+      '@context': "https://schema.org",
+      '@type': "Person",
+      name: "Julian Schoenfeld",
+      jobTitle: "Full-Stack Developer",
+      url: request.base_url,
+      sameAs: [
         "https://github.com/your-github-username",
         "https://linkedin.com/in/your-linkedin"
       ],
-      "knowsAbout": [
+      knowsAbout: [
         "Ruby on Rails",
         "JavaScript",
         "Web Development",
@@ -211,17 +211,17 @@ module ApplicationHelper
   def breadcrumb_structured_data(items)
     list_items = items.map.with_index do |item, index|
       {
-        "@type": "ListItem",
-        "position": index + 1,
-        "name": item[:name],
-        "item": item[:url] ? request.base_url + item[:url] : nil
+        '@type': "ListItem",
+        position: index + 1,
+        name: item[:name],
+        item: item[:url] ? request.base_url + item[:url] : nil
       }.compact
     end
 
     {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": list_items
+      '@context': "https://schema.org",
+      '@type': "BreadcrumbList",
+      itemListElement: list_items
     }.to_json.html_safe
   end
 

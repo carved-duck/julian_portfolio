@@ -33,8 +33,7 @@ class ImageCompressionService
 
       Rails.logger.info "Final compression with resize, size: #{File.size(uploaded_file.tempfile.path) / 1.megabyte.to_f}MB"
       uploaded_file
-
-    rescue => e
+    rescue StandardError => e
       Rails.logger.error "Image compression failed: #{e.message}"
       uploaded_file # Return original if compression fails
     end

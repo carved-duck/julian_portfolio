@@ -17,6 +17,6 @@ class PhotosController < ApplicationController
 
     # Find next and previous photos
     @next_photo = @category_photos[@current_index + 1] if @current_index && @current_index < @category_photos.length - 1
-    @prev_photo = @category_photos[@current_index - 1] if @current_index && @current_index > 0
+    @prev_photo = @category_photos[@current_index - 1] if @current_index&.positive?
   end
 end

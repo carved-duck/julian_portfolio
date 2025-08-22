@@ -26,6 +26,7 @@ class BlogPost < ApplicationRecord
       loop do
         new_slug = "#{base_slug}-#{counter}"
         break unless BlogPost.where(slug: new_slug).where.not(id: id).exists?
+
         counter += 1
       end
       self.slug = new_slug

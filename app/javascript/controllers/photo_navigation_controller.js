@@ -3,7 +3,7 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static targets = ["nextButton", "prevButton"]
 
-    connect() {
+  connect() {
     this.boundHandleKeydown = this.handleKeydown.bind(this)
     document.addEventListener("keydown", this.boundHandleKeydown)
 
@@ -101,7 +101,7 @@ export default class extends Controller {
         }
       }
 
-            startX = null
+      startX = null
       startY = null
     }, { passive: true })
   }
