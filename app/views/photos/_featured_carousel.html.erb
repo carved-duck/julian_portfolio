@@ -1,46 +1,43 @@
-<div id="featuredPhotosCarousel" class="carousel slide" data-bs-ride="false">
-  <!-- Carousel items -->
+<!-- Desktop Carousel: 3 photos visible, scroll one at a time -->
+<div id="featuredPhotosCarousel" class="carousel slide d-none d-md-block" data-bs-ride="false">
   <div class="carousel-inner">
-    <% photos.each_slice(3).each_with_index do |photo_group, index| %>
+    <% photos.each_with_index do |photo, index| %>
       <div class="carousel-item <%= 'active' if index == 0 %>">
-        <div class="row">
-          <% photo_group.each do |photo| %>
+        <div class="row justify-content-center">
+          <!-- Show current photo and next 2 (if available) -->
+          <% 3.times do |i| %>
+            <% current_photo_index = (index + i) % photos.size %>
+            <% current_photo = photos[current_photo_index] %>
             <div class="col-lg-4 col-md-6 mb-4" itemscope itemtype="https://schema.org/Photograph">
               <article class="card h-100 shadow-sm featured-photo-card">
-                <% if photo.image.attached? %>
+                <% if current_photo.image.attached? %>
                   <div class="photo-frame">
-                    <%= link_to photo_path(photo), 
+                    <%= link_to photo_path(current_photo), 
                         data: { 
                           bs_toggle: "modal", 
                           bs_target: "#photoModal",
-                          photo_id: photo.id,
-                          photo_url: cl_image_path(photo.image.key, width: 1200, height: 800, crop: :fit, quality: :auto, fetch_format: :auto),
-                          category: photo.category
+                          photo_id: current_photo.id,
+                          photo_url: cl_image_path(current_photo.image.key, width: 1200, height: 800, crop: :fit, quality: :auto, fetch_format: :auto),
+                          category: current_photo.category
                         } do %>
-                      <%= cl_image_tag photo.image.key,
+                      <%= cl_image_tag current_photo.image.key,
                           width: 400, height: 300, crop: :fill, quality: :auto, fetch_format: :auto,
                           class: "card-img-top featured-photo-image",
-                          alt: "Featured photo from #{photo.category}",
+                          alt: "Featured photo from #{current_photo.category}",
                           itemprop: "image" %>
                     <% end %>
                   </div>
                 <% end %>
                 <div class="card-body d-flex flex-column">
                   <footer class="mt-auto text-center">
-                    <%= link_to photos_path(category: photo.category), 
+                    <%= link_to photos_path(category: current_photo.category), 
                         class: "btn btn-outline-primary btn-sm" do %>
                       <i class="fas fa-camera me-1"></i>
-                      <%= photo.category %>
+                      <%= current_photo.category %>
                     <% end %>
                   </footer>
                 </div>
               </article>
-            </div>
-          <% end %>
-          <!-- Fill empty slots if less than 3 photos in group -->
-          <% (3 - photo_group.size).times do %>
-            <div class="col-lg-4 col-md-6 mb-4">
-              <!-- Empty slot -->
             </div>
           <% end %>
         </div>
@@ -48,17 +45,81 @@
     <% end %>
   </div>
   
-  <!-- Carousel controls (only show if more than 3 photos) -->
-  <% if photos.size > 3 %>
-    <!-- Dots indicators -->
+  <!-- Desktop Carousel Controls -->
+  <% if photos.size > 1 %>
     <div class="carousel-indicators position-static mt-4 mb-0">
-      <% photos.each_slice(3).each_with_index do |photo_group, index| %>
+      <% photos.each_with_index do |photo, index| %>
         <button type="button" 
                 data-bs-target="#featuredPhotosCarousel" 
                 data-bs-slide-to="<%= index %>"
                 <%= 'class="active" aria-current="true"'.html_safe if index == 0 %>
                 aria-label="Slide <%= index + 1 %>"></button>
       <% end %>
+    </div>
+  <% end %>
+</div>
+
+<!-- Mobile Carousel: 1 photo at a time, swipeable -->
+<div id="featuredPhotosMobile" class="carousel slide d-md-none" data-bs-ride="false">
+  <div class="carousel-inner">
+    <% shuffled_photos = photos.shuffle %>
+    <% shuffled_photos.each_with_index do |photo, index| %>
+      <div class="carousel-item <%= 'active' if index == 0 %>">
+        <div class="row justify-content-center">
+          <div class="col-10" itemscope itemtype="https://schema.org/Photograph">
+            <article class="card h-100 shadow-sm featured-photo-card">
+              <% if photo.image.attached? %>
+                <div class="photo-frame">
+                  <%= link_to photo_path(photo), 
+                      data: { 
+                        bs_toggle: "modal", 
+                        bs_target: "#photoModal",
+                        photo_id: photo.id,
+                        photo_url: cl_image_path(photo.image.key, width: 1200, height: 800, crop: :fit, quality: :auto, fetch_format: :auto),
+                        category: photo.category
+                      } do %>
+                    <%= cl_image_tag photo.image.key,
+                        width: 400, height: 300, crop: :fill, quality: :auto, fetch_format: :auto,
+                        class: "card-img-top featured-photo-image",
+                        alt: "Featured photo from #{photo.category}",
+                        itemprop: "image" %>
+                  <% end %>
+                </div>
+              <% end %>
+              <div class="card-body d-flex flex-column">
+                <footer class="mt-auto text-center">
+                  <%= link_to photos_path(category: photo.category), 
+                      class: "btn btn-outline-primary btn-sm" do %>
+                    <i class="fas fa-camera me-1"></i>
+                    <%= photo.category %>
+                  <% end %>
+                </footer>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+  
+  <!-- Mobile Carousel Controls -->
+  <% if photos.size > 1 %>
+    <div class="carousel-indicators position-static mt-4 mb-0">
+      <% shuffled_photos.each_with_index do |photo, index| %>
+        <button type="button" 
+                data-bs-target="#featuredPhotosMobile" 
+                data-bs-slide-to="<%= index %>"
+                <%= 'class="active" aria-current="true"'.html_safe if index == 0 %>
+                aria-label="Slide <%= index + 1 %>"></button>
+      <% end %>
+    </div>
+    
+    <!-- Swipe hint for mobile -->
+    <div class="text-center mt-3 d-md-none">
+      <small class="text-muted">
+        <i class="fas fa-hand-pointer me-1"></i>
+        Swipe left or right to see more
+      </small>
     </div>
   <% end %>
 </div>
@@ -96,5 +157,47 @@ document.addEventListener('DOMContentLoaded', function() {
       modalImage.alt = `Featured photo from ${category}`;
     });
   });
+
+  // Enable touch/swipe for mobile carousel
+  const mobileCarousel = document.getElementById('featuredPhotosMobile');
+  if (mobileCarousel) {
+    const carousel = new bootstrap.Carousel(mobileCarousel, {
+      interval: false,
+      touch: true
+    });
+
+    // Add swipe gesture support
+    let startX = null;
+    let startY = null;
+
+    mobileCarousel.addEventListener('touchstart', function(e) {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+    }, { passive: true });
+
+    mobileCarousel.addEventListener('touchend', function(e) {
+      if (!startX || !startY) return;
+
+      const endX = e.changedTouches[0].clientX;
+      const endY = e.changedTouches[0].clientY;
+
+      const diffX = startX - endX;
+      const diffY = startY - endY;
+
+      // Only trigger if horizontal swipe is dominant and significant
+      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+        if (diffX > 0) {
+          // Swiped left - go to next photo
+          carousel.next();
+        } else {
+          // Swiped right - go to previous photo
+          carousel.prev();
+        }
+      }
+
+      startX = null;
+      startY = null;
+    }, { passive: true });
+  }
 });
 </script>

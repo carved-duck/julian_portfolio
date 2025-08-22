@@ -37,10 +37,6 @@
   <h2 class="section-title">Featured Works</h2>
   <% if @featured_photos.any? %>
     <%= render "photos/featured_carousel", photos: @featured_photos %>
-    <div class="text-center mt-4">
-      <%= link_to "View All Photos", photos_path, class: "btn btn-primary" %>
-      <%= link_to "View Projects", projects_path, class: "btn btn-outline-secondary ms-2" %>
-    </div>
   <% else %>
     <div class="text-center py-5">
       <i class="fas fa-camera fa-3x text-muted mb-3"></i>
