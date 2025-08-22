@@ -189,6 +189,8 @@
 
 // Photo Modal Styles - Full Black Background with White Border
 #photoModal {
+  background: rgba(0, 0, 0, 1) !important; // Full black backdrop
+  
   .modal-dialog {
     max-width: 100vw;
     max-height: 100vh;
@@ -203,6 +205,10 @@
     border-radius: 0 !important;
     height: 100vh;
     width: 100vw;
+  }
+
+  &.show {
+    background: rgba(0, 0, 0, 1) !important;
   }
 
   .modal-body {
