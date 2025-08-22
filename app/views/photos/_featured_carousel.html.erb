@@ -1,39 +1,77 @@
-<!-- Desktop Carousel: Show 3 photos, slide one at a time -->
+<!-- Desktop Carousel: Always show 3 photos -->
 <div class="desktop-carousel-container d-none d-md-block position-relative">
   <div id="featuredPhotosCarousel" class="featured-photos-desktop">
     <div class="photo-track" style="transform: translateX(0%);">
-      <% photos.each_with_index do |photo, index| %>
-        <div class="photo-slide" data-slide="<%= index %>">
-          <article class="card h-100 shadow-sm featured-photo-card" itemscope itemtype="https://schema.org/Photograph">
-            <% if photo.image.attached? %>
-              <div class="photo-frame">
-                <%= link_to photo_path(photo), 
-                    data: { 
-                      bs_toggle: "modal", 
-                      bs_target: "#photoModal",
-                      photo_id: photo.id,
-                      photo_url: cl_image_path(photo.image.key, width: 1200, height: 800, crop: :fit, quality: :auto, fetch_format: :auto),
-                      category: photo.category
-                    } do %>
-                  <%= cl_image_tag photo.image.key,
-                      width: 400, height: 300, crop: :fill, quality: :auto, fetch_format: :auto,
-                      class: "card-img-top featured-photo-image",
-                      alt: "Featured photo from #{photo.category}",
-                      itemprop: "image" %>
-                <% end %>
+      <% if photos.size >= 3 %>
+        <!-- Show all photos plus duplicates for seamless looping -->
+        <% (photos.to_a * 2).each_with_index do |photo, index| %>
+          <div class="photo-slide" data-slide="<%= index %>">
+            <article class="card h-100 shadow-sm featured-photo-card" itemscope itemtype="https://schema.org/Photograph">
+              <% if photo.image.attached? %>
+                <div class="photo-frame">
+                  <%= link_to photo_path(photo), 
+                      data: { 
+                        bs_toggle: "modal", 
+                        bs_target: "#photoModal",
+                        photo_id: photo.id,
+                        photo_url: cl_image_path(photo.image.key, width: 1200, height: 800, crop: :fit, quality: :auto, fetch_format: :auto),
+                        category: photo.category
+                      } do %>
+                    <%= cl_image_tag photo.image.key,
+                        width: 400, height: 300, crop: :fill, quality: :auto, fetch_format: :auto,
+                        class: "card-img-top featured-photo-image",
+                        alt: "Featured photo from #{photo.category}",
+                        itemprop: "image" %>
+                  <% end %>
+                </div>
+              <% end %>
+              <div class="card-body d-flex flex-column">
+                <footer class="mt-auto text-center">
+                  <%= link_to photos_path(category: photo.category), 
+                      class: "btn btn-outline-primary btn-sm" do %>
+                    <i class="fas fa-camera me-1"></i>
+                    <%= photo.category %>
+                  <% end %>
+                </footer>
               </div>
-            <% end %>
-            <div class="card-body d-flex flex-column">
-              <footer class="mt-auto text-center">
-                <%= link_to photos_path(category: photo.category), 
-                    class: "btn btn-outline-primary btn-sm" do %>
-                  <i class="fas fa-camera me-1"></i>
-                  <%= photo.category %>
-                <% end %>
-              </footer>
-            </div>
-          </article>
-        </div>
+            </article>
+          </div>
+        <% end %>
+      <% else %>
+        <!-- If less than 3 photos, just show them regularly -->
+        <% photos.each_with_index do |photo, index| %>
+          <div class="photo-slide" data-slide="<%= index %>">
+            <article class="card h-100 shadow-sm featured-photo-card" itemscope itemtype="https://schema.org/Photograph">
+              <% if photo.image.attached? %>
+                <div class="photo-frame">
+                  <%= link_to photo_path(photo), 
+                      data: { 
+                        bs_toggle: "modal", 
+                        bs_target: "#photoModal",
+                        photo_id: photo.id,
+                        photo_url: cl_image_path(photo.image.key, width: 1200, height: 800, crop: :fit, quality: :auto, fetch_format: :auto),
+                        category: photo.category
+                      } do %>
+                    <%= cl_image_tag photo.image.key,
+                        width: 400, height: 300, crop: :fill, quality: :auto, fetch_format: :auto,
+                        class: "card-img-top featured-photo-image",
+                        alt: "Featured photo from #{photo.category}",
+                        itemprop: "image" %>
+                  <% end %>
+                </div>
+              <% end %>
+              <div class="card-body d-flex flex-column">
+                <footer class="mt-auto text-center">
+                  <%= link_to photos_path(category: photo.category), 
+                      class: "btn btn-outline-primary btn-sm" do %>
+                    <i class="fas fa-camera me-1"></i>
+                    <%= photo.category %>
+                  <% end %>
+                </footer>
+              </div>
+            </article>
+          </div>
+        <% end %>
       <% end %>
     </div>
   </div>
@@ -143,24 +181,52 @@ document.addEventListener('DOMContentLoaded', function() {
   const prevBtn = document.getElementById('prevArrow');
   
   if (desktopTrack && nextBtn && prevBtn) {
-    const totalPhotos = document.querySelectorAll('.photo-slide').length;
+    const allSlides = document.querySelectorAll('.photo-slide');
+    const totalSlides = allSlides.length;
+    const originalPhotosCount = Math.floor(totalSlides / 2); // Since we duplicate photos
     let currentIndex = 0;
     
-    function updateCarousel() {
-      // Each slide is 33.333% wide, move by that amount
+    function updateCarousel(instant = false) {
       const slideWidth = 33.333;
       const translateX = -(currentIndex * slideWidth);
-      desktopTrack.style.transform = `translateX(${translateX}%)`;
+      
+      if (instant) {
+        desktopTrack.style.transition = 'none';
+        desktopTrack.style.transform = `translateX(${translateX}%)`;
+        // Force reflow
+        desktopTrack.offsetHeight;
+        desktopTrack.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+      } else {
+        desktopTrack.style.transform = `translateX(${translateX}%)`;
+      }
     }
     
     nextBtn.addEventListener('click', function() {
-      currentIndex = (currentIndex + 1) % totalPhotos; // Infinite scroll
+      currentIndex++;
       updateCarousel();
+      
+      // Reset to beginning when we reach the duplicated section
+      if (currentIndex >= originalPhotosCount) {
+        setTimeout(() => {
+          currentIndex = 0;
+          updateCarousel(true);
+        }, 400); // Wait for animation to complete
+      }
     });
     
     prevBtn.addEventListener('click', function() {
-      currentIndex = (currentIndex - 1 + totalPhotos) % totalPhotos; // Infinite scroll
-      updateCarousel();
+      if (currentIndex <= 0) {
+        // Jump to end of original photos instantly, then animate back one
+        currentIndex = originalPhotosCount;
+        updateCarousel(true);
+        setTimeout(() => {
+          currentIndex = originalPhotosCount - 1;
+          updateCarousel();
+        }, 50);
+      } else {
+        currentIndex--;
+        updateCarousel();
+      }
     });
   }
 
