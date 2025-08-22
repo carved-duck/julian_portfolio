@@ -91,12 +91,74 @@
   }
 }
 
-// Carousel specific styles
-#featuredPhotosCarousel {
-  .carousel-item {
-    padding: 0 15px;
+// Desktop Custom Carousel
+.desktop-carousel-container {
+  overflow: hidden;
+  padding: 0 60px; // Space for arrows
+
+  .featured-photos-desktop {
+    width: 100%;
+    overflow: hidden;
   }
 
+  .photo-track {
+    display: flex;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    // Track width needs to accommodate all photos
+  }
+
+  .photo-slide {
+    flex: 0 0 calc(33.333% - 30px); // Show 3 at a time minus padding
+    margin: 0 15px; // Spacing between cards
+    min-width: 0; // Prevent flex items from growing
+  }
+}
+
+// Carousel Arrow Styles
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(141, 11, 65, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+  box-shadow: 0 4px 15px rgba(141, 11, 65, 0.3);
+
+  &:hover {
+    background: rgba(141, 11, 65, 1);
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 6px 20px rgba(141, 11, 65, 0.4);
+  }
+
+  &:active {
+    transform: translateY(-50%) scale(0.95);
+  }
+
+  i {
+    color: inherit;
+  }
+}
+
+.carousel-arrow-prev {
+  left: 10px;
+}
+
+.carousel-arrow-next {
+  right: 10px;
+}
+
+// Mobile Carousel (Bootstrap)
+#featuredPhotosMobile {
   .carousel-indicators {
     justify-content: center;
     margin: 0;

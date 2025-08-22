@@ -1,61 +1,51 @@
-<!-- Desktop Carousel: 3 photos visible, scroll one at a time -->
-<div id="featuredPhotosCarousel" class="carousel slide d-none d-md-block" data-bs-ride="false">
-  <div class="carousel-inner">
-    <% photos.each_with_index do |photo, index| %>
-      <div class="carousel-item <%= 'active' if index == 0 %>">
-        <div class="row justify-content-center">
-          <!-- Show current photo and next 2 (if available) -->
-          <% 3.times do |i| %>
-            <% current_photo_index = (index + i) % photos.size %>
-            <% current_photo = photos[current_photo_index] %>
-            <div class="col-lg-4 col-md-6 mb-4" itemscope itemtype="https://schema.org/Photograph">
-              <article class="card h-100 shadow-sm featured-photo-card">
-                <% if current_photo.image.attached? %>
-                  <div class="photo-frame">
-                    <%= link_to photo_path(current_photo), 
-                        data: { 
-                          bs_toggle: "modal", 
-                          bs_target: "#photoModal",
-                          photo_id: current_photo.id,
-                          photo_url: cl_image_path(current_photo.image.key, width: 1200, height: 800, crop: :fit, quality: :auto, fetch_format: :auto),
-                          category: current_photo.category
-                        } do %>
-                      <%= cl_image_tag current_photo.image.key,
-                          width: 400, height: 300, crop: :fill, quality: :auto, fetch_format: :auto,
-                          class: "card-img-top featured-photo-image",
-                          alt: "Featured photo from #{current_photo.category}",
-                          itemprop: "image" %>
-                    <% end %>
-                  </div>
-                <% end %>
-                <div class="card-body d-flex flex-column">
-                  <footer class="mt-auto text-center">
-                    <%= link_to photos_path(category: current_photo.category), 
-                        class: "btn btn-outline-primary btn-sm" do %>
-                      <i class="fas fa-camera me-1"></i>
-                      <%= current_photo.category %>
-                    <% end %>
-                  </footer>
-                </div>
-              </article>
-            </div>
-          <% end %>
-        </div>
-      </div>
-    <% end %>
-  </div>
-  
-  <!-- Desktop Carousel Controls -->
-  <% if photos.size > 1 %>
-    <div class="carousel-indicators position-static mt-4 mb-0">
+<!-- Desktop Carousel: Show 3 photos, slide one at a time -->
+<div class="desktop-carousel-container d-none d-md-block position-relative">
+  <div id="featuredPhotosCarousel" class="featured-photos-desktop">
+    <div class="photo-track" style="transform: translateX(0%);">
       <% photos.each_with_index do |photo, index| %>
-        <button type="button" 
-                data-bs-target="#featuredPhotosCarousel" 
-                data-bs-slide-to="<%= index %>"
-                <%= 'class="active" aria-current="true"'.html_safe if index == 0 %>
-                aria-label="Slide <%= index + 1 %>"></button>
+        <div class="photo-slide" data-slide="<%= index %>">
+          <article class="card h-100 shadow-sm featured-photo-card" itemscope itemtype="https://schema.org/Photograph">
+            <% if photo.image.attached? %>
+              <div class="photo-frame">
+                <%= link_to photo_path(photo), 
+                    data: { 
+                      bs_toggle: "modal", 
+                      bs_target: "#photoModal",
+                      photo_id: photo.id,
+                      photo_url: cl_image_path(photo.image.key, width: 1200, height: 800, crop: :fit, quality: :auto, fetch_format: :auto),
+                      category: photo.category
+                    } do %>
+                  <%= cl_image_tag photo.image.key,
+                      width: 400, height: 300, crop: :fill, quality: :auto, fetch_format: :auto,
+                      class: "card-img-top featured-photo-image",
+                      alt: "Featured photo from #{photo.category}",
+                      itemprop: "image" %>
+                <% end %>
+              </div>
+            <% end %>
+            <div class="card-body d-flex flex-column">
+              <footer class="mt-auto text-center">
+                <%= link_to photos_path(category: photo.category), 
+                    class: "btn btn-outline-primary btn-sm" do %>
+                  <i class="fas fa-camera me-1"></i>
+                  <%= photo.category %>
+                <% end %>
+              </footer>
+            </div>
+          </article>
+        </div>
       <% end %>
     </div>
+  </div>
+  
+  <!-- Arrow Controls -->
+  <% if photos.size > 1 %>
+    <button class="carousel-arrow carousel-arrow-prev" id="prevArrow">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+    <button class="carousel-arrow carousel-arrow-next" id="nextArrow">
+      <i class="fas fa-chevron-right"></i>
+    </button>
   <% end %>
 </div>
 
@@ -102,19 +92,8 @@
     <% end %>
   </div>
   
-  <!-- Mobile Carousel Controls -->
+  <!-- Swipe hint for mobile (no dots) -->
   <% if photos.size > 1 %>
-    <div class="carousel-indicators position-static mt-4 mb-0">
-      <% shuffled_photos.each_with_index do |photo, index| %>
-        <button type="button" 
-                data-bs-target="#featuredPhotosMobile" 
-                data-bs-slide-to="<%= index %>"
-                <%= 'class="active" aria-current="true"'.html_safe if index == 0 %>
-                aria-label="Slide <%= index + 1 %>"></button>
-      <% end %>
-    </div>
-    
-    <!-- Swipe hint for mobile -->
     <div class="text-center mt-3 d-md-none">
       <small class="text-muted">
         <i class="fas fa-hand-pointer me-1"></i>
@@ -157,6 +136,33 @@ document.addEventListener('DOMContentLoaded', function() {
       modalImage.alt = `Featured photo from ${category}`;
     });
   });
+
+  // Desktop carousel functionality
+  const desktopTrack = document.querySelector('.photo-track');
+  const nextBtn = document.getElementById('nextArrow');
+  const prevBtn = document.getElementById('prevArrow');
+  
+  if (desktopTrack && nextBtn && prevBtn) {
+    const totalPhotos = document.querySelectorAll('.photo-slide').length;
+    let currentIndex = 0;
+    
+    function updateCarousel() {
+      // Each slide is 33.333% wide, move by that amount
+      const slideWidth = 33.333;
+      const translateX = -(currentIndex * slideWidth);
+      desktopTrack.style.transform = `translateX(${translateX}%)`;
+    }
+    
+    nextBtn.addEventListener('click', function() {
+      currentIndex = (currentIndex + 1) % totalPhotos; // Infinite scroll
+      updateCarousel();
+    });
+    
+    prevBtn.addEventListener('click', function() {
+      currentIndex = (currentIndex - 1 + totalPhotos) % totalPhotos; // Infinite scroll
+      updateCarousel();
+    });
+  }
 
   // Enable touch/swipe for mobile carousel
   const mobileCarousel = document.getElementById('featuredPhotosMobile');
