@@ -1,52 +1,79 @@
 <h1>Bulk Photo Upload</h1>
-<div class="alert alert-info" role="alert">
-  <h5><i class="fas fa-info-circle"></i> How Bulk Upload Works</h5>
-  <p class="mb-0">Photos are processed in the background. After submitting, you'll be redirected immediately and photos will appear in the gallery within a few minutes.</p>
+<div class="alert alert-success" role="alert">
+  <h5><i class="fas fa-rocket"></i> Enhanced Bulk Upload</h5>
+  <p class="mb-0">Upload any number of photos! Select all your files at once and watch the progress bar as each photo uploads automatically.</p>
 </div>
-<%= form_with url: bulk_create_admin_photos_path, method: :post, multipart: true, local: true, class: "mb-4" do |f| %>
+
+<div data-controller="bulk-upload" class="mb-4">
   <div class="mb-3">
-    <%= f.label :category, "Category for all photos", class: "form-label" %>
-    <%= f.text_field :category,
-        list: "categories",
-        class: "form-control",
-        placeholder: "Enter category name",
-        required: true,
-        autocomplete: "off",
-        value: params[:category] %>
+    <label for="category" class="form-label">Category for all photos</label>
+    <input type="text" 
+           id="category"
+           data-bulk-upload-target="categoryInput"
+           list="categories"
+           class="form-control"
+           placeholder="Enter category name"
+           required
+           autocomplete="off"
+           value="<%= params[:category] %>">
     <datalist id="categories">
       <% Photo.categories.each do |category| %>
         <option value="<%= category %>">
-        <% end %>
-      </datalist>
-      <div class="form-text">
-        <strong>Existing categories:</strong>
-        <% if Photo.categories.any? %>
-          <%= Photo.categories.map { |cat| content_tag(:span, cat, class: "badge bg-secondary me-1") }.join.html_safe %>
-        <% else %>
-          <em>No categories yet</em>
-        <% end %>
-      </div>
+      <% end %>
+    </datalist>
+    <div class="form-text">
+      <strong>Existing categories:</strong>
+      <% if Photo.categories.any? %>
+        <%= Photo.categories.map { |cat| content_tag(:span, cat, class: "badge bg-secondary me-1") }.join.html_safe %>
+      <% else %>
+        <em>No categories yet</em>
+      <% end %>
     </div>
-    <div class="mb-3">
-      <%= f.label :location, "Location (optional)", class: "form-label" %>
-      <%= f.text_field :location,
-      class: "form-control",
-      placeholder: "e.g., Tokyo, LA, Seoul, Taipei...",
-      autocomplete: "off" %>
-      <div class="form-text">Add location if all photos are from the same place</div>
-    </div>
-    <div class="mb-3">
-      <%= f.label :images, "Select multiple photos", class: "form-label" %>
-      <%= f.file_field :images,
-      multiple: true,
-      accept: "image/*",
-      class: "form-control",
-      required: true %>
-      <div class="form-text">Hold Ctrl/Cmd to select multiple photos at once.</div>
-    </div>
-    <%= f.submit "Upload All Photos", class: "btn btn-primary btn-lg" %>
-  <% end %>
-  <div class="mt-4">
-    <%= link_to "← Back to Photos", admin_photos_path, class: "btn btn-outline-secondary" %>
-    <%= link_to "Single Photo Upload", new_admin_photo_path, class: "btn btn-outline-primary" %>
   </div>
+  
+  <div class="mb-3">
+    <label for="location" class="form-label">Location (optional)</label>
+    <input type="text"
+           id="location" 
+           data-bulk-upload-target="locationInput"
+           class="form-control"
+           placeholder="e.g., Tokyo, LA, Seoul, Taipei..."
+           autocomplete="off">
+    <div class="form-text">Add location if all photos are from the same place</div>
+  </div>
+  
+  <div class="mb-3">
+    <label for="images" class="form-label">Select multiple photos</label>
+    <input type="file"
+           id="images"
+           data-bulk-upload-target="fileInput"
+           data-action="change->bulk-upload#selectFiles"
+           multiple
+           accept="image/*"
+           class="form-control"
+           required>
+    <div class="form-text">Hold Ctrl/Cmd to select multiple photos at once. No size limits!</div>
+  </div>
+
+  <!-- Progress Container (hidden initially) -->
+  <div data-bulk-upload-target="progressContainer" class="mb-3" style="display: none;">
+    <div class="progress mb-2">
+      <div data-bulk-upload-target="progressBar" 
+           class="progress-bar" 
+           role="progressbar" 
+           style="width: 0%"></div>
+    </div>
+    <div data-bulk-upload-target="progressText" class="text-muted small"></div>
+  </div>
+
+  <button data-bulk-upload-target="uploadButton"
+          data-action="click->bulk-upload#startUpload"
+          class="btn btn-primary btn-lg">
+    Upload All Photos
+  </button>
+</div>
+
+<div class="mt-4">
+  <%= link_to "← Back to Photos", admin_photos_path, class: "btn btn-outline-secondary" %>
+  <%= link_to "Single Photo Upload", new_admin_photo_path, class: "btn btn-outline-primary" %>
+</div>

@@ -27,6 +27,7 @@ Rails.application.routes.draw do
       collection do
         get :bulk_upload
         post :bulk_create
+        post :upload_single, action: :upload_single_file
         delete 'categories/:category_name', action: :destroy_category, as: :destroy_category
       end
     end

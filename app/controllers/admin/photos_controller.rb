@@ -68,6 +68,70 @@ module Admin
       end
     end
 
+    # POST /admin/photos/upload_single
+    def upload_single_file
+      # Sanitize input parameters
+      category = params[:category]&.to_s&.strip
+      location = params[:location]&.to_s&.strip
+      image = params[:image]
+
+      if category.blank? || image.blank?
+        render json: { success: false, error: "Category and image are required" }, status: 400
+        return
+      end
+
+      # Validate category length and characters
+      if category.length > 100
+        render json: { success: false, error: "Category name too long (max 100 characters)" }, status: 400
+        return
+      end
+
+      if location.present? && location.length > 200
+        render json: { success: false, error: "Location name too long (max 200 characters)" }, status: 400
+        return
+      end
+
+      # Validate file type
+      unless image.content_type&.start_with?('image/')
+        render json: { success: false, error: "Only image files are allowed" }, status: 400
+        return
+      end
+
+      # Validate file size (basic check before compression)
+      if image.size > 100.megabytes
+        render json: { success: false, error: "File too large (max 100MB)" }, status: 400
+        return
+      end
+
+      begin
+        # Create photo directly (no blob creation needed for single uploads)
+        @photo = Photo.new(category: category, location: location)
+        
+        # Compress image if provided
+        compressed_image = ImageCompressionService.compress(image)
+        @photo.image.attach(compressed_image)
+
+        if @photo.save
+          render json: { 
+            success: true, 
+            message: "Photo uploaded successfully",
+            photo_id: @photo.id
+          }
+        else
+          render json: { 
+            success: false, 
+            error: @photo.errors.full_messages.join(', ')
+          }, status: 400
+        end
+      rescue StandardError => e
+        Rails.logger.error "Failed to upload single photo: #{e.message}"
+        render json: { 
+          success: false, 
+          error: "Upload failed: #{e.message}"
+        }, status: 500
+      end
+    end
+
     # POST /admin/photos/bulk_create
     def bulk_create
       category = params[:category]
@@ -80,6 +144,7 @@ module Admin
       end
 
       successful_uploads = 0
+      failed_uploads = []
 
       images.each do |image|
         next if image.blank?
@@ -97,14 +162,21 @@ module Admin
           successful_uploads += 1
         rescue StandardError => e
           Rails.logger.error "Failed to create blob for #{image.original_filename}: #{e.message}"
+          failed_uploads << image.original_filename
         end
       end
 
       if successful_uploads.positive?
-        redirect_to admin_photos_path,
-                    notice: "Queued #{successful_uploads} photos for background processing. They will appear in the gallery shortly."
+        if failed_uploads.any?
+          redirect_to admin_photos_path,
+                      notice: "Queued #{successful_uploads} photos for background processing. #{failed_uploads.count} photos failed (possibly due to size limits). Try uploading failed photos in smaller batches."
+        else
+          redirect_to admin_photos_path,
+                      notice: "Queued #{successful_uploads} photos for background processing. They will appear in the gallery shortly."
+        end
       else
-        redirect_to bulk_upload_admin_photos_path, alert: "Failed to queue any photos for processing. Please try again."
+        redirect_to bulk_upload_admin_photos_path, 
+                    alert: "Failed to queue any photos for processing. This usually happens when the total upload size exceeds 25MB. Try uploading fewer photos at once."
       end
     end
 
