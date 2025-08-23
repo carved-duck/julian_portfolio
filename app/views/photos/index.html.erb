@@ -32,7 +32,7 @@
     <div class="photo-grid">
       <% @photos.each do |photo| %>
         <% if photo.image.attached? %>
-          <%= link_to photo_path(photo), class: "photo-grid-item" do %>
+          <%= link_to photo_path(photo), class: "photo-grid-item", id: "photo-#{photo.id}" do %>
             <%= cl_image_tag photo.image.key,
                 width: 400, height: 400, crop: :fill, quality: :auto, fetch_format: :auto,
                 class: "photo-grid-image",

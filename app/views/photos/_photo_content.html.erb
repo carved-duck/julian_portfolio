@@ -47,7 +47,7 @@
     </div>
     <!-- Close Button (X) - Top Right -->
     <div class="close-button-container position-fixed">
-      <%= link_to photos_path,
+      <%= link_to photos_path(category: @photo.category, anchor: "photo-#{@photo.id}"),
           class: "btn btn-close-photo",
           data: { turbo_frame: "_top" } do %>
         <i class="fas fa-times"></i>

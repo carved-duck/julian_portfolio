@@ -53,6 +53,23 @@ export default class extends Controller {
   }
 
   goBack() {
+    // Try to get the current photo's category from the page
+    const categoryElement = this.element.querySelector('h2')
+    let category = null
+    
+    if (categoryElement) {
+      const categoryText = categoryElement.textContent.trim()
+      category = categoryText.split(' taken in')[0] // Remove location part if present
+    }
+    
+    // Try the close button first (which should have the correct category link)
+    const closeButton = document.querySelector('.btn-close-photo')
+    if (closeButton) {
+      closeButton.click()
+      return
+    }
+    
+    // Fallback to general back button
     const backButton = document.querySelector('a[href*="photos"]:not([data-turbo-frame])')
     if (backButton) {
       backButton.click()
