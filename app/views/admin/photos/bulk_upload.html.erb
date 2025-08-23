@@ -11,7 +11,8 @@
         class: "form-control",
         placeholder: "Enter category name",
         required: true,
-        autocomplete: "off" %>
+        autocomplete: "off",
+        value: params[:category] %>
     <datalist id="categories">
       <% Photo.categories.each do |category| %>
         <option value="<%= category %>">

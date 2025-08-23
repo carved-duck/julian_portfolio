@@ -36,7 +36,7 @@
           <% end %>
         </h4>
         <div>
-          <%= link_to "Add More", new_admin_photo_path(category: category), class: "btn btn-sm btn-outline-primary me-2" %>
+          <%= link_to "Add More", bulk_upload_admin_photos_path(category: category), class: "btn btn-sm btn-outline-primary me-2" %>
           <%= link_to "Delete Category",
               destroy_category_admin_photos_path(category_name: category),
               data: {
