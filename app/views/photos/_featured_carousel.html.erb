@@ -136,7 +136,7 @@
 </div>
 
 <!-- Photo Modal - Full Screen -->
-<div class="modal fade" id="photoModal" tabindex="-1" aria-labelledby="photoModalLabel">
+<div class="modal fade" id="photoModal" tabindex="-1" aria-labelledby="photoModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-fullscreen">
     <div class="modal-content bg-black">
       <button type="button" class="photo-modal-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close">
@@ -155,16 +155,18 @@ document.addEventListener('DOMContentLoaded', function() {
   const photoModal = document.getElementById('photoModal');
   const modalImage = document.getElementById('modalPhotoImage');
 
-  // Listen for modal trigger clicks
-  document.querySelectorAll('[data-bs-toggle="modal"][data-bs-target="#photoModal"]').forEach(function(trigger) {
-    trigger.addEventListener('click', function(e) {
-      e.preventDefault();
-      const photoUrl = this.dataset.photoUrl;
-      const category = this.dataset.category;
-
-      modalImage.src = photoUrl;
-      modalImage.alt = `Featured photo from ${category}`;
-    });
+  // Simple modal image update - let Bootstrap handle everything else
+  photoModal.addEventListener('show.bs.modal', function(e) {
+    const trigger = e.relatedTarget; // Button that triggered the modal
+    if (trigger) {
+      const photoUrl = trigger.dataset.photoUrl;
+      const category = trigger.dataset.category;
+      
+      if (photoUrl) {
+        modalImage.src = photoUrl;
+        modalImage.alt = `Featured photo from ${category}`;
+      }
+    }
   });
 
   // Desktop carousel functionality
@@ -173,9 +175,9 @@ document.addEventListener('DOMContentLoaded', function() {
   const prevBtn = document.getElementById('prevArrow');
 
   if (desktopTrack && nextBtn && prevBtn) {
-    const allSlides = document.querySelectorAll('.photo-slide');
+    const allSlides = document.querySelectorAll('.desktop-carousel-container .photo-slide');
     const totalSlides = allSlides.length;
-    const originalPhotosCount = Math.floor(totalSlides / 2); // Since we duplicate photos
+    const originalPhotosCount = totalSlides > 0 ? Math.floor(totalSlides / 2) : 0; // Since we duplicate photos
     let currentIndex = 0;
 
     function updateCarousel(instant = false) {
