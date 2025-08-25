@@ -11,18 +11,18 @@
   }
 }
 
-.featured-photo-card {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+// Carousel Cards - Clean styling without shadows
+.carousel-card {
+  transition: transform 0.3s ease;
   border: none;
   border-radius: 16px;
   overflow: hidden;
   background: rgba(254, 252, 248, 0.95);
   backdrop-filter: blur(10px);
-  box-shadow: 0 8px 25px rgba(141, 11, 65, 0.08);
+  box-shadow: none;
 
   &:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(141, 11, 65, 0.15);
+    transform: translateY(-2px);
   }
 
   .photo-frame {
@@ -80,8 +80,7 @@
       &:hover {
         background: var(--burgundy);
         color: var(--cream);
-        transform: translateY(-2px);
-        box-shadow: 0 6px 15px rgba(141, 11, 65, 0.3);
+        transform: translateY(-1px);
       }
 
       i {
@@ -122,22 +121,22 @@
   background: rgba(141, 11, 65, 0.9);
   border: none;
   border-radius: 50%;
-  width: 50px;
-  height: 50px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 1.2rem;
+  font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.3s ease;
   z-index: 10;
-  box-shadow: 0 4px 15px rgba(141, 11, 65, 0.3);
+  box-shadow: 0 2px 8px rgba(141, 11, 65, 0.2);
 
   &:hover {
     background: rgba(141, 11, 65, 1);
     transform: translateY(-50%) scale(1.1);
-    box-shadow: 0 6px 20px rgba(141, 11, 65, 0.4);
+    box-shadow: 0 3px 12px rgba(141, 11, 65, 0.3);
   }
 
   &:active {
@@ -187,9 +186,9 @@
   }
 }
 
-// Photo Modal Styles - Full Black Background with White Border
+// Photo Modal Styles - Full Black Background
 #photoModal {
-  background: rgba(0, 0, 0, 1) !important; // Full black backdrop
+  background: rgba(0, 0, 0, 1);
 
   .modal-dialog {
     max-width: 100vw;
@@ -200,15 +199,15 @@
   }
 
   .modal-content {
-    background: #000000 !important; // Full black background
-    border: none !important;
-    border-radius: 0 !important;
+    background: #000000;
+    border: none;
+    border-radius: 0;
     height: 100vh;
     width: 100vw;
   }
 
   &.show {
-    background: rgba(0, 0, 0, 1) !important;
+    background: rgba(0, 0, 0, 1);
   }
 
   .modal-body {
@@ -234,22 +233,31 @@
     }
   }
 
-  .btn-close {
+  .photo-modal-close {
     position: fixed;
     top: 20px;
     right: 20px;
     z-index: 1060;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(141, 11, 65, 0.9);
+    border: none;
     border-radius: 50%;
     width: 40px;
     height: 40px;
-    opacity: 1;
-    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.1rem;
+    cursor: pointer;
     transition: all 0.3s ease;
 
     &:hover {
-      background: rgba(255, 255, 255, 1);
+      background: rgba(141, 11, 65, 1);
       transform: scale(1.1);
+    }
+
+    i {
+      color: white;
     }
   }
 }
@@ -265,7 +273,7 @@
     }
   }
 
-  .featured-photo-card {
+  .carousel-card {
     &:hover {
       transform: none; // Disable hover transform on mobile
     }
@@ -309,7 +317,7 @@
 }
 
 @media (max-width: 576px) {
-  .featured-photo-card {
+  .carousel-card {
     .featured-photo-image {
       height: 200px;
     }
