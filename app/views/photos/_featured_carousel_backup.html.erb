@@ -74,10 +74,10 @@
 
   <!-- Arrow Controls -->
   <% if photos.size > 1 %>
-    <button class="carousel-arrow carousel-arrow-prev" onclick="carouselPrev()">
+    <button class="carousel-arrow carousel-arrow-prev" id="prevArrow">
       <i class="fas fa-chevron-left"></i>
     </button>
-    <button class="carousel-arrow carousel-arrow-next" onclick="carouselNext()">
+    <button class="carousel-arrow carousel-arrow-next" id="nextArrow">
       <i class="fas fa-chevron-right"></i>
     </button>
   <% end %>
@@ -124,7 +124,7 @@
     <% end %>
   </div>
 
-  <!-- Swipe hint for mobile -->
+  <!-- Swipe hint for mobile (no dots) -->
   <% if mobile_photos.size > 1 %>
     <div class="text-center mt-3 d-md-none">
       <small class="text-muted">
@@ -135,7 +135,7 @@
   <% end %>
 </div>
 
-<!-- Photo Modal -->
+<!-- Photo Modal - Full Screen -->
 <div class="modal fade" id="photoModal" tabindex="-1" aria-labelledby="photoModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-fullscreen">
     <div class="modal-content bg-black">
@@ -150,71 +150,115 @@
 </div>
 
 <script>
-// Simple global carousel functions
-let currentIndex = 0;
-const slideWidth = 33.333;
-
-function updateCarousel(instant = false) {
-  const track = document.querySelector('.photo-track');
-  if (!track) return;
-  
-  const translateX = -(currentIndex * slideWidth);
-  
-  if (instant) {
-    track.style.transition = 'none';
-    track.style.transform = `translateX(${translateX}%)`;
-    track.offsetHeight; // Force reflow
-    track.style.transition = '';
-  } else {
-    track.style.transform = `translateX(${translateX}%)`;
+// Initialize carousel on both initial load and turbo navigation
+function initializeCarousel() {
+  // Wait for Bootstrap to be available
+  if (typeof bootstrap === 'undefined') {
+    console.log('Bootstrap not loaded yet, retrying...');
+    setTimeout(initializeCarousel, 100);
+    return;
   }
-}
 
-function carouselNext() {
-  const slides = document.querySelectorAll('.desktop-carousel-container .photo-slide');
-  const totalSlides = slides.length;
-  const originalCount = Math.floor(totalSlides / 2) || totalSlides;
-  
-  currentIndex++;
-  updateCarousel();
-  
-  if (currentIndex >= originalCount && totalSlides > originalCount) {
-    setTimeout(() => {
-      currentIndex = 0;
-      updateCarousel(true);
-    }, 400);
+  // Prevent multiple initializations
+  if (window.carouselInitialized) {
+    return;
   }
-}
+  window.carouselInitialized = true;
 
-function carouselPrev() {
-  const slides = document.querySelectorAll('.desktop-carousel-container .photo-slide');
-  const totalSlides = slides.length;
-  const originalCount = Math.floor(totalSlides / 2) || totalSlides;
-  
-  if (currentIndex <= 0 && totalSlides > originalCount) {
-    currentIndex = originalCount;
-    updateCarousel(true);
-    setTimeout(() => {
-      currentIndex = originalCount - 1;
+  console.log('Initializing carousel...');
+
+  // Handle photo modal
+  const photoModal = document.getElementById('photoModal');
+  const modalImage = document.getElementById('modalPhotoImage');
+
+  if (photoModal && modalImage) {
+    // Simple modal image update - let Bootstrap handle everything else
+    photoModal.addEventListener('show.bs.modal', function(e) {
+      const trigger = e.relatedTarget; // Button that triggered the modal
+      if (trigger) {
+        const photoUrl = trigger.dataset.photoUrl;
+        const category = trigger.dataset.category;
+        
+        if (photoUrl) {
+          modalImage.src = photoUrl;
+          modalImage.alt = `Featured photo from ${category}`;
+        }
+      }
+    });
+  }
+
+  // Desktop carousel functionality
+  const desktopTrack = document.querySelector('.photo-track');
+  const nextBtn = document.getElementById('nextArrow');
+  const prevBtn = document.getElementById('prevArrow');
+
+  console.log('Carousel elements found:', {
+    desktopTrack: !!desktopTrack,
+    nextBtn: !!nextBtn,
+    prevBtn: !!prevBtn
+  });
+
+  if (desktopTrack && nextBtn && prevBtn) {
+    const allSlides = document.querySelectorAll('.desktop-carousel-container .photo-slide');
+    const totalSlides = allSlides.length;
+    const originalPhotosCount = totalSlides > 0 ? Math.floor(totalSlides / 2) : 0; // Since we duplicate photos
+    let currentIndex = 0;
+
+    console.log('Carousel setup:', {
+      totalSlides,
+      originalPhotosCount
+    });
+
+    function updateCarousel(instant = false) {
+      const slideWidth = 33.333;
+      const translateX = -(currentIndex * slideWidth);
+
+      if (instant) {
+        desktopTrack.style.transition = 'none';
+        desktopTrack.style.transform = `translateX(${translateX}%)`;
+        // Force reflow
+        desktopTrack.offsetHeight;
+        desktopTrack.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+      } else {
+        desktopTrack.style.transform = `translateX(${translateX}%)`;
+      }
+    }
+
+    // Remove existing event listeners by cloning nodes
+    const newNextBtn = nextBtn.cloneNode(true);
+    const newPrevBtn = prevBtn.cloneNode(true);
+    nextBtn.parentNode.replaceChild(newNextBtn, nextBtn);
+    prevBtn.parentNode.replaceChild(newPrevBtn, prevBtn);
+
+    newNextBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      console.log('Next button clicked, currentIndex:', currentIndex);
+      currentIndex++;
       updateCarousel();
-    }, 50);
-  } else {
-    currentIndex = Math.max(0, currentIndex - 1);
-    updateCarousel();
-  }
-}
 
-// Photo modal handler and mobile carousel
-document.addEventListener('DOMContentLoaded', function() {
-  const modal = document.getElementById('photoModal');
-  const modalImg = document.getElementById('modalPhotoImage');
-  
-  if (modal && modalImg) {
-    modal.addEventListener('show.bs.modal', function(e) {
-      const trigger = e.relatedTarget;
-      if (trigger && trigger.dataset.photoUrl) {
-        modalImg.src = trigger.dataset.photoUrl;
-        modalImg.alt = `Featured photo from ${trigger.dataset.category || 'gallery'}`;
+      // Reset to beginning when we reach the duplicated section
+      if (currentIndex >= originalPhotosCount) {
+        setTimeout(() => {
+          currentIndex = 0;
+          updateCarousel(true);
+        }, 400); // Wait for animation to complete
+      }
+    });
+
+    newPrevBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      console.log('Prev button clicked, currentIndex:', currentIndex);
+      if (currentIndex <= 0) {
+        // Jump to end of original photos instantly, then animate back one
+        currentIndex = originalPhotosCount;
+        updateCarousel(true);
+        setTimeout(() => {
+          currentIndex = originalPhotosCount - 1;
+          updateCarousel();
+        }, 50);
+      } else {
+        currentIndex--;
+        updateCarousel();
       }
     });
   }
@@ -222,6 +266,14 @@ document.addEventListener('DOMContentLoaded', function() {
   // Enable touch/swipe for mobile carousel
   const mobileCarousel = document.getElementById('featuredPhotosMobile');
   if (mobileCarousel) {
+    console.log('Initializing mobile carousel...');
+    
+    // Check if Bootstrap is available
+    if (typeof bootstrap === 'undefined') {
+      console.error('Bootstrap is not loaded!');
+      return;
+    }
+
     const carousel = new bootstrap.Carousel(mobileCarousel, {
       interval: false,
       touch: true
@@ -231,6 +283,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let startX = null;
     let startY = null;
 
+    // Initialize fresh carousel
     mobileCarousel.addEventListener('touchstart', function(e) {
       startX = e.touches[0].clientX;
       startY = e.touches[0].clientY;
@@ -260,5 +313,15 @@ document.addEventListener('DOMContentLoaded', function() {
       startY = null;
     }, { passive: true });
   }
+}
+
+// Reset initialization flag before navigation
+document.addEventListener('turbo:before-visit', function() {
+  window.carouselInitialized = false;
 });
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', initializeCarousel);
+// Initialize on Turbo navigation  
+document.addEventListener('turbo:load', initializeCarousel);
 </script>
