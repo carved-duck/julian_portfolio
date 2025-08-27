@@ -37,9 +37,18 @@
         </h4>
         <div>
           <%= link_to "Add More", bulk_upload_admin_photos_path(category: category), class: "btn btn-sm btn-outline-primary me-2" %>
-          <button type="button" class="btn btn-sm btn-outline-secondary me-2" data-bs-toggle="modal" data-bs-target="#renameModal<%= Digest::MD5.hexdigest(category)[0..7] %>">
-            Rename Category
-          </button>
+          
+          <!-- Simple inline rename form -->
+          <details class="d-inline-block">
+            <summary class="btn btn-sm btn-outline-secondary me-2">Rename Category</summary>
+            <div class="mt-2 p-2 border rounded bg-light">
+              <%= form_with url: rename_category_admin_photos_path(category_name: CGI.escape(category)), method: :patch, local: true, class: "d-flex gap-2" do |form| %>
+                <%= form.text_field :new_category_name, value: category, class: "form-control form-control-sm", style: "width: 200px;" %>
+                <%= form.submit "Rename", class: "btn btn-sm btn-primary" %>
+              <% end %>
+            </div>
+          </details>
+
           <%= link_to "Delete Category",
               destroy_category_admin_photos_path(category_name: CGI.escape(category)),
               data: {
@@ -95,33 +104,6 @@
       </div>
     </div>
     
-    <!-- Rename Category Modal for <%= h category %> -->
-    <% modal_id = Digest::MD5.hexdigest(category)[0..7] %>
-    <div class="modal fade" id="renameModal<%= modal_id %>" tabindex="-1" aria-labelledby="renameModalLabel<%= modal_id %>" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="renameModalLabel<%= modal_id %>">Rename Category</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <%= form_with url: rename_category_admin_photos_path(category_name: CGI.escape(category)), method: :patch, local: true do |form| %>
-            <div class="modal-body">
-              <p>Current category name: <strong><%= h category %></strong></p>
-              <p class="text-muted">This will rename all <%= photos.count %> photos in this category.</p>
-              <div class="mb-3">
-                <%= form.label :new_category_name, "New Category Name", class: "form-label" %>
-                <%= form.text_field :new_category_name, value: h(category), class: "form-control", required: true, maxlength: 100 %>
-                <div class="form-text">Maximum 100 characters. Must be unique (case-insensitive).</div>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-              <%= form.submit "Rename Category", class: "btn btn-primary" %>
-            </div>
-          <% end %>
-        </div>
-      </div>
-    </div>
   <% end %>
 <% else %>
   <div class="text-center py-5">

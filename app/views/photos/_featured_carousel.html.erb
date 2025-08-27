@@ -84,7 +84,7 @@
 </div>
 
 <!-- Mobile Carousel: 1 photo at a time, swipeable -->
-<div id="featuredPhotosMobile" class="carousel slide d-md-none" data-bs-ride="false" data-bs-interval="false">
+<div id="featuredPhotosMobile" class="carousel slide d-md-none">
   <div class="carousel-inner">
     <% mobile_photos = photos.to_a.shuffle %>
     <% mobile_photos.each_with_index do |photo, index| %>
@@ -221,11 +221,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Enable touch/swipe for mobile carousel
   const mobileCarousel = document.getElementById('featuredPhotosMobile');
+  console.log('Mobile carousel element:', mobileCarousel);
+  
   if (mobileCarousel) {
+    // Dispose existing carousel instance if it exists
+    const existingCarousel = bootstrap.Carousel.getInstance(mobileCarousel);
+    if (existingCarousel) {
+      console.log('Disposing existing carousel');
+      existingCarousel.dispose();
+    }
+    
+    console.log('Initializing new mobile carousel');
     const carousel = new bootstrap.Carousel(mobileCarousel, {
       interval: false,
-      touch: true
+      touch: true,
+      wrap: true
     });
+    
+    console.log('Mobile carousel initialized:', carousel);
 
     // Add swipe gesture support
     let startX = null;

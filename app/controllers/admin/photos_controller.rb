@@ -248,28 +248,28 @@ module Admin
         return
       end
 
+      # Do all validation OUTSIDE the transaction
+      photos_to_rename = Photo.where(category: old_category_name)
+      photo_count = photos_to_rename.count
+
+      if photo_count.zero?
+        redirect_to admin_photos_path, alert: "No photos found in category '#{old_category_name}'."
+        return
+      end
+
+      # Check if new category name already exists (case insensitive check for safety)
+      if Photo.where("LOWER(category) = LOWER(?)", new_category_name).exists?
+        redirect_to admin_photos_path, alert: "Category '#{new_category_name}' already exists (case-insensitive match). Choose a different name."
+        return
+      end
+
+      # Now do the actual database update in a transaction
       begin
-        # Use transaction to ensure data consistency
         Photo.transaction do
-          photos_to_rename = Photo.where(category: old_category_name).lock
-          photo_count = photos_to_rename.count
-
-          if photo_count.zero?
-            redirect_to admin_photos_path, alert: "No photos found in category '#{old_category_name}'."
-            return
-          end
-
-          # Check if new category name already exists (case insensitive check for safety)
-          if Photo.where("LOWER(category) = LOWER(?)", new_category_name).exists?
-            redirect_to admin_photos_path, alert: "Category '#{new_category_name}' already exists (case-insensitive match). Choose a different name."
-            return
-          end
-
-          # Rename all photos in the category
-          photos_to_rename.update_all(category: new_category_name)
-
-          redirect_to admin_photos_path, notice: "Successfully renamed category '#{old_category_name}' to '#{new_category_name}' (#{photo_count} photos updated)."
+          Photo.where(category: old_category_name).update_all(category: new_category_name)
         end
+        
+        redirect_to admin_photos_path, notice: "Successfully renamed category '#{old_category_name}' to '#{new_category_name}' (#{photo_count} photos updated)."
       rescue StandardError => e
         Rails.logger.error "Failed to rename category '#{old_category_name}' to '#{new_category_name}': #{e.message}"
         redirect_to admin_photos_path, alert: "Failed to rename category. Please try again."
