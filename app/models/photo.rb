@@ -16,8 +16,10 @@ class Photo < ApplicationRecord
 
   def feature!
     # If another photo in the same category is already featured, unfeature it
-    Photo.where(category: category, featured: true).where.not(id: id).update_all(featured: false)
-    update!(featured: true)
+    Photo.transaction do
+      Photo.where(category: category, featured: true).where.not(id: id).update_all(featured: false)
+      update!(featured: true)
+    end
   end
 
   def unfeature!

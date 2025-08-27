@@ -4,7 +4,7 @@ module Admin
 
     # GET /admin/photos or /admin/photos.json
     def index
-      @photos = Photo.all
+      @photos = Photo.includes(image_attachment: :blob).order(:category, :created_at)
     end
 
     # GET /admin/photos/1 or /admin/photos/1.json

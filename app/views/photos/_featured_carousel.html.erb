@@ -221,24 +221,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Enable touch/swipe for mobile carousel
   const mobileCarousel = document.getElementById('featuredPhotosMobile');
-  console.log('Mobile carousel element:', mobileCarousel);
   
   if (mobileCarousel) {
     // Dispose existing carousel instance if it exists
     const existingCarousel = bootstrap.Carousel.getInstance(mobileCarousel);
     if (existingCarousel) {
-      console.log('Disposing existing carousel');
       existingCarousel.dispose();
     }
     
-    console.log('Initializing new mobile carousel');
     const carousel = new bootstrap.Carousel(mobileCarousel, {
       interval: false,
       touch: true,
       wrap: true
     });
-    
-    console.log('Mobile carousel initialized:', carousel);
 
     // Add swipe gesture support
     let startX = null;
