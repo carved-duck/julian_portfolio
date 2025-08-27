@@ -205,7 +205,7 @@ function carouselPrev() {
 }
 
 // Photo modal handler and mobile carousel
-document.addEventListener('DOMContentLoaded', function() {
+function initializeCarousel() {
   const modal = document.getElementById('photoModal');
   const modalImg = document.getElementById('modalPhotoImage');
   
@@ -268,5 +268,9 @@ document.addEventListener('DOMContentLoaded', function() {
       startY = null;
     }, { passive: true });
   }
-});
+}
+
+// Initialize on page load AND Turbo navigation
+document.addEventListener('DOMContentLoaded', initializeCarousel);
+document.addEventListener('turbo:load', initializeCarousel);
 </script>
