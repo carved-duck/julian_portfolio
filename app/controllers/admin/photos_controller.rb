@@ -190,9 +190,10 @@ module Admin
       end
     end
 
-    # DELETE /admin/photos/categories/:category_name
+    # DELETE /admin/photos/categories/*category_name
     def destroy_category
-      category_name = params[:category_name]
+      # URL decode the category name to handle special characters
+      category_name = CGI.unescape(params[:category_name].to_s)
 
       if category_name.blank?
         redirect_to admin_photos_path, alert: "Category name is required."
@@ -211,6 +212,68 @@ module Admin
       photos_to_delete.destroy_all
 
       redirect_to admin_photos_path, notice: "Deleted #{photo_count} photos from category '#{category_name}'."
+    end
+
+    # PATCH /admin/photos/categories/:category_name/rename
+    def rename_category
+      # URL decode the category name to handle special characters
+      old_category_name = CGI.unescape(params[:category_name].to_s)
+      new_category_name = params[:new_category_name]&.to_s&.strip
+
+      if old_category_name.blank?
+        redirect_to admin_photos_path, alert: "Original category name is required."
+        return
+      end
+
+      if new_category_name.blank?
+        redirect_to admin_photos_path, alert: "New category name is required."
+        return
+      end
+
+      # Check if trying to rename to the same name
+      if old_category_name == new_category_name
+        redirect_to admin_photos_path, alert: "Category name is already '#{new_category_name}'. No changes needed."
+        return
+      end
+
+      # Validate new category name length
+      if new_category_name.length > 100
+        redirect_to admin_photos_path, alert: "Category name too long (max 100 characters)."
+        return
+      end
+
+      # Validate category name doesn't contain only whitespace or invalid characters
+      if new_category_name.gsub(/\s+/, '').blank?
+        redirect_to admin_photos_path, alert: "Category name cannot be only whitespace."
+        return
+      end
+
+      begin
+        # Use transaction to ensure data consistency
+        Photo.transaction do
+          photos_to_rename = Photo.where(category: old_category_name).lock
+          photo_count = photos_to_rename.count
+
+          if photo_count.zero?
+            redirect_to admin_photos_path, alert: "No photos found in category '#{old_category_name}'."
+            return
+          end
+
+          # Check if new category name already exists (case insensitive check for safety)
+          if Photo.where("LOWER(category) = LOWER(?)", new_category_name).exists?
+            redirect_to admin_photos_path, alert: "Category '#{new_category_name}' already exists (case-insensitive match). Choose a different name."
+            return
+          end
+
+          # Rename all photos in the category
+          photos_to_rename.update_all(category: new_category_name)
+
+          redirect_to admin_photos_path, notice: "Successfully renamed category '#{old_category_name}' to '#{new_category_name}' (#{photo_count} photos updated)."
+        end
+      rescue StandardError => e
+        Rails.logger.error "Failed to rename category '#{old_category_name}' to '#{new_category_name}': #{e.message}"
+        redirect_to admin_photos_path, alert: "Failed to rename category. Please try again."
+      end
     end
 
     # PATCH /admin/photos/1/feature

@@ -28,7 +28,8 @@ Rails.application.routes.draw do
         get :bulk_upload
         post :bulk_create
         post :upload_single, action: :upload_single_file
-        delete 'categories/:category_name', action: :destroy_category, as: :destroy_category
+        delete 'categories/*category_name', action: :destroy_category, as: :destroy_category
+        patch 'categories/*category_name/rename', action: :rename_category, as: :rename_category
       end
     end
     resources :blog_posts
