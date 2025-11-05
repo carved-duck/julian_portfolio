@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_08_22_064706) do
+ActiveRecord::Schema[7.1].define(version: 2025_11_05_125122) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -49,6 +49,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_22_064706) do
     t.bigint "event_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "bringing"
     t.index ["event_id"], name: "index_attendees_on_event_id"
   end
 
@@ -68,6 +69,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_22_064706) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "target_capacity"
+    t.string "event_type", default: "bbq"
+    t.boolean "enable_bringing_categories", default: true
+    t.index ["event_type"], name: "index_events_on_event_type"
   end
 
   create_table "photos", force: :cascade do |t|

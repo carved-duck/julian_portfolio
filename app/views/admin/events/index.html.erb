@@ -38,4 +38,7 @@
     <p>Create your first event to start collecting signups!</p>
   </div>
 <% end %>
-<%= link_to "New Event", new_admin_event_path, class: "btn btn-success" %>
+<div class="d-flex gap-2">
+  <%= link_to "New BBQ Event", new_admin_event_path(event_type: 'bbq'), class: "btn btn-success" %>
+  <%= link_to "New Normal Event", new_admin_event_path(event_type: 'normal'), class: "btn btn-primary" %>
+</div>

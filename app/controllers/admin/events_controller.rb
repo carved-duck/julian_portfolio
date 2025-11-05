@@ -15,6 +15,17 @@ module Admin
     # GET /admin/events/new
     def new
       @event = Event.new
+
+      # Set event type based on URL parameter
+      if params[:event_type].present?
+        @event.event_type = params[:event_type]
+        # Set sensible defaults based on event type
+        if params[:event_type] == 'normal'
+          @event.enable_bringing_categories = true
+        end
+      else
+        @event.event_type = 'bbq' # Default to BBQ if no type specified
+      end
     end
 
     # GET /admin/events/1/edit
@@ -66,7 +77,7 @@ module Admin
     end
 
     def event_params
-      params.require(:event).permit(:title, :description, :active, :target_capacity)
+      params.require(:event).permit(:title, :description, :active, :target_capacity, :event_type, :enable_bringing_categories)
     end
   end
 end

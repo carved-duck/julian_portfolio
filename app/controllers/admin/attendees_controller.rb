@@ -49,7 +49,7 @@ module Admin
     end
 
     def attendee_params
-      params.require(:attendee).permit(:name, :instagram_handle, :message)
+      params.require(:attendee).permit(:name, :instagram_handle, :message, :bringing)
     end
   end
 end

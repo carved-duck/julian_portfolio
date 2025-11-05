@@ -3,8 +3,23 @@ class Event < ApplicationRecord
 
   validates :title, presence: true
   validates :description, presence: true
+  validates :event_type, presence: true, inclusion: { in: %w[bbq normal] }
 
   scope :active, -> { where(active: true) }
+  scope :bbq_events, -> { where(event_type: 'bbq') }
+  scope :normal_events, -> { where(event_type: 'normal') }
+
+  def bbq_event?
+    event_type == 'bbq'
+  end
+
+  def normal_event?
+    event_type == 'normal'
+  end
+
+  def requires_bringing_field?
+    normal_event? && enable_bringing_categories?
+  end
 
   def attendee_count
     attendees.count
@@ -12,7 +27,7 @@ class Event < ApplicationRecord
 
   # Capacity management for BBQ table limits (10/20/30 people per table)
   def next_table_threshold
-    return nil unless target_capacity.present?
+    return nil unless target_capacity.present? && bbq_event?
 
     current_count = attendee_count
     # Find next multiple of 10 that's >= current count
@@ -20,7 +35,8 @@ class Event < ApplicationRecord
   end
 
   def in_pending_zone?
-    return false unless target_capacity.present?
+    # Only BBQ events use pending zone logic
+    return false unless bbq_event? && target_capacity.present?
 
     current_count = attendee_count
 
@@ -46,6 +62,23 @@ class Event < ApplicationRecord
 
     # Pending if we're 1-7 people over a table boundary (leaving 3+ spots until next table)
     people_over_boundary.positive? && people_until_next_table >= 3
+  end
+
+  # Normal events: simple capacity check
+  def at_capacity?
+    return false unless target_capacity.present?
+
+    if normal_event?
+      attendee_count >= target_capacity
+    else
+      false # BBQ events use pending zone logic instead
+    end
+  end
+
+  def capacity_full_message
+    return nil unless normal_event? && at_capacity?
+
+    "This event is full! Please contact @jju.irl on Instagram or julian@trendrider.io if you'd like to be added to a waitlist."
   end
 
   def capacity_warning_message
@@ -92,8 +125,28 @@ class Event < ApplicationRecord
   end
 
   def spots_until_next_table
-    return nil unless target_capacity.present?
+    return nil unless target_capacity.present? && bbq_event?
 
     next_table_threshold - attendee_count
   end
+
+  # For normal events with bringing categories enabled, get bringing breakdown
+  def bringing_breakdown
+    return {} unless requires_bringing_field?
+
+    breakdown = attendees.group(:bringing).count
+    # Ensure all categories are represented
+    BRINGING_CATEGORIES.each do |category|
+      breakdown[category] ||= 0
+    end
+    breakdown
+  end
+
+  BRINGING_CATEGORIES = [
+    'Drinks',
+    'Desserts',
+    'Snacks',
+    'Appetizers',
+    'Main Dish'
+  ].freeze
 end

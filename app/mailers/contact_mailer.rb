@@ -8,7 +8,7 @@ class ContactMailer < ApplicationMailer
     @message = contact_params[:message]
 
     mail(
-      to: 'juliankick@gmail.com',
+      to: 'julian@trendrider.io',
       subject: "Portfolio Contact: #{@subject}",
       reply_to: @email
     )

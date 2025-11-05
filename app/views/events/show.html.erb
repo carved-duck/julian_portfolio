@@ -38,6 +38,17 @@
             </div>
           </div>
         </div>
+      <% elsif @event.capacity_full_message %>
+        <div class="card mt-4 border-danger">
+          <div class="card-body bg-danger bg-opacity-10">
+            <div class="d-flex align-items-center">
+              <i class="fas fa-times-circle text-danger me-2"></i>
+              <div>
+                <%= @event.capacity_full_message %>
+              </div>
+            </div>
+          </div>
+        </div>
       <% end %>
       <div class="card mt-4">
         <div class="card-header">
@@ -50,6 +61,55 @@
             <div class="form-inputs">
               <%= f.input :name, required: true, hint: "Your name" %>
               <%= f.input :instagram_handle, required: true, hint: "Your Instagram username or name if you don't have one" %>
+
+              <% if @event.requires_bringing_field? %>
+                <% breakdown = @event.bringing_breakdown %>
+                <%= f.input :bringing,
+                    collection: @event.class::BRINGING_CATEGORIES.map { |cat|
+                      count = breakdown[cat] || 0
+                      if count > 0
+                        people_text = count == 1 ? "person" : "people"
+                        display_text = "#{cat} (#{count} #{people_text})"
+                      else
+                        display_text = cat
+                      end
+                      [display_text, cat]
+                    } + [['Other (specify below)', 'Other']],
+                    prompt: "What will you be bringing?",
+                    required: true,
+                    hint: "Select what you're planning to bring to the event",
+                    input_html: { id: 'bringing-select' } %>
+
+                <div id="other-bringing-input" style="display: none;">
+                  <%= f.input :bringing_other,
+                      label: "What are you bringing?",
+                      hint: "Please specify what you're bringing",
+                      input_html: { placeholder: "e.g., Homemade lasagna" } %>
+                </div>
+
+                <script>
+                  document.addEventListener('DOMContentLoaded', function() {
+                    const bringingSelect = document.getElementById('bringing-select');
+                    const otherInput = document.getElementById('other-bringing-input');
+
+                    function toggleOtherInput() {
+                      if (bringingSelect.value === 'Other') {
+                        otherInput.style.display = 'block';
+                        otherInput.querySelector('input').required = true;
+                      } else {
+                        otherInput.style.display = 'none';
+                        otherInput.querySelector('input').required = false;
+                      }
+                    }
+
+                    if (bringingSelect) {
+                      bringingSelect.addEventListener('change', toggleOtherInput);
+                      toggleOtherInput(); // Run on page load
+                    }
+                  });
+                </script>
+              <% end %>
+
               <%= f.input :message, as: :text, input_html: { rows: 3 }, hint: "Optional: Some kind of meaningful message :D" %>
             </div>
             <div class="form-actions">

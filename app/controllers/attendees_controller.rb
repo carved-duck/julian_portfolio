@@ -2,12 +2,24 @@ class AttendeesController < ApplicationController
   before_action :set_event
 
   def create
-    @attendee = @event.attendees.build(attendee_params)
+    # Handle the "Other" bringing option for normal events
+    processed_params = attendee_params
+    if @event.normal_event? && processed_params[:bringing] == 'Other' && processed_params[:bringing_other].present?
+      processed_params[:bringing] = processed_params[:bringing_other]
+    end
+    processed_params.delete(:bringing_other) # Remove the temporary field
 
-    # Check if this signup will put us in pending zone BEFORE saving
-    # We need to simulate the state after this attendee is added
+    @attendee = @event.attendees.build(processed_params)
+
+    # Check capacity before saving
+    if @event.normal_event? && @event.at_capacity?
+      redirect_to event_path(@event), alert: @event.capacity_full_message
+      return
+    end
+
+    # Check if this signup will put us in pending zone BEFORE saving (BBQ events only)
     will_be_pending = false
-    if @event.target_capacity.present?
+    if @event.bbq_event? && @event.target_capacity.present?
       # Temporarily add 1 to simulate the new attendee
       original_count = @event.attendee_count
       @event.define_singleton_method(:attendee_count) { original_count + 1 }
@@ -21,7 +33,7 @@ class AttendeesController < ApplicationController
 
     if @attendee.save
       if will_be_pending
-        # Store the pending status in session for confirmation modal
+        # Store the pending status in session for confirmation modal (BBQ events only)
         session[:pending_signup] = {
           attendee_name: @attendee.name,
           event_title: @event.title,
@@ -30,12 +42,17 @@ class AttendeesController < ApplicationController
         }
         redirect_to event_path(@event, show_pending_modal: true)
       else
-        redirect_to events_path,
-                    notice: "🎉 Thanks #{@attendee.name}! You've successfully signed up for #{@event.title}. We'll be in touch soon!"
+        success_message = if @event.normal_event?
+                            "🎉 Thanks #{@attendee.name}! You've successfully signed up for #{@event.title}. Thanks for bringing #{@attendee.bringing}!"
+                          else
+                            "🎉 Thanks #{@attendee.name}! You've successfully signed up for #{@event.title}. We'll be in touch soon!"
+                          end
+        redirect_to events_path, notice: success_message
       end
     else
       flash.now[:alert] = "😔 Sorry, there was an issue with your signup. Please check the form and try again."
-      render :new, status: :unprocessable_entity
+      @attendee = @event.attendees.build # Reset for re-render
+      render 'events/show', status: :unprocessable_entity
     end
   end
 
@@ -63,6 +80,6 @@ class AttendeesController < ApplicationController
   end
 
   def attendee_params
-    params.require(:attendee).permit(:name, :instagram_handle, :message)
+    params.require(:attendee).permit(:name, :instagram_handle, :message, :bringing, :bringing_other)
   end
 end
