@@ -19,6 +19,9 @@ h1 {
   letter-spacing: -0.02em;
 }
 
+// Inner pages' titles match Home's burgundy greeting.
+.page-title { color: var(--burgundy); }
+
 h2 {
   font-size: 1.75rem;
   font-weight: $font-semibold;

@@ -1,0 +1,147 @@
+// Photos index: a film contact sheet for the chosen place (black strips, sprocket holes, frame
+// numbers), then the full photos. Frames link to #photo-<id> below.
+$film: #141210;
+$film-edge: #e8a33c; // the orange print on a film's edge
+$sprocket: #d9d2c3;
+
+.contact-sheet {
+  margin: 0 0 3rem;
+  padding: 0.75rem;
+  background: $film;
+  border-radius: 4px;
+  box-shadow: var(--shadow-lg);
+}
+
+.contact-sheet-edge {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 0 0.5rem;
+  font: 600 0.75rem/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0.18em;
+  color: $film-edge;
+}
+
+.contact-sheet-frames {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+  row-gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+// Each frame carries its own sprocket holes above and below, so a full row reads as one strip.
+.contact-frame {
+  position: relative;
+  padding: 14px 3px 20px;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 5px, $sprocket 5px 11px, transparent 11px 16px)
+      top 4px left 0 / 100% 6px no-repeat,
+    repeating-linear-gradient(90deg, transparent 0 5px, $sprocket 5px 11px, transparent 11px 16px)
+      bottom 4px left 0 / 100% 6px no-repeat,
+    $film;
+
+  a { display: block; }
+
+  img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    background: #2a2622;
+    user-select: none;
+    -webkit-user-drag: none;
+    -webkit-touch-callout: none;
+    transition: filter 0.2s ease;
+  }
+
+  a:hover img,
+  a:focus-visible img { filter: brightness(1.15); }
+
+  a:focus-visible { outline: 2px solid $film-edge; outline-offset: 2px; }
+}
+
+.contact-frame-number {
+  position: absolute;
+  left: 6px;
+  bottom: 11px; // between the photo and the lower sprocket holes
+  font: 600 0.6rem/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: $film-edge;
+}
+
+// ---------- The roll: full photos below the sheet ----------
+.photo-roll {
+  display: grid;
+  gap: 3rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.photo-roll-item {
+  scroll-margin-top: 90px; // clears the fixed navbar when a frame jumps here
+  text-align: center;
+}
+
+.photo-roll-link { display: block; }
+
+// Width and aspect-ratio come inline from the blob's size, so the box exists before the image
+// loads: as wide as the column, or 85vh tall, whichever is smaller.
+.photo-roll-image {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  height: auto;
+  box-sizing: border-box;
+  border: 6px solid #fff;
+  background: rgba(214, 207, 180, 0.3); // sage placeholder while the image loads
+  box-shadow: var(--shadow-lg);
+  user-select: none;
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+}
+
+.photo-roll-caption {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 0.6rem 0 0;
+  font-size: 0.85rem;
+  color: #6b6b6b;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:has(.contact-sheet) { scroll-behavior: smooth; }
+}
+
+@media (max-width: 575px) {
+  .contact-sheet { padding: 0.5rem; }
+  .contact-sheet-frames { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); }
+  .photo-roll-image { border-width: 3px; }
+}
+
+// ---------- Empty state ----------
+.photos-empty {
+  text-align: center;
+  padding: 4rem 1rem;
+  max-width: 30rem;
+  margin: 0 auto;
+}
+
+.photos-empty-icon {
+  font-size: 3rem;
+  color: var(--sage);
+  margin-bottom: 1rem;
+}
+
+.photos-empty-title {
+  color: var(--burgundy);
+  font-size: 1.4rem;
+  font-weight: $font-semibold;
+  margin-bottom: 0.5rem;
+}
+
+.photos-empty-text {
+  color: #6b6b6b;
+  margin-bottom: 1.5rem;
+}

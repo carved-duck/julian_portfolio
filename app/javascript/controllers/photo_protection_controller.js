@@ -90,7 +90,7 @@ export default class extends Controller {
     // BUT allow quick taps for navigation
     if (event.target.tagName === 'IMG') {
       const parentLink = event.target.closest('a')
-      if (parentLink && (parentLink.classList.contains('photo-grid-item') || parentLink.href.includes('/photos/'))) {
+      if (this.isNavigationLink(parentLink)) {
         // For navigation images, only prevent long press, allow quick taps
         if (event.type === 'touchstart') {
           this.touchStartTime = Date.now()
@@ -113,13 +113,19 @@ export default class extends Controller {
     // BUT allow navigation clicks (check if parent link exists)
     if (event.target.tagName === 'IMG') {
       const parentLink = event.target.closest('a')
-      if (parentLink && (parentLink.classList.contains('photo-grid-item') || parentLink.href.includes('/photos/'))) {
+      if (this.isNavigationLink(parentLink)) {
         // Allow navigation clicks - don't prevent
         return true
       }
       event.preventDefault()
       return false
     }
+  }
+
+  // Image links that must still work by tap: a contact-sheet frame (jumps down the page) or a link
+  // to a photo page.
+  isNavigationLink(link) {
+    return !!link && (link.classList.contains('contact-frame-link') || link.pathname.startsWith('/photos/'))
   }
 
   preventGesture(event) {

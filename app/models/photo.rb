@@ -8,6 +8,7 @@ class Photo < ApplicationRecord
 
   scope :by_category, ->(category) { where(category: category) }
   scope :recent, -> { order(created_at: :desc) }
+  scope :in_roll_order, -> { order(:created_at, :id) } # oldest upload first, like frames on a roll
   scope :featured, -> { where(featured: true) }
 
   def self.categories

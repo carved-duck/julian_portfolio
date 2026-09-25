@@ -29,7 +29,8 @@ When the code and this file disagree, the code wins: fix this file in place.
   `published_at` desc.
 - **Photo** — `has_one_attached :image`, a `category`, optional `location`. One featured photo
   per category: `feature!` runs in a transaction and unfeatures the others. Scopes
-  `by_category`, `recent`, `featured`.
+  `by_category`, `recent`, `featured`, `in_roll_order` (oldest upload first: the Photos page's
+  contact sheet and the photo page's next/previous both use it; there is no shot date).
 - **Event** — `has_many :attendees`. `event_type` is `"bbq"` or `"normal"`. Scopes `active`,
   `bbq_events`, `normal_events`.
   - BBQ events use a "pending zone" model in 10-person table steps (`next_table_threshold`,

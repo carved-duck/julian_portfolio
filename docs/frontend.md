@@ -27,6 +27,10 @@ If a Bootstrap carousel is ever added back, dispose the old instance before maki
 - `showcase_controller.js` — the two doors (Featured photos, Featured dev work). Hover opens a
   panel on mouse devices; click/tap/Enter opens it everywhere. Both panels share one grid cell, so
   swapping them never moves the page.
+- Photos page (`photos/index`): a contact sheet of the chosen place's frames, then the full photos.
+  Frames are plain `#photo-<id>` links; each full photo's box is sized inline from its blob's width
+  and height, so a jump lands right before the lazy images load. `photo_protection_controller.js`
+  lets taps through on `.contact-frame-link` and links to `/photos/…` only.
 - `photo_modal_controller.js` — the full-screen photo viewer (`photos/_photo_modal.html.erb`). On
   `turbo:before-cache` it closes itself and clears Bootstrap's backdrop, so Back never restores it open.
 - Device frames on project cards: `projects/_frame_browser` (the page scrolls itself on hover)

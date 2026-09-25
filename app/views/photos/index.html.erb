@@ -8,7 +8,7 @@
       <li class="breadcrumb-item active" aria-current="page">Photos</li>
     </ol>
   </nav>
-  <h1 class="mb-4">Photo Gallery</h1>
+  <h1 class="mb-4 page-title">Photo Gallery</h1>
   <% if @categories.any? %>
     <!-- Unified category filter (one pill style, all breakpoints) -->
     <nav class="photo-filter" aria-label="Filter photos by category">
@@ -18,24 +18,48 @@
     </nav>
   <% end %>
   <% if @photos.any? %>
-    <div class="photo-grid">
-      <% @photos.each do |photo| %>
-        <% if photo.image.attached? %>
-          <%= link_to photo_path(photo), class: "photo-grid-item", id: "photo-#{photo.id}" do %>
-            <%= cl_image_tag photo.image.key,
-                width: 400, height: 400, crop: :fill, quality: :auto, fetch_format: :auto,
-                class: "photo-grid-image",
-                loading: "lazy",
-                alt: "Photo in #{photo.category}",
-                draggable: false,
-                oncontextmenu: "return false;",
-                onselectstart: "return false;",
-                ondragstart: "return false;",
-                style: "-webkit-touch-callout: none; -webkit-user-select: none; touch-action: manipulation;" %>
-          <% end %>
+    <% roll = @photos.select { |photo| photo.image.attached? } %>
+    <%# The contact sheet: every frame of this place's roll, small. Each links down to its full photo. %>
+    <section class="contact-sheet" id="contact-sheet" aria-label="Contact sheet: <%= @selected_category %>">
+      <p class="contact-sheet-edge" aria-hidden="true">
+        <span><%= @selected_category.upcase %></span><span><%= roll.size %> frames</span>
+      </p>
+      <ol class="contact-sheet-frames">
+        <% roll.each_with_index do |photo, index| %>
+          <li class="contact-frame">
+            <a href="#photo-<%= photo.id %>" class="contact-frame-link" aria-label="Frame <%= index + 1 %>">
+              <%= cl_image_tag photo.image.key,
+                  width: 240, height: 160, crop: :fill, quality: :auto, fetch_format: :auto,
+                  alt: "", loading: "lazy", draggable: false, oncontextmenu: "return false;" %>
+            </a>
+            <span class="contact-frame-number" aria-hidden="true"><%= index + 1 %></span>
+          </li>
         <% end %>
+      </ol>
+    </section>
+
+    <%# The roll itself: the full photos, one after another. Sized from the blob so lazy images
+        hold their space and a jump from the sheet lands on the right photo. %>
+    <ol class="photo-roll">
+      <% roll.each_with_index do |photo, index| %>
+        <% width, height = photo.image.blob.metadata.values_at("width", "height") %>
+        <li class="photo-roll-item" id="photo-<%= photo.id %>">
+          <%= link_to photo_path(photo), class: "photo-roll-link" do %>
+            <%= cl_image_tag photo.image.key,
+                width: 1600, crop: :limit, quality: :auto, fetch_format: :auto,
+                style: ("aspect-ratio: #{width} / #{height}; width: min(100%, calc(85vh * #{width} / #{height}))" if width && height),
+                class: "photo-roll-image", loading: "lazy",
+                alt: "Photo #{index + 1} from #{photo.category}",
+                draggable: false, oncontextmenu: "return false;", onselectstart: "return false;",
+                ondragstart: "return false;" %>
+          <% end %>
+          <p class="photo-roll-caption">
+            <span><%= index + 1 %> / <%= roll.size %></span>
+            <a href="#contact-sheet">Back to the contact sheet</a>
+          </p>
+        </li>
       <% end %>
-    </div>
+    </ol>
   <% else %>
     <div class="photos-empty">
       <i class="fas fa-camera photos-empty-icon" aria-hidden="true"></i>

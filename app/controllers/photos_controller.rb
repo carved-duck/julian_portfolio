@@ -5,15 +5,15 @@ class PhotosController < ApplicationController
     # Show first category by default, or selected category
     selected_category = params[:category].presence || @categories.first
     # with_attached_image eager-loads attachment + blob to avoid an N+1 per grid image.
-    @photos = selected_category ? Photo.by_category(selected_category).recent.with_attached_image : Photo.none
+    @photos = selected_category ? Photo.by_category(selected_category).in_roll_order.with_attached_image : Photo.none
     @selected_category = selected_category
   end
 
   def show
     @photo = Photo.find(params[:id])
 
-    # Get photos in same category for navigation
-    @category_photos = Photo.by_category(@photo.category).recent
+    # Get photos in same category for navigation, in the same order as the contact sheet
+    @category_photos = Photo.by_category(@photo.category).in_roll_order
     @current_index = @category_photos.find_index(@photo)
 
     # Find next and previous photos
