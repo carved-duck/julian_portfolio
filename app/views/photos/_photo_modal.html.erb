@@ -1,15 +1,26 @@
-<%# Full-screen photo viewer. Open it with a link carrying data-bs-toggle="modal",
-    data-bs-target="#photoModal" and data-photo-url (photo_modal_controller.js). %>
+<%# Full-screen photo viewer for Home, styled like the photo page (photos/show): black page,
+    white-framed photo, a quiet X, and arrows through the featured photos
+    (photo_modal_controller.js). Open it with a link carrying data-bs-toggle="modal",
+    data-bs-target="#photoModal" and data-photo-url. %>
 <div class="modal fade" id="photoModal" tabindex="-1" aria-label="Photo viewer" aria-hidden="true"
-     data-controller="photo-modal">
+     data-controller="photo-modal" data-action="keydown->photo-modal#key">
   <div class="modal-dialog modal-fullscreen">
-    <div class="modal-content bg-black">
-      <button type="button" class="photo-modal-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal"
-              aria-label="Close">
+    <div class="modal-content">
+      <button type="button" class="btn btn-close-photo photo-modal-close" data-bs-dismiss="modal" aria-label="Close">
         <i class="fas fa-times" aria-hidden="true"></i>
       </button>
-      <div class="modal-body d-flex align-items-center justify-content-center p-0">
-        <img src="" alt="" class="img-fluid" data-photo-modal-target="image">
+      <div class="modal-body">
+        <button type="button" class="btn btn-side-nav" data-photo-modal-target="prev"
+                data-action="photo-modal#prev" aria-label="Previous photo">
+          <i class="fas fa-chevron-left" aria-hidden="true"></i>
+        </button>
+        <div class="photo-frame">
+          <img src="" alt="" class="photo-main-image" data-photo-modal-target="image" draggable="false">
+        </div>
+        <button type="button" class="btn btn-side-nav" data-photo-modal-target="next"
+                data-action="photo-modal#next" aria-label="Next photo">
+          <i class="fas fa-chevron-right" aria-hidden="true"></i>
+        </button>
       </div>
     </div>
   </div>

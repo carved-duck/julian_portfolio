@@ -31,7 +31,10 @@ If a Bootstrap carousel is ever added back, dispose the old instance before maki
   Frames are plain `#photo-<id>` links; each full photo's box is sized inline from its blob's width
   and height, so a jump lands right before the lazy images load. `photo_protection_controller.js`
   lets taps through on `.contact-frame-link` and links to `/photos/…` only.
-- `photo_modal_controller.js` — the full-screen photo viewer (`photos/_photo_modal.html.erb`). On
+- `photo_modal_controller.js` — Home's full-screen photo viewer (`photos/_photo_modal.html.erb`),
+  dressed like the photo page: `.photo-frame`, `.btn-close-photo`, `.btn-side-nav`. Arrows and ←/→
+  step through the featured photos and hide at either end. `_modal.scss` paints every modal cream
+  for the contact form, so `_photo_modal.scss` resets `.modal-content` and `.modal-body`. On
   `turbo:before-cache` it closes itself and clears Bootstrap's backdrop, so Back never restores it open.
 - Device frames on project cards: `projects/_frame_browser` (the page scrolls itself on hover)
   and `_frame_terminal` fill the card; apps (`frame: "phone"`) get `projects/_feature_phone`, an App

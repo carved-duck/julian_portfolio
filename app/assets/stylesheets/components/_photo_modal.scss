@@ -1,91 +1,47 @@
-// Full-screen photo viewer (photos/_photo_modal.html.erb) - black background, framed photo
+// Home's photo viewer (photos/_photo_modal.html.erb). The frame and buttons come from the photo
+// page's styles (_photo_frame.scss, _photo_buttons.scss); this file lays them out and undoes the
+// contact form's modal look (_modal.scss paints every .modal-content and .modal-body cream).
 #photoModal {
-  background: rgba(0, 0, 0, 1);
-
-  .modal-dialog {
-    max-width: 100vw;
-    max-height: 100vh;
-    margin: 0;
-    width: 100%;
-    height: 100%;
-  }
-
   .modal-content {
-    background: #000000;
-    border: none;
+    background: #000;
+    border: 0;
     border-radius: 0;
-    height: 100vh;
-    width: 100vw;
-  }
-
-  &.show {
-    background: rgba(0, 0, 0, 1);
+    box-shadow: none;
+    backdrop-filter: none;
   }
 
   .modal-body {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100vh;
-    padding: 0;
+    gap: 1rem;
+    padding: 1rem;
+    background: transparent;
+  }
 
-    img {
-      border: 8px solid #ffffff; // White border like photo-frame
-      border-radius: 2px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
-      max-width: calc(100vw - 100px); // Space for close button and margins
-      max-height: calc(100vh - 100px);
-      object-fit: contain;
+  .photo-frame { margin: 0; }
 
-      // Photo protection
-      user-select: none;
-      -webkit-user-select: none;
-      -webkit-user-drag: none;
-      pointer-events: none;
-    }
+  .photo-main-image {
+    max-width: calc(100vw - 160px);
+    max-height: calc(100vh - 100px);
+    pointer-events: none;
   }
 
   .photo-modal-close {
     position: fixed;
     top: 20px;
-    right: 20px;
+    left: 20px;
     z-index: 1060;
-    background: rgba(141, 11, 65, 0.9);
-    border: none;
-    border-radius: 50%;
-    width: 44px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-
-    &:hover {
-      background: rgba(141, 11, 65, 1);
-      transform: scale(1.1);
-    }
-
-    &:focus-visible {
-      outline: 2px solid #fff;
-      outline-offset: 3px;
-    }
-
-    i {
-      color: white;
-    }
   }
+
+  // An arrow at the end of the row keeps its space, so the photo stays centred.
+  .btn-side-nav.is-hidden { visibility: hidden; }
 }
 
 @media (max-width: 768px) {
-  #photoModal .modal-body {
-    min-height: 70vh;
-
-    img {
-      border: 4px solid white;
-      max-width: calc(100vw - 24px);
-    }
+  #photoModal {
+    .btn-side-nav { display: none; }
+    .modal-body { padding: 0.75rem; }
+    .photo-main-image { max-width: calc(100vw - 24px); }
   }
 }
