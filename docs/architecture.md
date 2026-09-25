@@ -22,7 +22,9 @@ When the code and this file disagree, the code wins: fix this file in place.
   The admin form offers `started_on` and `highlights` but not frame, section, icon or screenshots:
   only `showcase:load` (`ShowcaseLoader`, data in `db/showcase/projects.yml`) sets those. Tags are
   one comma-separated string; `tag_list` / `tag_list=` split and join it. `highlights` is the
-  project page's "What I built" list, one point per line (`highlight_list`). Scopes `featured`,
+  project page's "What I built" list, one point per line (`highlight_list`). For the featured
+  projects `projects.yml` wins: every `showcase:load` (a deploy step) overwrites admin edits to
+  their copy and highlights, so edit those in the file. Scopes `featured`,
   `recent`, `by_start` (newest `started_on` first, undated last). `started_on` is when Julian began
   it; it only sorts, it's never shown (Julian: dates make ongoing work look finished). The Projects
   page leads with `HERO_TITLE` (Menyu, else the newest project), then one grid per section in

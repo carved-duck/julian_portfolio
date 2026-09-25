@@ -122,8 +122,8 @@ export default class extends Controller {
     }
   }
 
-  // Image links that must still work by tap: a contact-sheet frame (jumps down the page) or a link
-  // to a photo page.
+  // Image links that must still work by tap: a contact-sheet frame or any link to a photo page
+  // (both open the full-size viewer).
   isNavigationLink(link) {
     return !!link && (link.classList.contains('contact-frame-link') || link.pathname.startsWith('/photos/'))
   }

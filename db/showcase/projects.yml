@@ -20,7 +20,7 @@ featured:
     highlights:
       - Designed the menu-reading pipeline. Each page of a menu is read in parallel, and dishes stream in as they're ready.
       - Built a coverage check that spots parts of a menu the scan missed and re-reads them automatically.
-      - Built allergen warnings with several layers of safety, and caught a bug that could quietly remove the most serious allergy rules.
+      - Built allergen warnings with several layers of safety, and closed a gap in the tests that would have let the most serious allergy rules be deleted unnoticed.
       - Run it end to end, from the Flutter app to the FastAPI server on Cloud Run, with about 600 tests and a nightly AI checker that grades real scans.
 
   - title: Sollo
@@ -51,7 +51,7 @@ featured:
       Check in and out of a coworking space with one tap. I built it solo: sign-up, time-based
       pricing, Stripe checkout and a staff dashboard, in English and Japanese.
     highlights:
-      - Built it solo in about two weeks. It covers sign-up with Google or email, one-tap check-in and check-out, and a staff dashboard, in English and Japanese.
+      - Built it solo in about two weeks. It covers sign-up, one-tap check-in and check-out, and a staff dashboard, in English and Japanese.
       - Wrote a time-based pricing engine, with its own database tests for refunds and re-entry.
       - Integrated Stripe Checkout with signed webhooks, tagged so one Stripe account can safely serve two deployments.
       - Moved it from its own deployment into a shared codebase without breaking it. It launches at its first coworking space, in Shibuya.
@@ -69,7 +69,7 @@ featured:
       - Replaced an embedded third-party chart with our own charting engine, built on Lightweight Charts. I'm its main author.
       - Ported our own price-action indicator from Pine Script to TypeScript, and kept the port in step as the original was tuned.
       - Designed and built pages across the site, including much of the homepage, the products and pricing pages, insights and the dashboard.
-      - Added the free trial on top of our Stripe setup, and the system that grants and revokes indicator access for paying members.
+      - Added the free trial on top of our Stripe setup, and co-built the system that grants and revokes indicator access for paying members.
       - Worked on onboarding, including the emails new members get when they sign up.
 
   - title: imagebank-reader
@@ -98,7 +98,7 @@ featured:
       - Pitched for the work with a bilingual Next.js redesign mockup, built in about three days.
       - Took over the live store and now run it on my own, from fixes and campaigns to the loyalty program.
       - Compared moving hosts with rebuilding, and showed the loyalty points live in custom database tables. That made the case for staying on WooCommerce.
-      - Fixed a broken button that appeared across the site, cleared out about 29 GB of old backups, and caught a loyalty-points setting that was giving away too much.
+      - Fixed a broken button that appeared across the site, found about 29 GB of old backups bloating the server, and caught a loyalty-points setting that was giving away too much.
 
   - title: YS Club
     started_on: "2026-09-17"

@@ -26,12 +26,13 @@ export default class extends Controller {
       document.body.classList.remove("modal-open")
       document.body.removeAttribute("style")
     }
-    this.onTouchStart = (event) => { this.touchX = event.touches[0].clientX }
+    this.onTouchStart = (event) => { this.touchStart = { x: event.touches[0].clientX, y: event.touches[0].clientY } }
     this.onTouchEnd = (event) => {
-      if (this.touchX === undefined) return
-      const dx = event.changedTouches[0].clientX - this.touchX
-      this.touchX = undefined
-      if (Math.abs(dx) > 50) dx < 0 ? this.next() : this.prev()
+      if (!this.touchStart) return
+      const dx = event.changedTouches[0].clientX - this.touchStart.x
+      const dy = event.changedTouches[0].clientY - this.touchStart.y
+      this.touchStart = null
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) dx < 0 ? this.next() : this.prev() // sideways only
     }
     this.element.addEventListener("show.bs.modal", this.onShow)
     this.element.addEventListener("touchstart", this.onTouchStart, { passive: true })

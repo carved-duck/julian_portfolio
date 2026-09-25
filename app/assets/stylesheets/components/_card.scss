@@ -46,43 +46,9 @@
   font-size: 0.95rem;
 }
 
-// Live site link in bottom right
-.live-site-link {
-  color: #6b6b6b;
-  font-size: 0.875rem;
-  text-decoration: none;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  position: relative;
-  z-index: 10;
-  pointer-events: auto;
-}
-
-.live-site-link:hover {
-  color: var(--burgundy);
-  text-decoration: none;
-  transform: translateY(-1px);
-}
-
-.live-site-link:focus-visible {
-  outline: 2px solid var(--burgundy);
-  outline-offset: 2px;
-  border-radius: 4px;
-}
-
-.live-site-link i {
-  font-size: 0.75rem;
-}
-
 // Responsive adjustments
 @media (max-width: 768px) {
   .card-body {
     padding: 1.25rem;
-  }
-
-  .live-site-link {
-    font-size: 0.8rem;
   }
 }
