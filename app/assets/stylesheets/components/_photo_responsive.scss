@@ -76,10 +76,11 @@
     margin: 0 auto;
   }
 
-    // Hide navigation buttons and counter, keep only swipe hint
+    // Hide the prev/next buttons (mobile uses swipe) but keep the
+    // position counter visible and centered for context.
   .nav-buttons-dark {
     .d-flex {
-      display: none !important; // Hide the button container
+      justify-content: center !important;
     }
 
     .nav-buttons {
@@ -87,7 +88,7 @@
     }
 
     .photo-counter {
-      display: none !important; // Hide counter numbers on mobile
+      display: block !important;
     }
   }
 
@@ -146,9 +147,11 @@
     }
   }
 
-  // Navigation remains hidden on extra small screens too
+  // Buttons stay hidden on extra small screens, but keep the counter
   .nav-buttons-dark {
-    display: none !important;
+    .nav-buttons {
+      display: none !important;
+    }
   }
 
   .action-buttons-dark {

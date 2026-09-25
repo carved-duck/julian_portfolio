@@ -56,12 +56,6 @@ class Project < ApplicationRecord
       when /seo|pwa|responsive|mobile|accessibility|spam protection|real.?time|api|authentication|admin|web scraping|ocr|tesseract|pdf|csv|json|xml|oauth|jwt|caching|optimization|testing|deployment/
         categorized["Features"] << tag
 
-      # Special handling for compound terms
-      when /ocr.*tesseract|tesseract.*ocr/
-        categorized["Features"] << tag
-      when /selenium.*webdriver|webdriver.*selenium/
-        categorized["Tools & Libraries"] << tag
-
       else
         # For unrecognized tags, try to infer from context
         if tag_lower.include?('api') || tag_lower.include?('service')

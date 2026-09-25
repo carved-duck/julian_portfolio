@@ -39,9 +39,6 @@ class ImageCompressionService
       # Quality-only compression - NO RESIZING
       # Start with high quality and work down until we hit target size
       quality_levels = [95, 90, 85, 80, 75, 70, 65, 60, 55, 50, 45, 40, 35, 30]
-      
-      # Store original temp file path for clean resets
-      original_temp_path = temp_file.path.dup
 
       quality_levels.each do |quality|
         # Reset from original uploaded file each time to avoid quality degradation stacking
@@ -89,9 +86,7 @@ class ImageCompressionService
     end
   end
 
-  private
-
-  def self.copy_temp_to_uploaded_file(temp_file, uploaded_file)
+  private_class_method def self.copy_temp_to_uploaded_file(temp_file, uploaded_file)
     temp_file.rewind
     uploaded_file.tempfile.rewind
     uploaded_file.tempfile.truncate(0)

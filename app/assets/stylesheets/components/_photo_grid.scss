@@ -27,6 +27,19 @@
   overflow: hidden;
   border-radius: 8px;
   transition: transform 0.2s ease;
+  // Branded placeholder shown while the Cloudinary image loads
+  background-color: rgba(214, 207, 180, 0.3); // sage tint fallback
+
+  @media (prefers-reduced-motion: no-preference) {
+    background-image: linear-gradient(
+      110deg,
+      rgba(214, 207, 180, 0.25) 30%,
+      rgba(214, 207, 180, 0.5) 50%,
+      rgba(214, 207, 180, 0.25) 70%
+    );
+    background-size: 200% 100%;
+    animation: photo-shimmer 1.4s ease-in-out infinite;
+  }
 
   &:hover {
     transform: scale(1.02);
@@ -41,6 +54,11 @@
       transform: none;
     }
   }
+}
+
+@keyframes photo-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 .photo-grid-image {
@@ -59,4 +77,32 @@
       opacity: 1;
     }
   }
+}
+
+// ========================================
+// PHOTO GALLERY EMPTY STATE
+// ========================================
+.photos-empty {
+  text-align: center;
+  padding: 4rem 1rem;
+  max-width: 30rem;
+  margin: 0 auto;
+}
+
+.photos-empty-icon {
+  font-size: 3rem;
+  color: var(--sage);
+  margin-bottom: 1rem;
+}
+
+.photos-empty-title {
+  color: var(--burgundy);
+  font-size: 1.4rem;
+  font-weight: $font-semibold;
+  margin-bottom: 0.5rem;
+}
+
+.photos-empty-text {
+  color: #6b6b6b;
+  margin-bottom: 1.5rem;
 }

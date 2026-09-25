@@ -2,6 +2,8 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   connect() {
+    this.boundListeners = []
+
     // Bootstrap is available globally when loaded via importmap
     this.modal = new bootstrap.Modal(document.getElementById('contactModal'))
     this.setupFormValidation()
@@ -11,23 +13,37 @@ export default class extends Controller {
     this.setupInteractionTracking()
 
     // Track analytics when modal opens
-    document.getElementById('contactModal').addEventListener('shown.bs.modal', () => {
+    const modalElement = document.getElementById('contactModal')
+    this.addListener(modalElement, 'shown.bs.modal', () => {
       if (typeof window.trackContactFormOpen === 'function') {
         window.trackContactFormOpen()
       }
     })
   }
 
+  disconnect() {
+    // Tear down every listener bound in connect() so nothing leaks across Turbo navigations
+    this.boundListeners.forEach(({ element, type, handler }) => {
+      element.removeEventListener(type, handler)
+    })
+    this.boundListeners = []
+  }
+
+  addListener(element, type, handler) {
+    element.addEventListener(type, handler)
+    this.boundListeners.push({ element, type, handler })
+  }
+
   setupFormValidation() {
     const forms = document.querySelectorAll('.needs-validation')
     Array.from(forms).forEach(form => {
-      form.addEventListener('submit', event => {
+      this.addListener(form, 'submit', event => {
         if (!form.checkValidity()) {
           event.preventDefault()
           event.stopPropagation()
         }
         form.classList.add('was-validated')
-      }, false)
+      })
     })
   }
 
@@ -37,46 +53,30 @@ export default class extends Controller {
     const form = document.getElementById('contactForm')
     const realFields = form.querySelectorAll('input[name="name"], input[name="email"], input[name="subject"], textarea[name="message"]')
 
+    const markInteraction = () => { this.hasUserInteraction = true }
     realFields.forEach(field => {
-      // Track keyboard events
-      field.addEventListener('keydown', () => {
-        this.hasUserInteraction = true
-      })
-
-      // Track focus events
-      field.addEventListener('focus', () => {
-        this.hasUserInteraction = true
-      })
-
-      // Track paste events
-      field.addEventListener('paste', () => {
-        this.hasUserInteraction = true
-      })
+      this.addListener(field, 'keydown', markInteraction)
+      this.addListener(field, 'focus', markInteraction)
+      this.addListener(field, 'paste', markInteraction)
     })
   }
 
   async handleSubmit(event) {
-    console.log('handleSubmit called, preventing default...')
     event.preventDefault()
     event.stopPropagation()
 
     const form = event.target
-    console.log('Form:', form)
 
     // Client-side bot detection
     if (this.detectBotBehavior()) {
-      console.log('Bot behavior detected, blocking submission')
       this.handleError({ message: 'Please try again later.' })
       return
     }
 
     if (!form.checkValidity()) {
-      console.log('Form validation failed')
       form.classList.add('was-validated')
       return
     }
-
-    console.log('Form is valid, proceeding with fetch...')
 
     const submitButton = form.querySelector('#sendButton')
     submitButton.disabled = true
@@ -124,7 +124,6 @@ export default class extends Controller {
     for (const fieldName of honeypotFields) {
       const field = form.querySelector(`[name="${fieldName}"]`)
       if (field && field.value.trim() !== '') {
-        console.log(`Honeypot field ${fieldName} is filled:`, field.value)
         return true
       }
     }
@@ -132,13 +131,11 @@ export default class extends Controller {
     // Check if form was submitted too quickly (less than 2 seconds)
     const timeTaken = Date.now() - this.formStartTime
     if (timeTaken < 2000) {
-      console.log('Form submitted too quickly:', timeTaken, 'ms')
       return true
     }
 
     // Check if user never interacted with form
     if (!this.hasUserInteraction) {
-      console.log('No user interaction detected')
       return true
     }
 
@@ -156,7 +153,6 @@ export default class extends Controller {
       ]
 
       if (spamPatterns.some(pattern => pattern.test(message))) {
-        console.log('Suspicious message content detected')
         return true
       }
     }
@@ -165,8 +161,6 @@ export default class extends Controller {
   }
 
   handleSuccess(data) {
-    console.log('Contact form success:', data)
-
     // Track successful submission
     if (typeof window.trackContactFormSubmit === 'function') {
       window.trackContactFormSubmit()
@@ -186,18 +180,14 @@ export default class extends Controller {
 
     // Close modal after a short delay
     setTimeout(() => {
-      console.log('Timer fired - attempting to close modal...')
       const modalElement = document.getElementById('contactModal')
 
       // Direct approach: trigger Bootstrap's data attribute
       modalElement.querySelector('[data-bs-dismiss="modal"]').click()
-
-      console.log('Modal close attempted via button click')
     }, 1500)
   }
 
   handleError(data) {
-    console.log('Contact form error:', data)
     const message = data.message || 'Failed to send message. Please try again.'
     this.showMessage(message, 'error')
   }

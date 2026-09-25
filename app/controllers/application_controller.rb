@@ -9,6 +9,35 @@ class ApplicationController < ActionController::Base
   before_action :track_visitor
   before_action :track_page_view
 
+  # Public analytics readers consumed by Admin::DashboardController.
+  def self.visitor_count
+    Rails.cache.fetch('visitor_count', expires_in: 1.year) { 0 }
+  end
+
+  def self.total_page_views
+    Rails.cache.fetch('total_page_views', expires_in: 1.year) { 0 }
+  end
+
+  def self.recent_visitors
+    Rails.cache.fetch('recent_visitors', expires_in: 30.days) { [] }
+  end
+
+  def self.popular_pages
+    # Get all page view counts
+    all_keys = Rails.cache.instance_variable_get(:@data)&.keys || []
+    page_keys = all_keys.select { |key| key.start_with?('page_') }
+
+    pages = page_keys.map do |key|
+      path = key.gsub('page_', '').gsub('_', '/')
+      count = Rails.cache.read(key) || 0
+      { path: path, views: count }
+    end
+
+    pages.sort_by { |p| -p[:views] }.first(10)
+  rescue StandardError
+    []
+  end
+
   private
 
   def set_security_headers
@@ -134,33 +163,5 @@ class ApplicationController < ActionController::Base
   def sanitize_path(path)
     # Convert path to cache-safe key
     path.gsub(%r{[^a-zA-Z0-9\-_/]}, '_')
-  end
-
-  def self.visitor_count
-    Rails.cache.fetch('visitor_count', expires_in: 1.year) { 0 }
-  end
-
-  def self.total_page_views
-    Rails.cache.fetch('total_page_views', expires_in: 1.year) { 0 }
-  end
-
-  def self.recent_visitors
-    Rails.cache.fetch('recent_visitors', expires_in: 30.days) { [] }
-  end
-
-  def self.popular_pages
-    # Get all page view counts
-    all_keys = Rails.cache.instance_variable_get(:@data)&.keys || []
-    page_keys = all_keys.select { |key| key.start_with?('page_') }
-
-    pages = page_keys.map do |key|
-      path = key.gsub('page_', '').gsub('_', '/')
-      count = Rails.cache.read(key) || 0
-      { path: path, views: count }
-    end
-
-    pages.sort_by { |p| -p[:views] }.first(10)
-  rescue StandardError
-    []
   end
 end

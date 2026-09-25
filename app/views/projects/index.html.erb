@@ -62,27 +62,24 @@
     </p>
   </header>
   <% if @projects.any? %>
-    <%= render "projects/grid", projects: @projects %>
-    <!-- Call to Action Section -->
-    <section class="cta-section mt-5 pt-5 border-top text-center">
-      <div class="row justify-content-center">
-        <div class="col-lg-8">
-          <h2>Interested in Working Together?</h2>
-          <p class="lead">
-            I'm always excited to take on new challenges and create innovative web solutions.
-          </p>
-          <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#contactModal">
-            <i class="fas fa-envelope me-2"></i>Get In Touch
-          </button>
-          <div class="mt-4">
-            <small class="text-muted">
-              Or explore my other work:
-              <%= link_to "Photography", photos_path, class: "text-decoration-none" %> ·
-              <%= link_to "Blog", blog_posts_path, class: "text-decoration-none" %> ·
-              <%= link_to "Events", events_path, class: "text-decoration-none" %>
-            </small>
-          </div>
-        </div>
+    <% featured_project = @projects.detect { |p| p.live_url.to_s.downcase.include?("alturaflow") } || @projects.detect(&:featured) || @projects.first %>
+    <%= render "projects/featured_project", project: featured_project %>
+    <% other_projects = @projects.reject { |p| p == featured_project } %>
+    <% if other_projects.any? %>
+      <h2 class="projects-grid-heading">More Projects</h2>
+      <%= render "projects/grid", projects: other_projects %>
+    <% end %>
+    <!-- Slim contact band -->
+    <section class="projects-cta">
+      <span class="projects-cta-text">Interested in working together?</span>
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#contactModal">
+        <i class="fas fa-envelope me-2"></i>Get In Touch
+      </button>
+      <div class="projects-cta-links">
+        Or explore my other work:
+        <%= link_to "Photography", photos_path, class: "text-decoration-none" %> ·
+        <%= link_to "Blog", blog_posts_path, class: "text-decoration-none" %> ·
+        <%= link_to "Events", events_path, class: "text-decoration-none" %>
       </div>
     </section>
   <% else %>

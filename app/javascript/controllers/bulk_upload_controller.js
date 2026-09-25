@@ -4,6 +4,23 @@ export default class extends Controller {
   static targets = ["fileInput", "progressContainer", "progressBar", "progressText", "uploadButton", "categoryInput", "locationInput"]
 
   connect() {
+    this.disconnected = false
+    this.retryTimer = null
+    this.redirectTimer = null
+    this.resetUploadState()
+  }
+
+  disconnect() {
+    // Cancel pending timers and stop in-flight work so nothing fires after a Turbo navigation
+    this.disconnected = true
+    clearTimeout(this.retryTimer)
+    clearTimeout(this.redirectTimer)
+    this.retryTimer = null
+    this.redirectTimer = null
+    this.resetUploadState()
+  }
+
+  resetUploadState() {
     this.uploadQueue = []
     this.currentUploadIndex = 0
     this.successfulUploads = 0
@@ -45,6 +62,8 @@ export default class extends Controller {
   }
 
   async uploadNextFile() {
+    if (this.disconnected) return
+
     if (this.currentUploadIndex >= this.uploadQueue.length) {
       this.completeUpload()
       return
@@ -93,19 +112,24 @@ export default class extends Controller {
       console.error(`Error uploading ${file.name}:`, error)
     }
 
+    // Bail if the controller went away while the request was in flight
+    if (this.disconnected) return
+
     this.currentUploadIndex++
-    
+
     // Add small delay to prevent overwhelming the server
-    setTimeout(() => this.uploadNextFile(), 300)
+    this.retryTimer = setTimeout(() => this.uploadNextFile(), 300)
   }
 
   completeUpload() {
+    if (this.disconnected) return
+
     // Update progress to 100%
     this.progressBarTarget.style.width = "100%"
-    
+
     // Show completion message
     let message = `Upload complete! ${this.successfulUploads} photos uploaded successfully.`
-    
+
     if (this.failedUploads.length > 0) {
       message += ` ${this.failedUploads.length} photos failed.`
       console.error("Failed uploads:", this.failedUploads)
@@ -126,7 +150,7 @@ export default class extends Controller {
 
     // Redirect to admin photos after a delay
     if (this.successfulUploads > 0) {
-      setTimeout(() => {
+      this.redirectTimer = setTimeout(() => {
         window.location.href = '/admin/photos'
       }, 2000)
     }

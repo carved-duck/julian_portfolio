@@ -6,7 +6,6 @@ module SeoConfig
 
   # Social media handles (update these with your actual handles)
   SOCIAL_HANDLES = {
-    twitter: "@jju.irl",
     github: "https://github.com/julianschoenfeld",
     linkedin: "https://linkedin.com/in/julianschoenfeld",
     instagram: "https://instagram.com/jju.irl"

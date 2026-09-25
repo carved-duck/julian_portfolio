@@ -17,12 +17,12 @@ This document outlines the multi-layered spam protection system implemented for 
 Different hiding techniques make it harder for smart bots to detect all traps.
 
 ### 3. **Rate Limiting**
-- Maximum 3 submissions per IP address per hour
+- Maximum 2 submissions per IP address per hour
 - Automatically cleans old entries to prevent memory bloat
 - Configurable in `config/initializers/spam_protection.rb`
 
 ### 4. **Time-Based Protection**
-- **Server-side**: Minimum 3 seconds form fill time
+- **Server-side**: Minimum 10 seconds form fill time
 - **Client-side**: Minimum 2 seconds interaction time
 - Prevents instant bot submissions
 

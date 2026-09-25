@@ -38,7 +38,7 @@
   </div>
   <div class="photo-counter text-muted">
     <% if @current_index %>
-      <span class="d-none d-sm-inline"><%= @current_index + 1 %> of <%= @category_photos.count %></span>
+      <span><%= @current_index + 1 %> of <%= @category_photos.count %></span>
     <% end %>
   </div>
 </div>

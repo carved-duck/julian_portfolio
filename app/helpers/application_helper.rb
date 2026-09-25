@@ -34,8 +34,6 @@ module ApplicationHelper
       "#{title} | #{base_title}"
     else
       case "#{controller_name}##{action_name}"
-      when 'pages#home'
-        base_title
       when 'projects#index'
         "Projects & Web Development | #{base_title}"
       when 'projects#show'
@@ -162,11 +160,11 @@ module ApplicationHelper
       '@context': "https://schema.org",
       '@type': "Person",
       name: "Julian Schoenfeld",
-      jobTitle: "Full-Stack Developer",
+      jobTitle: SeoConfig::PERSON_SCHEMA[:job_title],
       url: request.base_url,
       sameAs: [
-        "https://github.com/your-github-username",
-        "https://linkedin.com/in/your-linkedin"
+        SeoConfig::SOCIAL_HANDLES[:github],
+        SeoConfig::SOCIAL_HANDLES[:linkedin]
       ],
       knowsAbout: [
         "Ruby on Rails",

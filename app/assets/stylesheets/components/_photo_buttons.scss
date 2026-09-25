@@ -25,31 +25,34 @@
   background: transparent !important;
   border: none !important;
   color: rgba(255, 255, 255, 0.6) !important;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: none !important;
+  transition: color 0.2s ease, background 0.2s ease;
 
   &:hover {
-    color: rgba(255, 255, 255, 0.6) !important;
+    color: #ffffff !important;
     transform: none !important;
     box-shadow: none !important;
-    background: transparent !important;
+    background: rgba(255, 255, 255, 0.12) !important;
   }
 
   &:active {
-    color: rgba(255, 255, 255, 0.6) !important;
+    color: #ffffff !important;
     transform: none !important;
     box-shadow: none !important;
-    background: transparent !important;
+    background: rgba(255, 255, 255, 0.18) !important;
   }
 
-  &:focus {
-    color: rgba(255, 255, 255, 0.6) !important;
+  &:focus-visible {
+    color: #ffffff !important;
     transform: none !important;
     box-shadow: none !important;
-    background: transparent !important;
-    outline: none !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+    outline: 2px solid rgba(255, 255, 255, 0.85);
+    outline-offset: 2px;
   }
 
   &::before {
@@ -70,36 +73,39 @@
 }
 
 .btn-close-photo {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   background: transparent !important;
   border: none !important;
   color: rgba(255, 255, 255, 0.6) !important;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: none !important;
+  transition: color 0.2s ease, background 0.2s ease;
 
   &:hover {
-    color: rgba(255, 255, 255, 0.6) !important;
+    color: #ffffff !important;
     transform: none !important;
     box-shadow: none !important;
-    background: transparent !important;
+    background: rgba(255, 255, 255, 0.12) !important;
   }
 
   &:active {
-    color: rgba(255, 255, 255, 0.6) !important;
+    color: #ffffff !important;
     transform: none !important;
     box-shadow: none !important;
-    background: transparent !important;
+    background: rgba(255, 255, 255, 0.18) !important;
   }
 
-  &:focus {
-    color: rgba(255, 255, 255, 0.6) !important;
+  &:focus-visible {
+    color: #ffffff !important;
     transform: none !important;
     box-shadow: none !important;
-    background: transparent !important;
-    outline: none !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+    outline: 2px solid rgba(255, 255, 255, 0.85);
+    outline-offset: 2px;
   }
 
   &::before {
@@ -107,7 +113,7 @@
   }
 
   i {
-    font-size: 20px;
+    font-size: 22px;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
   }
 }
@@ -153,6 +159,11 @@
       transform: none;
       box-shadow: none;
       cursor: not-allowed;
+    }
+
+    &:focus-visible {
+      outline: 2px solid rgba(255, 255, 255, 0.85);
+      outline-offset: 2px;
     }
   }
 

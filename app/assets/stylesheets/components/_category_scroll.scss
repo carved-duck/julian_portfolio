@@ -87,6 +87,41 @@
 }
 
 // ========================================
+// UNIFIED PHOTO FILTER (one pill style, all breakpoints)
+// ========================================
+.photo-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 1.5rem;
+
+  // On phones, scroll horizontally instead of wrapping
+  @media (max-width: 768px) {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .category-pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+
+    @media (max-width: 768px) {
+      min-height: 44px; // comfortable tap target
+    }
+  }
+}
+
+// ========================================
 // MOBILE CATEGORY SCROLL COMPONENT
 // ========================================
 

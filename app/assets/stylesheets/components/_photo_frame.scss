@@ -2,6 +2,16 @@
 // PHOTO FRAME & IMAGE STYLING
 // ========================================
 
+// Reserve the photo area height so the absolutely-positioned side-nav arrows
+// (top: 50%) stay centered and don't snap to the top while the next image
+// streams in during Turbo-frame navigation. Desktop only — that's where the
+// side arrows are shown (.side-nav-* is d-none d-lg-block).
+@media (min-width: 992px) {
+  .photo-stage {
+    min-height: 75vh; // matches .photo-main-image max-height
+  }
+}
+
 // Film Photography Aesthetic - Black Border with White Frame
 .photo-frame {
   background: #000000; // black background for the border

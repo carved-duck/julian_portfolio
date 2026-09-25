@@ -14,6 +14,13 @@
   box-shadow: 0 12px 50px rgba(0, 0, 0, 0.15);
 }
 
+// Inside a card, only the card lifts — avoid the double hover-lift
+// (card + browser-window both translating).
+.card .browser-window:hover {
+  transform: none;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
+}
+
 // Browser header with traffic lights and URL bar
 .browser-header {
   background: #f5f5f7;
@@ -84,10 +91,10 @@
   border-color: rgba(0, 0, 0, 0.15);
 }
 
-.clickable-url:focus {
+.clickable-url:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
-  border-color: rgba(59, 130, 246, 0.3);
+  box-shadow: 0 0 0 2px rgba(141, 11, 65, 0.15);
+  border-color: rgba(141, 11, 65, 0.35);
 }
 
 // Website content area

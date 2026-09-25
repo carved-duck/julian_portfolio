@@ -10,23 +10,12 @@
   </nav>
   <h1 class="mb-4">Photo Gallery</h1>
   <% if @categories.any? %>
-    <div class="mb-4">
-      <h4>Filter by Category</h4>
-      <!-- Desktop category buttons -->
-      <div class="btn-group d-none d-md-flex" role="group">
-        <% @categories.each do |category| %>
-          <%= link_to category.titleize, photos_path(category: category), class: "btn #{'btn-primary' if @selected_category == category} #{'btn-outline-primary' unless @selected_category == category}" %>
-        <% end %>
-      </div>
-      <!-- Mobile horizontal scrollable category buttons -->
-      <div class="category-scroll-container d-md-none">
-        <div class="category-scroll">
-          <% @categories.each do |category| %>
-            <%= link_to category.titleize, photos_path(category: category), class: "category-pill #{'active' if @selected_category == category}" %>
-          <% end %>
-        </div>
-      </div>
-    </div>
+    <!-- Unified category filter (one pill style, all breakpoints) -->
+    <nav class="photo-filter" aria-label="Filter photos by category">
+      <% @categories.each do |category| %>
+        <%= link_to category.titleize, photos_path(category: category), class: "category-pill #{'active' if @selected_category == category}" %>
+      <% end %>
+    </nav>
   <% end %>
   <% if @photos.any? %>
     <div class="photo-grid">
@@ -36,6 +25,7 @@
             <%= cl_image_tag photo.image.key,
                 width: 400, height: 400, crop: :fill, quality: :auto, fetch_format: :auto,
                 class: "photo-grid-image",
+                loading: "lazy",
                 alt: "Photo in #{photo.category}",
                 draggable: false,
                 oncontextmenu: "return false;",
@@ -47,9 +37,17 @@
       <% end %>
     </div>
   <% else %>
-    <div class="alert alert-info">
-      <h4>No photos yet</h4>
-      <p>Photos will appear here once they're uploaded.</p>
+    <div class="photos-empty">
+      <i class="fas fa-camera photos-empty-icon" aria-hidden="true"></i>
+      <% if @selected_category.present? %>
+        <h2 class="photos-empty-title">No photos in <%= @selected_category.titleize %> yet</h2>
+        <p class="photos-empty-text">Nothing here for this category at the moment.</p>
+        <%= link_to "View all photos", photos_path, class: "btn btn-primary" %>
+      <% else %>
+        <h2 class="photos-empty-title">No photos yet</h2>
+        <p class="photos-empty-text">Photos will appear here once they're uploaded.</p>
+        <%= link_to "Browse projects", projects_path, class: "btn btn-outline-primary" %>
+      <% end %>
     </div>
   <% end %>
 </div>

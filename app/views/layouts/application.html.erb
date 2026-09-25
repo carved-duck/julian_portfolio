@@ -26,8 +26,7 @@
     <meta property="twitter:title" content="<%= page_title %>">
     <meta property="twitter:description" content="<%= meta_description %>">
     <meta property="twitter:image" content="<%= request.base_url + asset_path('icons/apple-icon.png') %>">
-    <meta property="twitter:creator" content="@julianschoenfeld">
-    
+
     <!-- Structured Data -->
     <% if content_for?(:structured_data) %>
       <%= yield(:structured_data) %>

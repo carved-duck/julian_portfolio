@@ -1,0 +1,62 @@
+<%# Editorial hero row for the standout project (alturaflow when present).
+    Keeps the browser-window look at showcase size, paired with title/copy/CTAs. %>
+<section class="project-featured" itemscope itemtype="https://schema.org/CreativeWork">
+  <div class="project-featured-media">
+    <% if project.featured_image.attached? %>
+      <%= link_to project_path(project), class: "project-featured-window-link", aria: { label: "View #{project.title}" } do %>
+        <div class="browser-window browser-window-showcase">
+          <div class="browser-header">
+            <div class="browser-controls">
+              <div class="control-button control-close"></div>
+              <div class="control-button control-minimize"></div>
+              <div class="control-button control-maximize"></div>
+            </div>
+            <% if project.live_url.present? %>
+              <span class="browser-url-bar"><%= project.live_url.gsub(/^https?:\/\//, '').gsub(/^www\./, '') %></span>
+            <% else %>
+              <span class="browser-url-bar"><%= project.title.downcase.gsub(' ', '') + '.com' %></span>
+            <% end %>
+          </div>
+          <div class="browser-content">
+            <%= cl_image_tag project.featured_image.key,
+                width: 1200, height: 720, crop: :fill, quality: :auto, fetch_format: :auto,
+                class: "browser-image", loading: "eager",
+                alt: "#{project.title} project preview",
+                itemprop: "image" %>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+  <div class="project-featured-body">
+    <span class="project-featured-eyebrow">Featured Project</span>
+    <h2 class="project-featured-title" itemprop="name">
+      <%= link_to project.title, project_path(project), class: "text-decoration-none" %>
+    </h2>
+    <p class="project-featured-desc" itemprop="description">
+      <%= truncate(strip_tags(project.description), length: 240) %>
+    </p>
+    <% if project.tag_list.any? %>
+      <ul class="project-tags list-unstyled" title="<%= project.tag_list.join(', ') %>">
+        <% project.tag_list.first(6).each do |tag| %>
+          <li class="tag-pill" itemprop="keywords"><%= tag %></li>
+        <% end %>
+      </ul>
+    <% end %>
+    <div class="project-featured-actions d-flex flex-wrap gap-2">
+      <%= link_to project_path(project), class: "btn btn-primary" do %>
+        View Project <i class="fas fa-arrow-right ms-1" aria-hidden="true"></i>
+      <% end %>
+      <% if project.live_url.present? %>
+        <%= link_to format_url(project.live_url, add_www: true), target: "_blank", class: "btn btn-outline-primary", rel: "noopener noreferrer" do %>
+          <i class="fas fa-external-link-alt me-1" aria-hidden="true"></i>Live Site
+        <% end %>
+      <% end %>
+      <% if project.github_url.present? %>
+        <%= link_to format_url(project.github_url), target: "_blank", class: "btn btn-outline-secondary", rel: "noopener noreferrer" do %>
+          <i class="fab fa-github me-1" aria-hidden="true"></i>Code
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</section>

@@ -51,12 +51,12 @@ The portfolio includes two levels of analytics:
 ### Spam Protection
 Multi-layer contact form protection including:
 - Multiple honeypot fields with different hiding techniques
-- Rate limiting (1 submission per IP per hour)
+- Rate limiting (2 submissions per IP per hour)
 - User agent and bot detection
 - Content analysis and keyword filtering
 - Human interaction tracking
 
-**See:** [SPAM_PROTECTION.md](SPAM_PROTECTION.md) for detailed configuration
+**See:** [docs/spam-protection.md](docs/spam-protection.md) for detailed configuration
 
 ### Security Headers
 - CSRF protection
@@ -73,7 +73,7 @@ Comprehensive SEO implementation:
 - Breadcrumb navigation with structured data
 - Canonical URLs and internal linking
 
-**See:** [SEO_IMPROVEMENTS.md](SEO_IMPROVEMENTS.md) for setup instructions
+**See:** [docs/seo.md](docs/seo.md) for setup instructions
 
 ## 🏗️ Development Setup
 
@@ -81,7 +81,6 @@ Comprehensive SEO implementation:
 - Ruby 3.3.5
 - Rails 7.1
 - PostgreSQL
-- Node.js (for asset compilation)
 
 ### Local Development
 ```bash
@@ -102,7 +101,10 @@ rails server
 ### Environment Variables
 Required for full functionality:
 - `CLOUDINARY_URL` - Image storage and optimization
-- `GOOGLE_ANALYTICS_ID` - Analytics tracking (production only)
+
+The GA4 measurement ID is **not** an environment variable. It lives in Rails encrypted
+credentials as `google_analytics_id` and is read in the layout (production only). Edit it with
+`rails credentials:edit`.
 
 ## 📁 Project Structure
 

@@ -4,7 +4,8 @@ class PhotosController < ApplicationController
 
     # Show first category by default, or selected category
     selected_category = params[:category].presence || @categories.first
-    @photos = selected_category ? Photo.by_category(selected_category).recent : Photo.none
+    # with_attached_image eager-loads attachment + blob to avoid an N+1 per grid image.
+    @photos = selected_category ? Photo.by_category(selected_category).recent.with_attached_image : Photo.none
     @selected_category = selected_category
   end
 

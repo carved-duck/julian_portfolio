@@ -1,0 +1,120 @@
+// Projects index — editorial featured hero, sage tag pills, grid heading, slim CTA.
+
+// ---- Sage tag pills (grid cards + featured hero) ----
+.project-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0 0 1rem;
+  padding: 0;
+}
+
+.tag-pill {
+  font-size: 0.75rem;
+  font-weight: $font-medium;
+  letter-spacing: 0.01em;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(214, 207, 180, 0.45); // sage tint
+  color: #5a4632; // warm brown on sage — readable
+  border: 1px solid rgba(141, 11, 65, 0.08);
+  white-space: nowrap;
+}
+
+.tag-pill-more {
+  background: transparent;
+  color: var(--burgundy);
+  border-color: rgba(141, 11, 65, 0.25);
+}
+
+// ---- Grid section heading ----
+.projects-grid-heading {
+  font-size: 1.35rem;
+  font-weight: $font-semibold;
+  color: var(--burgundy);
+  margin: 3.5rem 0 1.5rem;
+}
+
+// ---- Editorial featured project hero ----
+.project-featured {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 2.5rem;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+.project-featured-window-link {
+  display: block;
+  text-decoration: none;
+}
+
+.project-featured-eyebrow {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: $font-semibold;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.75rem;
+}
+
+.project-featured-title {
+  font-size: 2.25rem;
+  font-weight: $font-bold;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+
+  a {
+    color: var(--burgundy) !important;
+  }
+
+  a:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--gold);
+    text-underline-offset: 4px;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 1.75rem;
+  }
+}
+
+.project-featured-desc {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #5a4d54;
+  margin-bottom: 1.25rem;
+}
+
+.project-featured-actions {
+  margin-top: 0.5rem;
+}
+
+// ---- Slim contact band ----
+.projects-cta {
+  margin-top: 4rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid rgba(141, 11, 65, 0.12);
+  text-align: center;
+}
+
+.projects-cta-text {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: $font-medium;
+  color: var(--burgundy);
+  margin-bottom: 1rem;
+}
+
+.projects-cta-links {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #6b6b6b;
+}
