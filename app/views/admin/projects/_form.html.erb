@@ -6,6 +6,7 @@
     <%= f.input :github_url %>
     <%= f.input :live_url %>
     <%= f.input :featured, as: :boolean, label: "Featured (show on homepage)" %>
+    <%= f.input :started_on, as: :date, html5: true, label: "Started (only the month is shown)" %>
     <%= f.input :featured_image, as: :file, hint: (@project.featured_image.attached? ? cl_image_tag(@project.featured_image.key, width: 200, height: 200, crop: :fill) : "") %>
     <%= f.input :tags %>
   </div>

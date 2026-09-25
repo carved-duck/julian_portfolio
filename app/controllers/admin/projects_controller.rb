@@ -67,7 +67,8 @@ module Admin
 
     # Only allow a list of trusted parameters through.
     def project_params
-      params.require(:project).permit(:title, :description, :github_url, :live_url, :featured_image, :tags, :featured)
+      params.require(:project).permit(:title, :description, :github_url, :live_url, :featured_image, :tags, :featured,
+                                      :started_on)
     end
   end
 end

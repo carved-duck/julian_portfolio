@@ -2,6 +2,7 @@
 # Featured ones are listed newest first and show on the home page; images live next to this file.
 featured:
   - title: Menyu
+    started_on: "2026-06-15"
     frame: phone
     image: menyu-1.jpg
     icon: menyu-icon.png
@@ -13,6 +14,7 @@ featured:
       or flip back to show your waiter exactly what you want.
 
   - title: Sollo
+    started_on: "2026-06-02"
     frame: phone
     image: sollo-1.jpg
     icon: sollo-icon.png
@@ -24,6 +26,7 @@ featured:
       government sources, and led the Flutter app on top.
 
   - title: MyTap
+    started_on: "2026-09-14"
     frame: phone
     image: mytap-1.jpg
     icon: mytap-icon.png
@@ -34,6 +37,7 @@ featured:
       pricing, Stripe checkout and a staff dashboard, in English and Japanese.
 
   - title: AlturaFlow
+    started_on: "2025-06-01" # Julian's date; his first commit is 2025-09-02
     frame: browser
     image: alturaflow.jpg
     live_url: https://alturaflow.com
@@ -43,6 +47,7 @@ featured:
       from Pine Script to TypeScript, and wired up billing.
 
   - title: imagebank-reader
+    started_on: "2026-09-13"
     frame: terminal
     tags: C, Python, Reverse engineering
     description: >-
@@ -50,6 +55,7 @@ featured:
       and pulled real photos back off it.
 
   - title: CS12 Skincare
+    started_on: "2026-07-21"
     frame: browser
     image: cs12.jpg
     live_url: https://cs12skincare.com.hk
@@ -59,6 +65,7 @@ featured:
       the loyalty program. I pitched for it with a Next.js mockup.
 
   - title: YS Club
+    started_on: "2026-09-17"
     frame: browser
     image: ysclub.jpg
     tags: Next.js, Tailwind, i18n
@@ -69,5 +76,8 @@ featured:
 # Everything else stays on the Projects page, grouped by era, but off the home page.
 # Matched by title (ignoring surrounding spaces); a missing title is skipped.
 older:
-  bootcamp: [Tokyo Turntable, レンtool, Rails-watch-list]
-  earlier: [Resume Auto-Fill Chrome Extension, Portfolio website]
+  - { title: Resume Auto-Fill Chrome Extension, section: earlier, started_on: "2025-06-23" }
+  - { title: Portfolio website, section: earlier, started_on: "2025-06-17" }
+  - { title: Tokyo Turntable, section: bootcamp, started_on: "2025-05-26" }
+  - { title: レンtool, section: bootcamp, started_on: "2025-05-01" }
+  - { title: Rails-watch-list, section: bootcamp, started_on: "2025-05-01" }

@@ -1,7 +1,8 @@
 # Loads the dev-work cards from db/showcase/projects.yml and their images (same folder), and files
-# the older projects under "earlier" and "bootcamp". Safe to run again: it updates by title and only
-# attaches an image that isn't attached yet (force_images re-attaches them). Each run resets the
-# featured cards' copy, featured flag, section and order to the file's, overriding admin edits.
+# the older projects under "earlier" and "bootcamp"; every project gets its started_on date.
+# Safe to run again: it updates by title and only attaches an image that isn't attached yet
+# (force_images re-attaches them). Each run resets the featured cards' copy, dates, featured flag,
+# section and order to the file's, overriding admin edits.
 # Run it with `bin/rails showcase:load`.
 class ShowcaseLoader
   def initialize(dir: Rails.root.join("db/showcase"), force_images: false, out: $stdout)
@@ -13,14 +14,14 @@ class ShowcaseLoader
 
   def call
     @data["featured"].each_with_index { |card, index| load_featured(card, index) }
-    @data["older"].each { |section, titles| titles.each { |title| file_older(title, section) } }
+    @data["older"].each { |entry| file_older(entry) }
   end
 
   private
 
   def load_featured(card, index)
     project = Project.find_or_initialize_by(title: card["title"])
-    project.assign_attributes(card.slice("frame", "tags", "description"))
+    project.assign_attributes(card.slice("frame", "tags", "description", "started_on"))
     project.assign_attributes(live_url: card["live_url"], section: "work", featured: true)
     project.created_at = (index + 1).minutes.ago # re-set every run so the file's order always wins
     project.save!
@@ -31,12 +32,12 @@ class ShowcaseLoader
     @out.puts "#{project.title}: saved (#{project.frame})"
   end
 
-  def file_older(title, section)
-    project = Project.where("TRIM(title) = ?", title).first
-    return @out.puts("#{title}: not found, skipped") unless project
+  def file_older(entry)
+    project = Project.where("TRIM(title) = ?", entry["title"]).first
+    return @out.puts("#{entry['title']}: not found, skipped") unless project
 
-    project.update!(section: section, featured: false)
-    @out.puts "#{title}: #{section}"
+    project.update!(section: entry["section"], started_on: entry["started_on"], featured: false)
+    @out.puts "#{entry['title']}: #{entry['section']}, #{project.started_on&.strftime('%b %Y')}"
   end
 
   def replace_screenshots(project, names)

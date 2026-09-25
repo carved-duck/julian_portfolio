@@ -54,7 +54,7 @@ Visit `/sitemap.xml` to see your sitemap. Submit this URL to Google Search Conso
 - `app/views/projects/show.html.erb` - Project structured data
 - `app/views/blog_posts/show.html.erb` - Blog post structured data
 - `app/views/projects/index.html.erb` - Collection page structured data
-- `app/views/projects/_grid.html.erb` - Individual project items
+- `app/views/pages/_project_slide.html.erb` - Individual project cards (`CreativeWork` microdata)
 
 ### Benefits:
 - Better search result appearance (rich snippets)
@@ -85,7 +85,7 @@ Visit `/sitemap.xml` to see your sitemap. Submit this URL to Google Search Conso
 - **rel="noopener noreferrer"** for external links
 
 ### Files Modified:
-- `app/views/projects/_grid.html.erb` - Better alt tags and semantic markup
+- `app/views/pages/_project_slide.html.erb` - Semantic markup for project cards
 - `app/views/projects/show.html.erb` - Semantic HTML structure
 - `app/views/blog_posts/show.html.erb` - Accessibility improvements
 

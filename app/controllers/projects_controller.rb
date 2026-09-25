@@ -1,8 +1,11 @@
 class ProjectsController < ApplicationController
   def index
-    # Eager-load the attachment + blob so each card doesn't fire its own pair of
-    # queries (N+1) for featured_image.attached? / .key in the view.
-    @projects = Project.with_attached_featured_image
+    # Eager-load every image a card can show so each card doesn't query its own (N+1).
+    @projects = Project.by_start
+                       .with_attached_featured_image.with_attached_screenshots.with_attached_icon.to_a
+    @hero = @projects.find { |p| p.title.to_s.strip.casecmp?(Project::HERO_TITLE) } || @projects.first
+    @eras = Project::SECTIONS.index_with { |section| @projects.select { |p| p.section == section && p != @hero } }
+                             .reject { |_, projects| projects.empty? }
   end
 
   def show

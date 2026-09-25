@@ -173,6 +173,20 @@
   padding: 0.85rem;
 }
 
+.slide-card-footer--dated {
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.slide-card-date {
+  margin-right: auto;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: rgba(141, 11, 65, 0.7);
+}
+
 .slide-pill {
   display: inline-flex;
   align-items: center;

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_09_25_120000) do
+ActiveRecord::Schema[7.1].define(version: 2026_09_26_090000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "plpgsql"
@@ -95,6 +95,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_09_25_120000) do
     t.boolean "featured", default: false
     t.string "frame", default: "browser", null: false
     t.string "section", default: "work", null: false
+    t.date "started_on"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"

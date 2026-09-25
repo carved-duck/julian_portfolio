@@ -35,7 +35,19 @@
   margin: 3.5rem 0 1.5rem;
 }
 
+// ---- Eras (Work · Earlier · Bootcamp): Home's cards in a grid ----
+.project-era-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(unquote("min(340px, 100%)"), 1fr)); // app cards need ~340px
+  gap: 1.5rem;
+}
+
 // ---- Editorial featured project hero ----
+.project-featured-media {
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+}
+
 .project-featured {
   display: grid;
   grid-template-columns: 1.15fr 1fr;

@@ -55,19 +55,22 @@
     </ol>
   </nav>
   <header class="mb-5">
-    <h1 class="mb-3">Web Development Projects</h1>
+    <h1 class="mb-3 page-title">Web Development Projects</h1>
     <p class="lead">
       Explore my portfolio of web applications, websites, and digital solutions.
       Each project showcases different technologies and creative approaches to solving real-world problems.
     </p>
   </header>
-  <% if @projects.any? %>
-    <% featured_project = @projects.detect { |p| p.live_url.to_s.downcase.include?("alturaflow") } || @projects.detect(&:featured) || @projects.first %>
-    <%= render "projects/featured_project", project: featured_project %>
-    <% other_projects = @projects.reject { |p| p == featured_project } %>
-    <% if other_projects.any? %>
-      <h2 class="projects-grid-heading">More Projects</h2>
-      <%= render "projects/grid", projects: other_projects %>
+  <% if @hero %>
+    <%= render "projects/featured_project", project: @hero %>
+    <%# The rest by era (Project::SECTIONS order), newest start first inside each. %>
+    <% @eras.each do |section, projects| %>
+      <section class="project-era" aria-labelledby="era-<%= section %>">
+        <h2 class="projects-grid-heading" id="era-<%= section %>"><%= section.titleize %></h2>
+        <div class="project-era-grid">
+          <%= render partial: "pages/project_slide", collection: projects, as: :project, locals: { dated: true } %>
+        </div>
+      </section>
     <% end %>
     <!-- Slim contact band -->
     <section class="projects-cta">

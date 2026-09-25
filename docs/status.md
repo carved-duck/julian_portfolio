@@ -4,21 +4,20 @@ ELI5: the short list of what's waiting. One line per item, a pointer to the deta
 When something closes, delete its line here in the same session (the commit message is the record).
 
 ## Live
-- `master` carries the projects/photos redesign and the May health pass (committed 2026-09-25).
-  Not yet deployed to Heroku unless Julian has pushed `heroku` since.
+- Heroku still runs the May projects/photos redesign; everything since is on `master` only.
 
 ## Next
 - **The site redesign, page by page** (Julian, 2026-09-25). Burgundy is now Bootstrap's primary.
   Agree each page's changes before building (`../workers/workflow.md` step 2).
-  - **Home: built locally.** Seigaiha background, two doors, sliders, seven dev cards. Still owed:
-    Julian's phone screenshots for Menyu (home screen) and Sollo (today cropped from App Store tiles)
-    · optionally a photo for the imagebank-reader card · a MyTap screenshot if the app's colours
-    changed (today's is sollo.my/tap cropped to phone width).
-  - **In progress: waves on every page, Projects (Menyu hero, eras by date), Photos contact sheet,
-    Home viewer matching the photo page.** Spec and plan: `specs/2026-09-25-pages-redesign*.md`.
-  - **To go live (Julian's go), after the Projects redesign ships:** push, deploy,
-    `heroku run rails db:migrate`, then `heroku run rails showcase:load` with `FORCE_IMAGES=1`
-    (new MyTap icon). Loading before the new Projects page would show the new cards in the old one.
+  - **Built locally (not deployed):** Home, waves on every page, Projects (Menyu hero, eras by
+    date), Photos contact sheet, Home viewer matching the photo page
+    (`specs/2026-09-25-pages-redesign*.md`). Julian's eye check still owed: Claude's Chrome tab
+    was hidden, so motion, smooth scroll and the viewer's final paint were checked by measurement.
+  - **Still owed by Julian:** phone screenshots for Menyu (home screen) and Sollo (today cropped
+    from App Store tiles) · optionally a photo for the imagebank-reader card · a MyTap screenshot
+    if the app's colours changed (today's is sollo.my/tap cropped to phone width).
+  - **To go live (Julian's go):** push, deploy, `heroku run rails db:migrate`, then
+    `heroku run rails showcase:load` with `FORCE_IMAGES=1` (new MyTap icon).
   - **Design review findings still open after that** (`specs/2026-09-25-design-review.md`): Events
     and Blog keep the old flat cards · Blog's empty state is a dead end: point it at Photos and
     Projects.
@@ -30,8 +29,8 @@ When something closes, delete its line here in the same session (the commit mess
   meetups"; the real events are casual BBQs and meetups. Pick the wording.
 - **Phone-width walk of the May redesign** (projects, photos, home): only checked at desktop width
   and in markup so far.
-- **Writer pass on the May redesign's new strings** (never done): the "Featured Project" eyebrow,
-  "More Projects", "Interested in working together?", and the photos empty-state copy. The May
+- **Writer pass on the redesign's strings** (never done): the "Featured project" eyebrow, "More
+  about it", "Interested in working together?", and the photos empty-state copy. The May
   writer audit (~30 copy proposals + 4 copy bugs) was lost with the chat; redo it with the redesign.
 - **Dependency upgrades** (Rails 7.1 → 8, Puma 6 → 8, Ruby 3.3 → 3.4): proposed in May, one PR per
   big jump. The written plan was lost with the chat; redo it when wanted.
