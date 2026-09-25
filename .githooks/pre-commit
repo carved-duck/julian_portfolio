@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+#
+# Portfolio pre-commit hook. Committed so it is version-controlled and reviewable.
+# Activate once per clone:  git config core.hooksPath .githooks
+#
+set -uo pipefail
+
+# Doc-staleness guard: block a commit that brings a dead file or setting name back into a live doc.
+scripts/check-doc-staleness.sh || {
+  echo "" >&2
+  echo "pre-commit: doc-staleness check failed — commit aborted." >&2
+  exit 1
+}
+
+# Doc size guard: CLAUDE.md and CONTEXT.md only grow when Julian says so.
+scripts/check-doc-size.sh || {
+  echo "" >&2
+  echo "pre-commit: doc-size check failed — commit aborted." >&2
+  exit 1
+}

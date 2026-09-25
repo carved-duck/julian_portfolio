@@ -126,15 +126,16 @@ Visit `/sitemap.xml` to see your sitemap. Submit this URL to Google Search Conso
 3. Verify ownership (HTML file method recommended)
 4. Submit your sitemap: `https://julianschoenfeld.com/sitemap.xml`
 
-### Google Analytics (Optional):
-1. Create Google Analytics account
-2. Get tracking ID
-3. Uncomment and update the GA code in `app/views/layouts/application.html.erb`
+### Google Analytics:
+Live in production. The GA4 measurement ID is in Rails encrypted credentials as
+`google_analytics_id`, read in the layout.
 
 ### Social Media Updates:
-Update these files with your actual social handles:
-- `config/initializers/seo_config.rb` - Social media URLs
-- `app/views/layouts/application.html.erb` - Twitter creator handle
+Social URLs live in `config/initializers/seo_config.rb` (`SOCIAL_HANDLES`). There is no Twitter
+creator tag (removed 2026-05-24).
+
+### Where page descriptions live:
+`ApplicationHelper#meta_description` (per page) and `SeoConfig` (site-wide defaults).
 
 ### Content Recommendations:
 1. **Add more blog posts** - Google loves fresh content
