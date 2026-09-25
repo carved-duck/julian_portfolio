@@ -7,19 +7,6 @@
   color: var(--burgundy);
 }
 
-// The interactive seigaiha waves (seigaiha_controller.js) sit fixed behind the whole page,
-// fading out under the navbar.
-.home-pattern {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 0;
-  mask-image: linear-gradient(to bottom, transparent 0%, black 14%, black 100%);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 14%, black 100%);
-}
-
 .home {
   > section {
     position: relative;

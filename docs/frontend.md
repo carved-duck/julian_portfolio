@@ -19,8 +19,9 @@ If a Bootstrap carousel is ever added back, dispose the old instance before maki
 `bootstrap.Carousel.getInstance(el)?.dispose()`.
 
 ## Home page pieces
-- `seigaiha_controller.js` — the home page background: seigaiha (青海波) waves on a `<canvas>`,
-  burgundy at 7%. Near the mouse the scales slide outward and turn, like leaves pushed aside; a
+- `seigaiha_controller.js` — the site background: seigaiha (青海波) waves on a `<canvas>` that the
+  layout renders via `ApplicationHelper#site_pattern_tag`. Burgundy at 7% on Home, 4% with a smaller
+  push on inner pages, none on the black photo page or in `/admin`. Near the mouse the scales slide outward and turn, like leaves pushed aside; a
   tap sends a ripple; still pattern under reduced motion. It only runs animation frames while
   something is moving; a resting mouse costs nothing.
 - `showcase_controller.js` — the two doors (Featured photos, Featured dev work). Hover opens a

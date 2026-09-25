@@ -11,6 +11,18 @@ module ApplicationHelper
     end
   end
 
+  # The seigaiha waves behind the page (seigaiha_controller.js): full strength on Home, quieter
+  # elsewhere, and none on the black single-photo page or in the admin.
+  def site_pattern_tag
+    return if controller_path.start_with?("admin/") || (controller_name == "photos" && action_name == "show")
+
+    data = { controller: "seigaiha" }
+    unless controller_name == "pages" && action_name == "home"
+      data.merge!(seigaiha_alpha_value: 0.04, seigaiha_push_value: 8)
+    end
+    tag.canvas(class: "site-pattern", data: data, aria: { hidden: true })
+  end
+
   def body_class
     case controller_name
     when 'projects'
