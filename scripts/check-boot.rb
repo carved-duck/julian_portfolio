@@ -15,7 +15,11 @@ end
 
 begin
   css = Rails.application.assets["application.css"].to_s
-  puts "application.css: OK (#{css.bytesize} bytes)"
+  # Production also squeezes the finished CSS through Sass (sassc-rails' compressor). Plain CSS that
+  # compiles fine can still fail there, e.g. min(340px, 100%) ("Incompatible units"), and that
+  # rejects the Heroku build. Run the same pass here.
+  SassC::Engine.new(css, syntax: :scss, style: :compressed).render
+  puts "application.css: OK (#{css.bytesize} bytes, production compress OK)"
 rescue StandardError => e
   failures << "application.css: #{e.class}: #{e.message}"
 end

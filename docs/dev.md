@@ -43,8 +43,11 @@ The test database (`julian_portfolio_test`) has not been created; the suite is b
 - **Lint baseline:** rubocop is not clean repo-wide (mostly `Metrics` and long-line noise). The bar is
   no *new* offenses on the lines you touched. The rule that bites is `Layout/LineLength` at 120.
   Don't rename `is_bot_request?` to please the `Naming/PredicatePrefix` cop (Julian, 2026-05-24).
-- **Boot check** (`scripts/check-boot.rb`): the app eager-loads, `application.css` compiles, and every
-  ERB view compiles. No database, no browser. It does not prove a page renders right.
+- **Boot check** (`scripts/check-boot.rb`): the app eager-loads, `application.css` compiles *and*
+  survives production's Sass compressor, and every ERB view compiles. No database, no browser. It
+  does not prove a page renders right. The compressor re-reads the finished CSS, so CSS `min()` /
+  `max()` / `clamp()` mixing units (`min(340px, 100%)`) fails there even when dev is fine; it
+  rejected a Heroku build on 2026-09-25. Use a media query instead.
 - **Test suite state:** the admin scaffold tests (`test/controllers/admin/*`, `test/system/admin/*`)
   call fixtures like `admin_projects(:one)` that don't exist, so they all error. Repair or remove is
   an open call in `status.md`.
