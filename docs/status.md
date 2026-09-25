@@ -4,25 +4,26 @@ ELI5: the short list of what's waiting. One line per item, a pointer to the deta
 When something closes, delete its line here in the same session (the commit message is the record).
 
 ## Live
-- Heroku still runs the May projects/photos redesign; everything since is on `master` only.
+- Heroku runs the 2026-09-25 redesign (release v75, `136f510`): Home, waves on every page,
+  Projects (Menyu hero, eras sorted by start), project pages ("What I built"), Photos (contact
+  sheet + grid, full-size viewer). Migrations and `showcase:load` done on production.
+- **Deploy steps** (at Julian's go): `git push heroku master`, then straight away
+  `heroku run rails db:migrate -a julian-portfolio` if there are migrations (no release phase, so
+  pages that need the new columns error until it runs), then
+  `heroku run -a julian-portfolio -e FORCE_IMAGES=1 rails showcase:load` if `db/showcase/` changed.
 
 ## Next
 - **The site redesign, page by page** (Julian, 2026-09-25). Burgundy is now Bootstrap's primary.
   Agree each page's changes before building (`../workers/workflow.md` step 2).
-  - **Built locally (not deployed):** Home, waves on every page, Projects (Menyu hero, eras sorted
-    by start), project pages ("What I built"), Photos (contact sheet + grid, full-size viewer)
-    (`specs/2026-09-25-pages-redesign*.md`). Julian's eye check still owed: Claude's Chrome tab
-    was hidden, so motion and the viewer's final paint were checked by measurement.
+  - **Julian's eye check still owed:** Claude's Chrome tab was hidden, so motion and the viewer's
+    final paint were checked by measurement.
   - **Next (Julian, 2026-09-26):** refine each project's page one by one. The seven featured
     projects' "What I built" bullets are first drafts in `db/showcase/projects.yml`; the five
     older ones have none yet.
   - **Still owed by Julian:** phone screenshots for Menyu (home screen) and Sollo (today cropped
     from App Store tiles) · optionally a photo for the imagebank-reader card · a MyTap screenshot
     if the app's colours changed (today's is sollo.my/tap cropped to phone width).
-  - **To go live (Julian's go):** push, deploy, `heroku run rails db:migrate`, then
-    `heroku run rails showcase:load` with `FORCE_IMAGES=1` (new MyTap icon). There's no release
-    phase, so `/projects` errors between the deploy and the migrate: run them back to back.
-  - **Design review findings still open after that** (`specs/2026-09-25-design-review.md`): Events
+  - **Design review findings still open** (`specs/2026-09-25-design-review.md`): Events
     and Blog keep the old flat cards · Blog's empty state is a dead end: point it at Photos and
     Projects.
 
