@@ -11,7 +11,9 @@ featured:
     tags: Flutter, FastAPI, Vision AI
     description: >-
       Snap any menu and read it in your language, instantly. Tap to order, share with your table,
-      or flip back to show your waiter exactly what you want.
+      or flip back to show your waiter exactly what you want. Live on the App Store. I lead its
+      development: the AI that reads menus, the allergen warnings, and a nightly checker that tests
+      real scans.
 
   - title: Sollo
     started_on: "2026-06-02"
@@ -43,8 +45,8 @@ featured:
     live_url: https://alturaflow.com
     tags: Next.js, TypeScript, Stripe
     description: >-
-      The markets, visualized. I built its charting engine from scratch, ported its indicators
-      from Pine Script to TypeScript, and wired up billing.
+      I built its charting engine from scratch, ported our own indicator from Pine Script to
+      TypeScript, built out many of its pages, and added trial billing and onboarding.
 
   - title: imagebank-reader
     started_on: "2026-09-13"
