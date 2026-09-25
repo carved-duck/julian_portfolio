@@ -45,5 +45,12 @@ export default class extends Controller {
     this.imageTarget.alt = trigger.dataset.photoAlt || "Photo"
     this.prevTarget.classList.toggle("is-hidden", index === 0)
     this.nextTarget.classList.toggle("is-hidden", index === this.triggers.length - 1)
+
+    // A hidden arrow drops keyboard focus to <body>, where ←/→ and Escape stop working.
+    const focused = document.activeElement
+    if (focused?.classList.contains("is-hidden")) {
+      const other = focused === this.prevTarget ? this.nextTarget : this.prevTarget
+      other.classList.contains("is-hidden") ? this.element.focus() : other.focus()
+    }
   }
 }

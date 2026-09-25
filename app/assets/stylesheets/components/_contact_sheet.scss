@@ -79,7 +79,7 @@ $sprocket: #d9d2c3;
 }
 
 .photo-roll-item {
-  scroll-margin-top: 90px; // clears the fixed navbar when a frame jumps here
+  scroll-margin-top: 90px; // breathing room above a photo a frame jumped to
   text-align: center;
 }
 
@@ -93,6 +93,7 @@ $sprocket: #d9d2c3;
   max-width: 100%;
   height: auto;
   box-sizing: border-box;
+  object-fit: contain; // the inline aspect-ratio includes the border; never stretch the photo
   border: 6px solid #fff;
   background: rgba(214, 207, 180, 0.3); // sage placeholder while the image loads
   box-shadow: var(--shadow-lg);
@@ -108,10 +109,6 @@ $sprocket: #d9d2c3;
   margin: 0.6rem 0 0;
   font-size: 0.85rem;
   color: #6b6b6b;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  html:has(.contact-sheet) { scroll-behavior: smooth; }
 }
 
 @media (max-width: 575px) {

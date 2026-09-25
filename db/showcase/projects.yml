@@ -1,5 +1,6 @@
-# The dev-work cards, read by `bin/rails showcase:load` (lib/tasks/showcase.rake).
-# Featured ones are listed newest first and show on the home page; images live next to this file.
+# The dev-work cards, read by `bin/rails showcase:load` (app/services/showcase_loader.rb).
+# Featured ones show on the home page in this order; images live next to this file. started_on
+# is when Julian began each one (only the month is shown) and sorts the Projects page.
 featured:
   - title: Menyu
     started_on: "2026-06-15"
@@ -39,7 +40,7 @@ featured:
       pricing, Stripe checkout and a staff dashboard, in English and Japanese.
 
   - title: AlturaFlow
-    started_on: "2025-06-01" # Julian's date; his first commit is 2025-09-02
+    started_on: "2025-06-01"
     frame: browser
     image: alturaflow.jpg
     live_url: https://alturaflow.com

@@ -1,4 +1,4 @@
-<div class="container mt-4" data-controller="photo-protection">
+<div class="container mt-4" data-controller="photo-protection contact-sheet">
   <!-- Breadcrumb Navigation -->
   <nav aria-label="breadcrumb" class="mb-4">
     <ol class="breadcrumb">
@@ -17,8 +17,8 @@
       <% end %>
     </nav>
   <% end %>
-  <% if @photos.any? %>
-    <% roll = @photos.select { |photo| photo.image.attached? } %>
+  <% roll = @photos.select { |photo| photo.image.attached? } %>
+  <% if roll.any? %>
     <%# The contact sheet: every frame of this place's roll, small. Each links down to its full photo. %>
     <section class="contact-sheet" id="contact-sheet" aria-label="Contact sheet: <%= @selected_category %>">
       <p class="contact-sheet-edge" aria-hidden="true">
@@ -27,7 +27,8 @@
       <ol class="contact-sheet-frames">
         <% roll.each_with_index do |photo, index| %>
           <li class="contact-frame">
-            <a href="#photo-<%= photo.id %>" class="contact-frame-link" aria-label="Frame <%= index + 1 %>">
+            <a href="#photo-<%= photo.id %>" class="contact-frame-link" aria-label="Frame <%= index + 1 %>"
+               data-action="contact-sheet#jump">
               <%= cl_image_tag photo.image.key,
                   width: 240, height: 160, crop: :fill, quality: :auto, fetch_format: :auto,
                   alt: "", loading: "lazy", draggable: false, oncontextmenu: "return false;" %>
@@ -55,7 +56,7 @@
           <% end %>
           <p class="photo-roll-caption">
             <span><%= index + 1 %> / <%= roll.size %></span>
-            <a href="#contact-sheet">Back to the contact sheet</a>
+            <a href="#contact-sheet" data-action="contact-sheet#jump">Back to the contact sheet</a>
           </p>
         </li>
       <% end %>

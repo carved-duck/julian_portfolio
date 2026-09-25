@@ -9,6 +9,9 @@ $font-family-sans-serif: $body-font;
 $headings-font-family:   $headers-font;
 $body-bg:                $light-gray;
 $font-size-base:         1rem;
+// No page-wide smooth scrolling: it would animate Turbo's restore scrolls (Back, or closing photo
+// 90 of a roll glides past 89 others). Links that should glide do it themselves (contact_sheet_controller).
+$enable-smooth-scroll:   false;
 
 // Colors
 $body-color: $gray;

@@ -17,7 +17,10 @@ When something closes, delete its line here in the same session (the commit mess
     from App Store tiles) · optionally a photo for the imagebank-reader card · a MyTap screenshot
     if the app's colours changed (today's is sollo.my/tap cropped to phone width).
   - **To go live (Julian's go):** push, deploy, `heroku run rails db:migrate`, then
-    `heroku run rails showcase:load` with `FORCE_IMAGES=1` (new MyTap icon).
+    `heroku run rails showcase:load` with `FORCE_IMAGES=1` (new MyTap icon). There's no release
+    phase, so `/projects` errors between the deploy and the migrate: run them back to back.
+  - **Home viewer on phones:** the arrows are hidden under 768px and there's no swipe, so a phone
+    sees one photo per open. Add swipe (the photo page has it) if wanted.
   - **Design review findings still open after that** (`specs/2026-09-25-design-review.md`): Events
     and Blog keep the old flat cards · Blog's empty state is a dead end: point it at Photos and
     Projects.
@@ -37,7 +40,7 @@ When something closes, delete its line here in the same session (the commit mess
 
 ## Ideas (not a go)
 - An "All" photo filter: `PhotosController#index` always picks a category; allowing a blank one
-  (→ `Photo.recent`) is about two lines, then the pill comes back.
+  (→ `Photo.in_roll_order`) is about two lines, but a 331-frame contact sheet would need paging.
 - Auto-screenshot a project's live URL for its image (a screenshot service or headless capture).
 
 ## Known bugs (small, unfixed)

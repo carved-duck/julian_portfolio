@@ -20,7 +20,9 @@ If a Bootstrap carousel is ever added back, dispose the old instance before maki
 
 ## Home page pieces
 - `seigaiha_controller.js` — the site background: seigaiha (青海波) waves on a `<canvas>` that the
-  layout renders via `ApplicationHelper#site_pattern_tag`. Burgundy at 7% on Home, 4% with a smaller
+  layout renders via `ApplicationHelper#site_pattern_tag`, at `z-index: -1`. Never give `<main>` a
+  z-index to lift content over it instead: that traps every modal rendered inside `<main>` (the
+  photo viewer, the events pending modal) beneath Bootstrap's backdrop. Burgundy at 7% on Home, 4% with a smaller
   push on inner pages, none on the black photo page or in `/admin`. Near the mouse the scales slide outward and turn, like leaves pushed aside; a
   tap sends a ripple; still pattern under reduced motion. It only runs animation frames while
   something is moving; a resting mouse costs nothing.
@@ -28,8 +30,10 @@ If a Bootstrap carousel is ever added back, dispose the old instance before maki
   panel on mouse devices; click/tap/Enter opens it everywhere. Both panels share one grid cell, so
   swapping them never moves the page.
 - Photos page (`photos/index`): a contact sheet of the chosen place's frames, then the full photos.
-  Frames are plain `#photo-<id>` links; each full photo's box is sized inline from its blob's width
-  and height, so a jump lands right before the lazy images load. `photo_protection_controller.js`
+  Frames are `#photo-<id>` links that `contact_sheet_controller.js` glides to (instant under reduced
+  motion); each full photo's box is sized inline from its blob's width and height, so a jump lands
+  right before the lazy images load. Bootstrap's page-wide smooth scroll is off
+  (`$enable-smooth-scroll: false`) so Turbo's restore scrolls stay instant. `photo_protection_controller.js`
   lets taps through on `.contact-frame-link` and links to `/photos/…` only.
 - `photo_modal_controller.js` — Home's full-screen photo viewer (`photos/_photo_modal.html.erb`),
   dressed like the photo page: `.photo-frame`, `.btn-close-photo`, `.btn-side-nav`. Arrows and ←/→
