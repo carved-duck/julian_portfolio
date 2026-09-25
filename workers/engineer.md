@@ -76,8 +76,8 @@ If a copy or design issue is hiding a real bug, name it and route it.
    credentials rendered into the page or into client JS. Anything a Stimulus controller can see
    is public.
 7. **Never run database tooling.** No `db:migrate`, `db:drop`, `db:reset`, `db:schema:load`, or
-   other destructive rake tasks. Julian handles all DB tooling. And read `../docs/dev.md` Trap 2
-   before running anything that touches the database: local may be production.
+   other destructive rake tasks. Julian handles all DB tooling. Localhost runs on its own copy
+   of the data (`../docs/dev.md` § The local database), never production.
 8. **Fix the root cause, not the symptom.** A failing test points at a bug; making the test
    pass is not the goal. Understand why before patching.
 9. **Verify before claiming done.** The gates for the change's risk level are in `workflow.md`;
@@ -94,8 +94,9 @@ You have seen these a thousand times. Flag them every review.
 - **Stimulus controllers that set up without tearing down.** Whatever `connect()` binds must be
   removed in `disconnect()`. Copy `contact_form_controller.js`'s tracked-listener pattern; never
   remove a fresh `.bind(this)` copy (it matches nothing).
-- **Carousel re-init without dispose.** Always
-  `bootstrap.Carousel.getInstance(el)?.dispose()` before re-creating (`../docs/frontend.md`).
+- **A carousel where a slider would do.** Rows of cards use the scroll-snap slider
+  (`../docs/frontend.md`). A Bootstrap component re-created on each Turbo visit must dispose the old
+  instance first (`bootstrap.X.getInstance(el)?.dispose()`).
 - **Stale view after a mutation.** Make sure the redirect, Turbo frame, or refresh actually shows
   the new data, and watch `turbo:before-cache` for anything that should not be cached.
 - **Premature abstraction.** A `format_thing` helper called from one place is a method in

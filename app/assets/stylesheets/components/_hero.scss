@@ -1,18 +1,17 @@
 // Hero Section Component
 
 .hero-section {
-  min-height: 40vh;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   position: relative;
   margin-top: 0;
-  padding-top: 2rem;
+  padding: 3.5rem 0 2rem;
 }
 
 .hero-content {
-  max-width: 600px;
+  max-width: 880px;
   margin: 0 auto;
 }
 
@@ -44,7 +43,7 @@
 .hero-description {
   font-size: 1.5rem;
   color: #5a4d54;
-  margin-bottom: 2rem;
+  margin-bottom: 0;
   font-weight: $font-regular;
   line-height: 1.4;
 }
@@ -120,8 +119,7 @@
 // Mobile responsiveness
 @media (max-width: 768px) {
   .hero-section {
-    min-height: 50vh;
-    padding: 2rem 0;
+    padding: 2rem 0 1.25rem;
     margin-top: 0;
   }
 
@@ -132,6 +130,5 @@
 
   .hero-description {
     font-size: 1.25rem;
-    margin-bottom: 2rem;
   }
 }

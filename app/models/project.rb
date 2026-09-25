@@ -1,8 +1,15 @@
 class Project < ApplicationRecord
+  FRAMES = %w[browser phone terminal].freeze
+  SECTIONS = %w[work earlier bootcamp].freeze
+
   has_one_attached :featured_image
+  has_many_attached :screenshots # extra app screens a phone-frame card flips through
+  has_one_attached :icon # app icon for the phone card's App Store-style layout
 
   validates :title, presence: true
   validates :description, presence: true
+  validates :frame, inclusion: { in: FRAMES }
+  validates :section, inclusion: { in: SECTIONS }
 
   scope :recent, -> { order(created_at: :desc) }
   scope :featured, -> { where(featured: true) }

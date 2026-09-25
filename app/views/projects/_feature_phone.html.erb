@@ -1,0 +1,24 @@
+<%# App Store "Today"-style card for apps: icon, name, line and stack on the brand colour at the
+    left, the phone rising from the bottom edge at the right. %>
+<span class="app-feature">
+  <span class="app-feature-text">
+    <span class="app-feature-head">
+      <% if project.icon.attached? %>
+        <%= cl_image_tag project.icon.key, width: 96, height: 96, crop: :fill, quality: :auto, fetch_format: :auto,
+            alt: "", class: "app-feature-icon" %>
+      <% else %>
+        <span class="app-feature-icon app-feature-icon--letter" aria-hidden="true"><%= project.title.strip.first %></span>
+      <% end %>
+      <span class="app-feature-name" itemprop="name"><%= project.title.strip %></span>
+    </span>
+    <span class="app-feature-desc" itemprop="description"><%= project_tagline(project) %></span>
+    <% if project.tag_list.any? %>
+      <span class="slide-card-tags">
+        <% project.tag_list.first(3).each do |tag| %>
+          <span class="slide-card-tag"><%= tag %></span>
+        <% end %>
+      </span>
+    <% end %>
+  </span>
+  <%= render "projects/frame_phone", project: project %>
+</span>

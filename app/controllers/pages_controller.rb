@@ -3,8 +3,10 @@ class PagesController < ApplicationController
   @@submission_times = {}
 
   def home
-    # Eager-load attachment + blob for the featured carousel (avoids N+1 per slide).
+    # Eager-load attachment + blob for each slider (avoids N+1 per slide).
     @featured_photos = Photo.featured.recent.with_attached_image
+    @featured_projects = Project.featured.recent
+                                .with_attached_featured_image.with_attached_screenshots.with_attached_icon
   end
 
   def sitemap

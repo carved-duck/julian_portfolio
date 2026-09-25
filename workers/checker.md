@@ -50,7 +50,8 @@ How deep to go (safety / normal / docs) is the risk table in `workflow.md`.
 - [ ] Anything that must run on every visit listens for `turbo:load`.
 - [ ] Stimulus `disconnect()` removes what `connect()` added, using stored references (not a
       fresh `.bind(this)`).
-- [ ] Carousel changes dispose the existing Bootstrap instance before creating a new one.
+- [ ] Rows of cards use the scroll-snap slider; any Bootstrap component re-created on a Turbo visit
+      disposes the old instance first.
 - [ ] New JS dependencies pinned in `config/importmap.rb`.
 - [ ] Nothing goes stale after a Turbo navigation (`turbo:before-cache`, `data-turbo-permanent`).
 
@@ -58,7 +59,7 @@ How deep to go (safety / normal / docs) is the risk table in `workflow.md`.
 - [ ] The zero-patience test: a first-time, distracted visitor knows what to do in five seconds.
 - [ ] One primary action per view.
 - [ ] Empty states do real work.
-- [ ] Renders at 320px; tap targets at least 44x44px; carousel and photo swipe work by touch.
+- [ ] Renders at 320px; tap targets at least 44x44px; sliders and photo swipe work by touch.
 - [ ] Destructive admin actions confirm first and state the consequence plainly.
 - [ ] Keyboard reachable: focusable, focus ring visible, Escape closes modals.
 

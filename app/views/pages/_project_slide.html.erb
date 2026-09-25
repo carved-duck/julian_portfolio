@@ -1,0 +1,46 @@
+<%# Same shape as a photo slide (image area + pill footer) so the two home panels line up.
+    Apps get an App Store-style layout (projects/_feature_phone). Websites and tools get a
+    full-bleed window (projects/_frame_*) with the name and stack on top; the description slides up
+    on hover. %>
+<article class="slide-card slide-card--project" itemscope itemtype="https://schema.org/CreativeWork">
+  <%= link_to project_path(project), class: "slide-card-media slide-card-media--device slide-card-media--#{project.frame}",
+      style: "--accent: #{project_accent(project)}" do %>
+    <% if project.frame == "phone" %>
+      <%= render "projects/feature_phone", project: project %>
+    <% else %>
+      <%= render "projects/frame_#{project.frame}", project: project %>
+      <span class="slide-card-overlay">
+        <span class="slide-card-title" itemprop="name"><%= project.title.strip %></span>
+        <span class="slide-card-text" itemprop="description"><%= truncate(project.description.to_s.squish, length: 170) %></span>
+        <% if project.tag_list.any? %>
+          <span class="slide-card-tags">
+            <% project.tag_list.first(3).each do |tag| %>
+              <span class="slide-card-tag"><%= tag %></span>
+            <% end %>
+          </span>
+        <% end %>
+      </span>
+    <% end %>
+  <% end %>
+  <footer class="slide-card-footer">
+    <% if project.live_url.present? %>
+      <%= link_to project_live_url(project), class: "slide-pill", target: "_blank", rel: "noopener" do %>
+        <% if project.live_url.include?("apps.apple.com") %>
+          <i class="fab fa-app-store-ios" aria-hidden="true"></i> App Store
+        <% else %>
+          <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i> Live site
+        <% end %>
+      <% end %>
+    <% end %>
+    <% if project.github_url.present? %>
+      <%= link_to project.github_url, class: "slide-pill", target: "_blank", rel: "noopener" do %>
+        <i class="fab fa-github" aria-hidden="true"></i> Code
+      <% end %>
+    <% end %>
+    <% unless project.has_links? %>
+      <%= link_to project_path(project), class: "slide-pill" do %>
+        <i class="fas fa-circle-info" aria-hidden="true"></i> Details
+      <% end %>
+    <% end %>
+  </footer>
+</article>

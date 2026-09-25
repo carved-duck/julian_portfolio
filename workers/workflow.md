@@ -40,7 +40,7 @@ When a call is Julian's, ask with options, a recommendation, and the trade-off, 
 ## Gates and checker depth, by risk
 | Risk | Examples | Gates (once, at the end) | Checker depth |
 |---|---|---|---|
-| Safety | admin auth, contact form + spam layers, event signup/capacity, migrations, data loss | rubocop · boot check · `bin/rails test` once it is safe to run (`../docs/dev.md` Trap 2) · walk the changed routes (desktop + phone width) | full `checker.md` + try to break it |
+| Safety | admin auth, contact form + spam layers, event signup/capacity, migrations, data loss | rubocop · boot check · `bin/rails test` once the suite is repaired (`../docs/dev.md`) · walk the changed routes (desktop + phone width) | full `checker.md` + try to break it |
 | Normal | pages, styling, features, fixes | rubocop · boot check · walk the changed routes (desktop + phone width) | `checker.md` sections the change touches |
 | Docs / copy | docs, wording | `../scripts/check-doc-size.sh` · `../scripts/check-doc-staleness.sh` (+ boot check if a view changed) | nothing dropped · no contradictions · paths resolve |
 

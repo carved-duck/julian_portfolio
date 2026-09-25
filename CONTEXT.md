@@ -9,14 +9,14 @@ ELI5: name the task, and this table tells you which file to open.
 | what's open, owed, next | `docs/status.md` |
 | how a task runs end to end | `workers/workflow.md` |
 | controllers, models, services, jobs, Stimulus JS | `workers/engineer.md` · `docs/architecture.md` · `docs/frontend.md` |
-| views, layout, SCSS, responsive, the carousel | `workers/uiux.md` · `docs/styling.md` · `docs/frontend.md` |
+| views, layout, SCSS, responsive, the home page | `workers/uiux.md` · `docs/styling.md` · `docs/frontend.md` |
 | copy, voice, page titles, meta descriptions | `workers/writer.md` · `docs/seo.md` |
 | events, BBQ capacity, attendee signup | `docs/architecture.md` § Domain model |
 | photos, uploads, Cloudinary, compression | `docs/architecture.md` § Images |
 | the contact form, spam, email | `docs/spam-protection.md` · `docs/architecture.md` § Contact form and email |
 | admin area, auth | `docs/architecture.md` § Auth boundary |
 | SEO, structured data, sitemap | `docs/seo.md` |
-| running locally, gates, the wrong-Ruby and prod-DB traps | `docs/dev.md` |
+| running locally, the local database, gates, the wrong-Ruby trap | `docs/dev.md` |
 | reviewing a change (the one checker) | `workers/checker.md` |
 | a big or risky change's design | `docs/specs/` (dated; history, not live facts) |
 
@@ -27,4 +27,4 @@ ELI5: name the task, and this table tells you which file to open.
 
 ## Do NOT
 - Bypass the pre-commit hooks with `--no-verify`.
-- Run `bin/rails test` or any `db:*` task until `docs/dev.md` Trap 2 is resolved.
+- Run destructive `db:*` tasks: Julian runs DB tooling.

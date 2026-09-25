@@ -16,7 +16,11 @@ When the code and this file disagree, the code wins: fix this file in place.
 - The `geocoder` gem is installed but has no config and no caller (see Open questions).
 
 ## Domain model (`app/models/`)
-- **Project** — `has_one_attached :featured_image`. Tags are one comma-separated string;
+- **Project** — `has_one_attached :featured_image`, `has_many_attached :screenshots`,
+  `has_one_attached :icon`. `frame` is how its card shows the image (`browser`, `phone`,
+  `terminal`); `section` is where it sits on the Projects page (`work`, `earlier`, `bootcamp`).
+  The admin form doesn't offer frame, section, icon or screenshots: only `showcase:load`
+  (`ShowcaseLoader`, data in `db/showcase/projects.yml`) sets them. Tags are one comma-separated string;
   `tag_list` / `tag_list=` split and join it, `categorized_tags` buckets them (Core Stack,
   Frontend, Services, Tools & Libraries, Features). Scopes `featured`, `recent`. `has_links?`
   checks for a GitHub or live URL.
@@ -72,7 +76,4 @@ credentials as `google_analytics_id`, read in the layout (production only).
 helpers. Full notes: `seo.md`.
 
 ## Open questions (flag, don't act on)
-- **`submissions` table** — in `db/schema.rb`, but no model. Its columns look like an older
-  `attendees` (name, instagram_handle, message, event_id, no `bringing`). Probably legacy.
-  Don't build on it or drop it without asking Julian.
 - **`geocoder`** — installed, unused.

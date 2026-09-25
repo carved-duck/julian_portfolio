@@ -1,0 +1,11 @@
+<%# An iPhone drawn in CSS. Its screens cross-fade on hover: the featured image first, then each screenshot. %>
+<% screens = (project.featured_image.attached? ? [project.featured_image] : []) + project.screenshots.to_a %>
+<span class="device device--phone <%= 'device--multi' if screens.size > 1 %>" style="--screens: <%= [screens.size, 1].max %>">
+  <span class="device-island" aria-hidden="true"></span>
+  <span class="device-screen">
+    <% screens.each_with_index do |screen, i| %>
+      <%= cl_image_tag screen.key, width: 400, crop: :scale, quality: :auto, fetch_format: :auto,
+          alt: "", loading: "lazy", class: "device-phone-shot", style: "--i: #{i}" %>
+    <% end %>
+  </span>
+</span>

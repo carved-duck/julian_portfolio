@@ -22,7 +22,7 @@ the commit. New facts go in a `docs/` file; a new file's pointer goes in [`CONTE
 - Anything that must run on every page visit listens for `turbo:load`, and Stimulus `disconnect()`
   undoes `connect()`: `docs/frontend.md`.
 - Never run destructive database tasks (`db:migrate`, `db:drop`, `db:reset`, `db:schema:load`).
-  Julian runs DB tooling. Local dev may point at production: read `docs/dev.md` Trap 2 first.
+  Julian runs DB tooling. Localhost uses its own copy of the data: `docs/dev.md`.
 - Commits and pushes to `origin` are authorized (standing OK, 2026-05-24): Conventional Commits,
   once at the end of a task. Deploying to Heroku only at Julian's go.
 - Never add a `Co-Authored-By` or any Claude/AI trailer. Never bypass hooks (`--no-verify`).
@@ -34,7 +34,7 @@ the commit. New facts go in a `docs/` file; a new file's pointer goes in [`CONTE
 |---|---|
 | What's open now | `docs/status.md` |
 | Stack, data model, auth, images, email, env vars | `docs/architecture.md` |
-| Turbo, Stimulus, the carousel rule | `docs/frontend.md` |
+| Turbo, Stimulus, the slider | `docs/frontend.md` |
 | SCSS layout, brand colors | `docs/styling.md` |
 | Running the app, gates, local traps | `docs/dev.md` |
 | SEO · contact-form spam defenses | `docs/seo.md` · `docs/spam-protection.md` |

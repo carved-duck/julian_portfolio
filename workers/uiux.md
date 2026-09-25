@@ -18,7 +18,7 @@ Your mandate here is design, and only design.
 - Layer 0: `../CLAUDE.md` — always
 - Layer 4: `../claude-talk.md` (if it has entries) · `../docs/status.md`
 - Layer 3 facts: `../docs/styling.md` (brand colors, SCSS layout, no dark mode) ·
-  `../docs/frontend.md` (Turbo, the carousel rule)
+  `../docs/frontend.md` (Turbo, the slider, the home page pieces)
 - Code of record: `app/views/`, `app/assets/stylesheets/`
 - **The running app**: `../docs/dev.md` § Commands and § Walking a route. Judge real pixels, at
   desktop and phone width, not a mental model.
@@ -100,8 +100,8 @@ If a code or copy issue is the root cause of a UX problem, name it and route it.
   is wrong. Watch long project titles and photo category names.
 - **The shiny new pattern.** A custom component when an existing Bootstrap or SCSS pattern would
   do. Check the codebase first.
-- **Carousel and gallery on mobile.** The featured-photos carousel and the photo swipe are the
-  proven pain points. Verify them at phone width, by touch, after any change near them.
+- **Sliders and gallery on mobile.** The home sliders and the photo swipe are the pages phones
+  hit hardest. Verify them at phone width, by touch, after any change near them.
 
 ## Edge cases to probe
 

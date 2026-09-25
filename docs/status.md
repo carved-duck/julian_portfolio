@@ -8,17 +8,24 @@ When something closes, delete its line here in the same session (the commit mess
   Not yet deployed to Heroku unless Julian has pushed `heroku` since.
 
 ## Next
-- **The site redesign** (Julian, 2026-09-25). Plan not written yet: agree it first
-  (`../workers/workflow.md` step 2).
+- **The site redesign, page by page** (Julian, 2026-09-25). Burgundy is now Bootstrap's primary.
+  Agree each page's changes before building (`../workers/workflow.md` step 2).
+  - **Home: built locally.** Seigaiha background, two doors, sliders, seven dev cards. Still owed:
+    Julian's phone screenshots for Menyu (home screen) and Sollo (today cropped from App Store tiles)
+    · optionally a photo for the imagebank-reader card · a MyTap screenshot if the app's colours
+    changed (today's is sollo.my/tap cropped to phone width).
+  - **In progress: waves on every page, Projects (Menyu hero, eras by date), Photos contact sheet,
+    Home viewer matching the photo page.** Spec and plan: `specs/2026-09-25-pages-redesign*.md`.
+  - **To go live (Julian's go), after the Projects redesign ships:** push, deploy,
+    `heroku run rails db:migrate`, then `heroku run rails showcase:load` with `FORCE_IMAGES=1`
+    (new MyTap icon). Loading before the new Projects page would show the new cards in the old one.
+  - **Design review findings still open after that** (`specs/2026-09-25-design-review.md`): Events
+    and Blog keep the old flat cards · Blog's empty state is a dead end: point it at Photos and
+    Projects.
 
 ## Waiting on Julian
-- **Local database.** Point dev at a local Postgres: fix the placeholder names in
-  `config/database.yml`, drop `DATABASE_URL` from `.env`, create the DB, load a copy of the data
-  (`heroku pg:pull`). Julian runs DB tooling. Until then, see `dev.md` Trap 2.
 - **Broken admin scaffold tests:** repair them, or delete them (`dev.md` § Commands, "Test suite
   state"). Until tests run, event capacity changes have no automated check.
-- **Projects hero:** no AlturaFlow project exists in prod, so the hero falls back to the first
-  featured project. Add it, or mark the project you want `featured`.
 - **Event SEO wording:** `ApplicationHelper` describes events as "photography workshops, tech
   meetups"; the real events are casual BBQs and meetups. Pick the wording.
 - **Phone-width walk of the May redesign** (projects, photos, home): only checked at desktop width

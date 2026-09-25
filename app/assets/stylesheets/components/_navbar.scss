@@ -144,8 +144,9 @@
   border-radius: 8px;
 }
 
-// Underline on hover
-.nav-link::after {
+// Underline on hover. Skips the Contact dropdown: Bootstrap draws its arrow in the same ::after,
+// and positioning it here pushed the arrow under the word.
+.nav-link:not(.dropdown-toggle)::after {
   content: '';
   position: absolute;
   bottom: -2px;
@@ -162,7 +163,7 @@
   text-decoration: none;
 }
 
-.nav-link:hover::after {
+.nav-link:not(.dropdown-toggle):hover::after {
   width: 60%;
 }
 

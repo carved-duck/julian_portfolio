@@ -1,47 +1,76 @@
-<!-- For the hero -->
-<section class="hero-section">
-  <div class="hero-content">
-    <h1 class="hero-greeting">
-      <span class="word" data-word="Hey,">
-        <span class="letter">H</span>
-        <span class="letter">e</span>
-        <span class="letter">y</span>
-        <span class="letter">,</span>
-      </span>
-      <span class="word" data-word="I'm">
-        <span class="letter">I</span>
-        <span class="letter">'</span>
-        <span class="letter">m</span>
-      </span>
-      <span class="word" data-word="Julian">
-        <span class="letter">J</span>
-        <span class="letter">u</span>
-        <span class="letter">l</span>
-        <span class="letter">i</span>
-        <span class="letter">a</span>
-        <span class="letter">n</span>
-      </span>
-    </h1>
-    <p class="hero-description">
-      I love taking photos and figuring out how things work <br>
-      <span class="hero-description-small"> and sometimes I host events :D</span>
-    </p>
-  </div>
-</section>
-<!-- Featured Works -->
-<section class="featured-works" id="works">
-  <h2 class="section-title">Featured Works</h2>
-  <% if @featured_photos.any? %>
-    <%= render "photos/featured_carousel", photos: @featured_photos %>
-  <% else %>
-    <div class="text-center py-5">
-      <i class="fas fa-camera fa-3x text-muted mb-3"></i>
-      <h3>Featured Works Coming Soon</h3>
-      <p class="text-muted">I'm curating my best photography to showcase here. Check back soon!</p>
-      <div class="mt-3">
-        <%= link_to "Browse All Photos", photos_path, class: "btn btn-primary" %>
-        <%= link_to "View Projects", projects_path, class: "btn btn-outline-secondary ms-2" %>
+<div class="home">
+  <canvas class="home-pattern" data-controller="seigaiha" aria-hidden="true"></canvas>
+
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-greeting">
+        <span class="word" data-word="Hey,">
+          <span class="letter">H</span>
+          <span class="letter">e</span>
+          <span class="letter">y</span>
+          <span class="letter">,</span>
+        </span>
+        <span class="word" data-word="I'm">
+          <span class="letter">I</span>
+          <span class="letter">'</span>
+          <span class="letter">m</span>
+        </span>
+        <span class="word" data-word="Julian">
+          <span class="letter">J</span>
+          <span class="letter">u</span>
+          <span class="letter">l</span>
+          <span class="letter">i</span>
+          <span class="letter">a</span>
+          <span class="letter">n</span>
+        </span>
+      </h1>
+      <p class="hero-description">
+        I love taking photos and developing websites and building apps
+        <span class="hero-description-small"> and sometimes I host events :D</span>
+      </p>
+    </div>
+  </section>
+
+  <section class="showcase" id="works" data-controller="showcase" data-showcase-open-value="photos">
+    <div class="showcase-doors">
+      <button type="button" class="showcase-door" data-showcase-target="door" data-key="photos"
+              aria-controls="showcase-photos"
+              data-action="mouseenter->showcase#hover click->showcase#select">
+        <i class="fas fa-camera" aria-hidden="true"></i>
+        <span class="showcase-door-label">Featured photos</span>
+      </button>
+      <button type="button" class="showcase-door" data-showcase-target="door" data-key="dev"
+              aria-controls="showcase-dev"
+              data-action="mouseenter->showcase#hover click->showcase#select">
+        <i class="fas fa-code" aria-hidden="true"></i>
+        <span class="showcase-door-label">Featured dev work</span>
+      </button>
+    </div>
+
+    <div class="showcase-panels">
+      <div class="showcase-panel" id="showcase-photos" data-showcase-target="panel" data-key="photos">
+        <% if @featured_photos.any? %>
+          <%= render "pages/slider", label: "Featured photos" do %>
+            <%= render partial: "pages/photo_slide", collection: @featured_photos, as: :photo %>
+          <% end %>
+        <% else %>
+          <p class="showcase-empty">I'm picking my favourite shots. For now, <%= link_to "browse all photos", photos_path %>.</p>
+        <% end %>
+        <p class="showcase-more"><%= link_to "See all photos", photos_path %> <i class="fas fa-arrow-right" aria-hidden="true"></i></p>
+      </div>
+
+      <div class="showcase-panel" id="showcase-dev" data-showcase-target="panel" data-key="dev">
+        <% if @featured_projects.any? %>
+          <%= render "pages/slider", label: "Featured dev work" do %>
+            <%= render partial: "pages/project_slide", collection: @featured_projects, as: :project %>
+          <% end %>
+        <% else %>
+          <p class="showcase-empty">Projects are on their way. For now, <%= link_to "see everything I've built", projects_path %>.</p>
+        <% end %>
+        <p class="showcase-more"><%= link_to "See all projects", projects_path %> <i class="fas fa-arrow-right" aria-hidden="true"></i></p>
       </div>
     </div>
-  <% end %>
-</section>
+  </section>
+</div>
+
+<%= render "photos/photo_modal" %>

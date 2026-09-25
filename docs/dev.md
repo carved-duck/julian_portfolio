@@ -1,6 +1,6 @@
 # Dev — running the app, the gates, local gotchas
 
-ELI5: how to start the app and check a change, and the two traps that bite first. Checked 2026-09-25.
+ELI5: how to start the app and check a change, and the traps that bite first. Checked 2026-09-25.
 
 ## Trap 1: the wrong Ruby
 `bin/rails` starts with `#!/usr/bin/env ruby`. In a shell without rbenv on the PATH (Claude's
@@ -12,15 +12,22 @@ Run it through the rbenv Ruby explicitly:
 ~/.rbenv/shims/bundle exec rubocop <files>
 ```
 
-## Trap 2: the local app may be talking to production
-The May 2026 recon found `.env` sets `DATABASE_URL` to the **Heroku production database**, and
-`dotenv-rails` loads `.env` in development and test. `database.yml`'s local database names are still
-the template placeholders (`change_this_to_your_rails_app_name_*`), so there is no local database.
-Until that is fixed (open item in `status.md`):
-- `rails server` reads and writes **live data**. Fine for looking; never create, edit or delete
-  records from a local session without Julian's say-so.
-- **Do not run `bin/rails test`** or any `db:*` task. The test setup could touch the production
-  database, and the suite is broken anyway (below).
+## Trap 2: `DATABASE_URL` in `.env` beats `database.yml`
+`dotenv-rails` loads `.env` in development and test, and a `DATABASE_URL` there overrides
+`config/database.yml`. Keep it out of `.env`: production gets its own from Heroku.
+
+## The local database
+Since 2026-09-25 localhost runs on its own Postgres database, `julian_portfolio_development`: a copy
+of production made with `heroku pg:pull` (its "6 errors ignored" warning was harmless; row counts
+matched Heroku table for table). Editing records locally never touches the live site. To refresh it
+from production (Julian runs DB tooling):
+
+```bash
+dropdb julian_portfolio_development
+heroku pg:pull DATABASE_URL julian_portfolio_development -a julian-portfolio
+```
+
+The test database (`julian_portfolio_test`) has not been created; the suite is broken anyway (below).
 
 ## Commands
 | What | Command |
@@ -30,7 +37,8 @@ Until that is fixed (open item in `status.md`):
 | Lint | `~/.rbenv/shims/bundle exec rubocop <changed files>` |
 | Boot check | `~/.rbenv/shims/ruby bin/rails runner scripts/check-boot.rb` |
 | Doc guards | `scripts/check-doc-size.sh` · `scripts/check-doc-staleness.sh` |
-| Tests | `bin/rails test` (minitest, parallel; system tests in `test/system/`, Capybara + Chrome) — **not runnable safely today**, see Trap 2 |
+| Load the dev-work cards | `~/.rbenv/shims/ruby bin/rails showcase:load` — creates/updates them by title from `db/showcase/projects.yml` (copy, tags, order) and the images beside it (`FORCE_IMAGES=1` re-uploads). Each run resets those cards to the file, overriding admin edits |
+| Tests | `bin/rails test` (minitest, parallel; system tests in `test/system/`, Capybara + Chrome) — **broken today**, see Test suite state |
 
 - **Lint baseline:** rubocop is not clean repo-wide (mostly `Metrics` and long-line noise). The bar is
   no *new* offenses on the lines you touched. The rule that bites is `Layout/LineLength` at 120.
@@ -43,7 +51,7 @@ Until that is fixed (open item in `status.md`):
 
 ## Walking a route
 After the boot check, open each changed page at desktop width and at phone width (~375px). The
-featured carousel and the photo viewer are the pages that break on phones.
+home page (doors, sliders) and the photo viewer are where phone bugs show up first.
 
 Claude's Chrome tool cannot reach phone width: the viewport stayed at 1470px whatever
 `resize_window` did (May 2026). So Claude walks desktop and checks mobile in the markup and CSS,

@@ -1,0 +1,15 @@
+<%# A browser window holding a full-page screenshot. On hover the page scrolls itself (CSS only). %>
+<span class="device device--browser">
+  <span class="device-browser-bar" aria-hidden="true">
+    <span></span><span></span><span></span>
+    <span class="device-browser-url"><%= project_host(project).presence || project.title.strip %></span>
+  </span>
+  <span class="device-screen">
+    <% if project.featured_image.attached? %>
+      <%= cl_image_tag project.featured_image.key, width: 800, crop: :scale, quality: :auto, fetch_format: :auto,
+          alt: "", loading: "lazy", class: "device-scroll-shot" %>
+    <% else %>
+      <span class="device-soon">Coming soon</span>
+    <% end %>
+  </span>
+</span>

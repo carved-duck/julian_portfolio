@@ -1,0 +1,16 @@
+<%# Full-screen photo viewer. Open it with a link carrying data-bs-toggle="modal",
+    data-bs-target="#photoModal" and data-photo-url (photo_modal_controller.js). %>
+<div class="modal fade" id="photoModal" tabindex="-1" aria-label="Photo viewer" aria-hidden="true"
+     data-controller="photo-modal">
+  <div class="modal-dialog modal-fullscreen">
+    <div class="modal-content bg-black">
+      <button type="button" class="photo-modal-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal"
+              aria-label="Close">
+        <i class="fas fa-times" aria-hidden="true"></i>
+      </button>
+      <div class="modal-body d-flex align-items-center justify-content-center p-0">
+        <img src="" alt="" class="img-fluid" data-photo-modal-target="image">
+      </div>
+    </div>
+  </div>
+</div>

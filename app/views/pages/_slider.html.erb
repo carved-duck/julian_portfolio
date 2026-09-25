@@ -1,0 +1,14 @@
+<%# A sideways-scrolling row of cards (slider_controller.js). Pass the cards as the block. %>
+<div class="slider" data-controller="slider" role="region" aria-label="<%= label %>">
+  <button type="button" class="slider-arrow slider-arrow-prev" data-slider-target="prev" data-action="slider#prev"
+          aria-label="Previous">
+    <i class="fas fa-chevron-left" aria-hidden="true"></i>
+  </button>
+  <div class="slider-track" data-slider-target="track">
+    <%= yield %>
+  </div>
+  <button type="button" class="slider-arrow slider-arrow-next" data-slider-target="next" data-action="slider#next"
+          aria-label="Next">
+    <i class="fas fa-chevron-right" aria-hidden="true"></i>
+  </button>
+</div>

@@ -1,0 +1,73 @@
+# The dev-work cards, read by `bin/rails showcase:load` (lib/tasks/showcase.rake).
+# Featured ones are listed newest first and show on the home page; images live next to this file.
+featured:
+  - title: Menyu
+    frame: phone
+    image: menyu-1.jpg
+    icon: menyu-icon.png
+    screenshots: [menyu-2.jpg, menyu-3.jpg]
+    live_url: https://apps.apple.com/us/app/mymenyu/id6781243160
+    tags: Flutter, FastAPI, Vision AI
+    description: >-
+      Snap any menu and read it in your language, instantly. Tap to order, share with your table,
+      or flip back to show your waiter exactly what you want.
+
+  - title: Sollo
+    frame: phone
+    image: sollo-1.jpg
+    icon: sollo-icon.png
+    screenshots: [sollo-2.jpg, sollo-3.jpg]
+    live_url: https://apps.apple.com/us/app/sollo-life-nav/id6781235016
+    tags: Flutter, RAG, Scraping
+    description: >-
+      Life in Japan, explained. I built the scrapers and AI pipeline that answer from official
+      government sources, and led the Flutter app on top.
+
+  - title: MyTap
+    frame: phone
+    image: mytap-1.jpg
+    icon: mytap-icon.png
+    live_url: https://sollo.my/tap
+    tags: Next.js, Supabase, Stripe
+    description: >-
+      Check in and out of a coworking space with one tap. I built it solo: sign-up, time-based
+      pricing, Stripe checkout and a staff dashboard, in English and Japanese.
+
+  - title: AlturaFlow
+    frame: browser
+    image: alturaflow.jpg
+    live_url: https://alturaflow.com
+    tags: Next.js, TypeScript, Stripe
+    description: >-
+      The markets, visualized. I built its charting engine from scratch, ported its indicators
+      from Pine Script to TypeScript, and wired up billing.
+
+  - title: imagebank-reader
+    frame: terminal
+    tags: C, Python, Reverse engineering
+    description: >-
+      Rescuing photos from a dead 2000s camera storage box. I reverse-engineered its disk format
+      and pulled real photos back off it.
+
+  - title: CS12 Skincare
+    frame: browser
+    image: cs12.jpg
+    live_url: https://cs12skincare.com.hk
+    tags: WordPress, WooCommerce, Next.js
+    description: >-
+      I look after a Hong Kong skincare brand's live WooCommerce store on my own: fixes, campaigns,
+      the loyalty program. I pitched for it with a Next.js mockup.
+
+  - title: YS Club
+    frame: browser
+    image: ysclub.jpg
+    tags: Next.js, Tailwind, i18n
+    description: >-
+      A site redesign for a ski school in Yamagata. I designed and built every page as a working
+      demo, in three languages, before the real build starts.
+
+# Everything else stays on the Projects page, grouped by era, but off the home page.
+# Matched by title (ignoring surrounding spaces); a missing title is skipped.
+older:
+  bootcamp: [Tokyo Turntable, レンtool, Rails-watch-list]
+  earlier: [Resume Auto-Fill Chrome Extension, Portfolio website]

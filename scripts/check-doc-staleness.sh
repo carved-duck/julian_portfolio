@@ -18,6 +18,7 @@ DEAD=(
   "SEO_IMPROVEMENTS.md|moved to docs/seo.md"
   "SPAM_PROTECTION.md|moved to docs/spam-protection.md"
   "GOOGLE_ANALYTICS_ID|GA4 id lives in Rails credentials as google_analytics_id, not an env var"
+  "_featured_carousel|the home carousel was replaced by the slider 2026-09-25 (docs/frontend.md)"
 )
 
 # Live docs only. docs/specs/ is dated history and may name old things.

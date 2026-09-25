@@ -1,0 +1,12 @@
+<%# A terminal window showing the tool's output (ProjectsHelper#terminal_lines); the cursor blinks. %>
+<span class="device device--terminal">
+  <span class="device-browser-bar" aria-hidden="true">
+    <span></span><span></span><span></span>
+    <span class="device-browser-url"><%= project.title.strip %></span>
+  </span>
+  <span class="device-screen device-terminal-body" aria-hidden="true">
+    <% terminal_lines(project).each_with_index do |line, i| %>
+      <span class="device-terminal-line" style="--i: <%= i %>"><%= line %></span>
+    <% end %>
+  </span>
+</span>
