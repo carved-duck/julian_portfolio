@@ -11,9 +11,7 @@
     <% end %>
   <% end %>
   <div class="project-featured-body">
-    <span class="project-featured-eyebrow">
-      Featured project<% if project.started_on %> · <%= project.started_on.strftime("%b %Y") %><% end %>
-    </span>
+    <span class="project-featured-eyebrow">Featured project</span>
     <h2 class="project-featured-title" itemprop="name">
       <%= link_to project.title.strip, project_path(project), class: "text-decoration-none" %>
     </h2>

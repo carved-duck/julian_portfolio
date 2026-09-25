@@ -29,15 +29,16 @@ If a Bootstrap carousel is ever added back, dispose the old instance before maki
 - `showcase_controller.js` — the two doors (Featured photos, Featured dev work). Hover opens a
   panel on mouse devices; click/tap/Enter opens it everywhere. Both panels share one grid cell, so
   swapping them never moves the page.
-- Photos page (`photos/index`): a contact sheet of the chosen place's frames, then the full photos.
-  Frames are `#photo-<id>` links that `contact_sheet_controller.js` glides to (instant under reduced
-  motion); each full photo's box is sized inline from its blob's width and height, so a jump lands
-  right before the lazy images load. Bootstrap's page-wide smooth scroll is off
-  (`$enable-smooth-scroll: false`) so Turbo's restore scrolls stay instant. `photo_protection_controller.js`
-  lets taps through on `.contact-frame-link` and links to `/photos/…` only.
-- `photo_modal_controller.js` — Home's full-screen photo viewer (`photos/_photo_modal.html.erb`),
-  dressed like the photo page: `.photo-frame`, `.btn-close-photo`, `.btn-side-nav`. Arrows and ←/→
-  step through the featured photos and hide at either end. `_modal.scss` paints every modal cream
+- Photos page (`photos/index`): a contact sheet of the chosen place's frames, then the same roll as
+  a square grid (`#photo-<id>` on each tile, so the photo page's close link lands on it). Every
+  frame and tile opens the viewer below (`PhotosHelper#photo_viewer_data`); without JS they go to
+  the photo's page. Bootstrap's page-wide smooth scroll is off (`$enable-smooth-scroll: false`) so
+  Turbo's restore scrolls stay instant. `photo_protection_controller.js` lets taps through on
+  `.contact-frame-link` and links to `/photos/…` only.
+- `photo_modal_controller.js` — the full-screen photo viewer (`photos/_photo_modal.html.erb`) on Home
+  and the Photos page, dressed like the photo page: `.photo-frame`, `.btn-close-photo`,
+  `.btn-side-nav`. Arrows, ←/→ and a sideways swipe step through the page's photos (each once, even
+  when linked twice) and stop at either end. `_modal.scss` paints every modal cream
   for the contact form, so `_photo_modal.scss` resets `.modal-content` and `.modal-body`. On
   `turbo:before-cache` it closes itself and clears Bootstrap's backdrop, so Back never restores it open.
 - Device frames on project cards: `projects/_frame_browser` (the page scrolls itself on hover)

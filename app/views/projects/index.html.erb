@@ -68,7 +68,7 @@
       <section class="project-era" aria-labelledby="era-<%= section %>">
         <h2 class="projects-grid-heading" id="era-<%= section %>"><%= section.titleize %></h2>
         <div class="project-era-grid">
-          <%= render partial: "pages/project_slide", collection: projects, as: :project, locals: { dated: true } %>
+          <%= render partial: "pages/project_slide", collection: projects, as: :project %>
         </div>
       </section>
     <% end %>

@@ -1,6 +1,6 @@
 # The dev-work cards, read by `bin/rails showcase:load` (app/services/showcase_loader.rb).
 # Featured ones show on the home page in this order; images live next to this file. started_on
-# is when Julian began each one (only the month is shown) and sorts the Projects page.
+# is when Julian began each one; it sorts the Projects page but isn't shown (work may be ongoing).
 featured:
   - title: Menyu
     started_on: "2026-06-15"

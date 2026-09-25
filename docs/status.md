@@ -19,8 +19,6 @@ When something closes, delete its line here in the same session (the commit mess
   - **To go live (Julian's go):** push, deploy, `heroku run rails db:migrate`, then
     `heroku run rails showcase:load` with `FORCE_IMAGES=1` (new MyTap icon). There's no release
     phase, so `/projects` errors between the deploy and the migrate: run them back to back.
-  - **Home viewer on phones:** the arrows are hidden under 768px and there's no swipe, so a phone
-    sees one photo per open. Add swipe (the photo page has it) if wanted.
   - **Design review findings still open after that** (`specs/2026-09-25-design-review.md`): Events
     and Blog keep the old flat cards · Blog's empty state is a dead end: point it at Photos and
     Projects.

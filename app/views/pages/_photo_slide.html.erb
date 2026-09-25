@@ -1,13 +1,6 @@
 <article class="slide-card" itemscope itemtype="https://schema.org/Photograph">
   <% if photo.image.attached? %>
-    <%= link_to photo_path(photo), class: "slide-card-media",
-        data: {
-          bs_toggle: "modal",
-          bs_target: "#photoModal",
-          photo_url: cl_image_path(photo.image.key, width: 1600, height: 1200, crop: :fit, quality: :auto,
-                                   fetch_format: :auto),
-          photo_alt: "Photo from #{photo.category}"
-        } do %>
+    <%= link_to photo_path(photo), class: "slide-card-media", data: photo_viewer_data(photo) do %>
       <%= cl_image_tag photo.image.key,
           width: 600, height: 450, crop: :fill, quality: :auto, fetch_format: :auto,
           alt: "Photo from #{photo.category}", loading: "lazy", itemprop: "image" %>

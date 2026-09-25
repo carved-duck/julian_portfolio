@@ -1,7 +1,7 @@
 <%# Same shape as a photo slide (image area + pill footer) so the two home panels line up.
     Apps get an App Store-style layout (projects/_feature_phone). Websites and tools get a
     full-bleed window (projects/_frame_*) with the name and stack on top; the description slides up
-    on hover. Pass dated: true to show when it started (the Projects page does; Home doesn't). %>
+    on hover. %>
 <article class="slide-card slide-card--project" itemscope itemtype="https://schema.org/CreativeWork">
   <%= link_to project_path(project), class: "slide-card-media slide-card-media--device slide-card-media--#{project.frame}",
       style: "--accent: #{project_accent(project)}" do %>
@@ -22,12 +22,7 @@
       </span>
     <% end %>
   <% end %>
-  <footer class="slide-card-footer<%= ' slide-card-footer--dated' if local_assigns[:dated] %>">
-    <% if local_assigns[:dated] && project.started_on %>
-      <time class="slide-card-date" datetime="<%= project.started_on.strftime('%Y-%m') %>">
-        <%= project.started_on.strftime("%b %Y") %>
-      </time>
-    <% end %>
+  <footer class="slide-card-footer">
     <% if project.live_url.present? %>
       <%= link_to project_live_url(project), class: "slide-pill", target: "_blank", rel: "noopener" do %>
         <% if project.live_url.include?("apps.apple.com") %>

@@ -1,5 +1,5 @@
 // Photos index: a film contact sheet for the chosen place (black strips, sprocket holes, frame
-// numbers), then the full photos. Frames link to #photo-<id> below.
+// numbers), then the same roll as a square grid. Both open the full-size viewer (_photo_modal.scss).
 $film: #141210;
 $film-edge: #e8a33c; // the orange print on a film's edge
 $sprocket: #d9d2c3;
@@ -69,52 +69,61 @@ $sprocket: #d9d2c3;
   color: $film-edge;
 }
 
-// ---------- The roll: full photos below the sheet ----------
-.photo-roll {
+@media (max-width: 575px) {
+  .contact-sheet { padding: 0.5rem; }
+  .contact-sheet-frames { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); }
+}
+
+// ---------- The grid: the same roll as square tiles ----------
+.photo-grid {
   display: grid;
-  gap: 3rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+  gap: 4px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 2px;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
-.photo-roll-item {
-  scroll-margin-top: 90px; // breathing room above a photo a frame jumped to
-  text-align: center;
-}
-
-.photo-roll-link { display: block; }
-
-// Width and aspect-ratio come inline from the blob's size, so the box exists before the image
-// loads: as wide as the column, or 85vh tall, whichever is smaller.
-.photo-roll-image {
+.photo-grid-item {
   display: block;
-  margin: 0 auto;
-  max-width: 100%;
-  height: auto;
-  box-sizing: border-box;
-  object-fit: contain; // the inline aspect-ratio includes the border; never stretch the photo
-  border: 6px solid #fff;
-  background: rgba(214, 207, 180, 0.3); // sage placeholder while the image loads
-  box-shadow: var(--shadow-lg);
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 8px;
+  transition: transform 0.2s ease;
+  background-color: rgba(214, 207, 180, 0.3); // sage placeholder while the image loads
+
+  &:hover { transform: scale(1.02); }
+
+  &:focus-visible {
+    outline: 3px solid rgba(141, 11, 65, 0.45);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 768px) {
+    border-radius: 4px;
+
+    &:hover { transform: none; }
+  }
+}
+
+.photo-grid-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   user-select: none;
   -webkit-user-drag: none;
   -webkit-touch-callout: none;
 }
 
-.photo-roll-caption {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin: 0.6rem 0 0;
-  font-size: 0.85rem;
-  color: #6b6b6b;
-}
-
-@media (max-width: 575px) {
-  .contact-sheet { padding: 0.5rem; }
-  .contact-sheet-frames { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); }
-  .photo-roll-image { border-width: 3px; }
+@media (prefers-reduced-motion: reduce) {
+  .photo-grid-item { transition: none; }
 }
 
 // ---------- Empty state ----------

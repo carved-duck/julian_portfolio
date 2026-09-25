@@ -23,8 +23,8 @@ When the code and this file disagree, the code wins: fix this file in place.
   (`ShowcaseLoader`, data in `db/showcase/projects.yml`) sets them. Tags are one comma-separated string;
   `tag_list` / `tag_list=` split and join it, `categorized_tags` buckets them (Core Stack,
   Frontend, Services, Tools & Libraries, Features). Scopes `featured`, `recent`, `by_start`
-  (newest `started_on` first, undated last). `started_on` is when Julian began it; only the month
-  is shown. The Projects page leads with `HERO_TITLE` (Menyu, else the newest project), then one
+  (newest `started_on` first, undated last). `started_on` is when Julian began it; it only sorts,
+  it's never shown (Julian: dates make ongoing work look finished). The Projects page leads with `HERO_TITLE` (Menyu, else the newest project), then one
   grid per section in `SECTIONS` order. `has_links?` checks for a GitHub or live URL.
 - **BlogPost** — builds a unique `slug` before save (adds a counter on collision); `to_param`
   returns it, so URLs use the slug. `published` = `published_at` present; `recent` orders by
