@@ -1,6 +1,8 @@
 # The dev-work cards, read by `bin/rails showcase:load` (app/services/showcase_loader.rb).
 # Featured ones show on the home page in this order; images live next to this file. started_on
 # is when Julian began each one; it sorts the Projects page but isn't shown (work may be ongoing).
+# highlights are the project page's "What I built" bullets (checked against each repo's history,
+# 2026-09-25; first drafts, to be refined per project).
 featured:
   - title: Menyu
     started_on: "2026-06-15"
@@ -15,6 +17,11 @@ featured:
       or flip back to show your waiter exactly what you want. Live on the App Store. I lead its
       development: the AI that reads menus, the allergen warnings, and a nightly checker that tests
       real scans.
+    highlights:
+      - Designed the menu-reading pipeline. Each page of a menu is read in parallel, and dishes stream in as they're ready.
+      - Built a coverage check that spots parts of a menu the scan missed and re-reads them automatically.
+      - Built allergen warnings with several layers of safety, and caught a bug that could quietly remove the most serious allergy rules.
+      - Run it end to end, from the Flutter app to the FastAPI server on Cloud Run, with about 600 tests and a nightly AI checker that grades real scans.
 
   - title: Sollo
     started_on: "2026-06-02"
@@ -27,6 +34,11 @@ featured:
     description: >-
       Life in Japan, explained. I built the scrapers and AI pipeline that answer from official
       government sources, and led the Flutter app on top.
+    highlights:
+      - Built the whole data pipeline on my own. It scrapes official government sites, reads scanned documents, and indexes them for search in Postgres.
+      - Wrote the original AI server that answers questions from those sources (retrieval-augmented generation, or RAG).
+      - Led the Flutter app with a small team.
+      - Tracked down and fixed two production outages in the data pipeline.
 
   - title: MyTap
     started_on: "2026-09-14"
@@ -38,6 +50,11 @@ featured:
     description: >-
       Check in and out of a coworking space with one tap. I built it solo: sign-up, time-based
       pricing, Stripe checkout and a staff dashboard, in English and Japanese.
+    highlights:
+      - Built it solo in about two weeks. It covers sign-up with Google or email, one-tap check-in and check-out, and a staff dashboard, in English and Japanese.
+      - Wrote a time-based pricing engine, with its own database tests for refunds and re-entry.
+      - Integrated Stripe Checkout with signed webhooks, tagged so one Stripe account can safely serve two deployments.
+      - Moved it from its own deployment into a shared codebase without breaking it. It launches at its first coworking space, in Shibuya.
 
   - title: AlturaFlow
     started_on: "2025-06-01"
@@ -48,6 +65,12 @@ featured:
     description: >-
       I built its charting engine from scratch, ported our own indicator from Pine Script to
       TypeScript, built out many of its pages, and added trial billing and onboarding.
+    highlights:
+      - Replaced an embedded third-party chart with our own charting engine, built on Lightweight Charts. I'm its main author.
+      - Ported our own price-action indicator from Pine Script to TypeScript, and kept the port in step as the original was tuned.
+      - Designed and built pages across the site, including much of the homepage, the products and pricing pages, insights and the dashboard.
+      - Added the free trial on top of our Stripe setup, and the system that grants and revokes indicator access for paying members.
+      - Worked on onboarding, including the emails new members get when they sign up.
 
   - title: imagebank-reader
     started_on: "2026-09-13"
@@ -56,6 +79,11 @@ featured:
     description: >-
       Rescuing photos from a dead 2000s camera storage box. I reverse-engineered its disk format
       and pulled real photos back off it.
+    highlights:
+      - Took the disk out of a dead camera storage box and decoded its raw layout in Python, recovering 91 photos.
+      - Turned them into DNG raw files, so they open in ordinary photo apps.
+      - Mapped the sensor's faulty columns and filled them in from their neighbours.
+      - Reverse-engineered the box's own protocol from its old desktop software, and wrote a C tool for it. That one hasn't been tried on the real hardware yet.
 
   - title: CS12 Skincare
     started_on: "2026-07-21"
@@ -66,6 +94,11 @@ featured:
     description: >-
       I look after a Hong Kong skincare brand's live WooCommerce store on my own: fixes, campaigns,
       the loyalty program. I pitched for it with a Next.js mockup.
+    highlights:
+      - Pitched for the work with a bilingual Next.js redesign mockup, built in about three days.
+      - Took over the live store and now run it on my own, from fixes and campaigns to the loyalty program.
+      - Compared moving hosts with rebuilding, and showed the loyalty points live in custom database tables. That made the case for staying on WooCommerce.
+      - Fixed a broken button that appeared across the site, cleared out about 29 GB of old backups, and caught a loyalty-points setting that was giving away too much.
 
   - title: YS Club
     started_on: "2026-09-17"
@@ -75,6 +108,10 @@ featured:
     description: >-
       A site redesign for a ski school in Yamagata. I designed and built every page as a working
       demo, in three languages, before the real build starts.
+    highlights:
+      - Designed and built the whole redesign as a working demo, 15 pages in Traditional Chinese, English and Japanese.
+      - Built it on my own in Next.js and Tailwind in under a week.
+      - Shared as a private preview for the school; the real build comes next.
 
 # Everything else stays on the Projects page, grouped by era, but off the home page.
 # Matched by title (ignoring surrounding spaces); a missing title is skipped.

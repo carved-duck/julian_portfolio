@@ -10,5 +10,8 @@ class ProjectsController < ApplicationController
 
   def show
     @project = Project.find(params[:id])
+    # "More projects": the three newest others.
+    @more_projects = Project.where.not(id: @project.id).by_start.limit(3)
+                            .with_attached_featured_image.with_attached_screenshots.with_attached_icon
   end
 end

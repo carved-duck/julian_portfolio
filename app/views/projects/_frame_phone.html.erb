@@ -5,7 +5,7 @@
   <span class="device-screen">
     <% screens.each_with_index do |screen, i| %>
       <%= cl_image_tag screen.key, width: 400, crop: :scale, quality: :auto, fetch_format: :auto,
-          alt: "", loading: "lazy", class: "device-phone-shot", style: "--i: #{i}" %>
+          alt: "", loading: local_assigns.fetch(:loading, "lazy"), class: "device-phone-shot", style: "--i: #{i}" %>
     <% end %>
   </span>
 </span>

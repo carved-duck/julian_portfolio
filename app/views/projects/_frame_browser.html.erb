@@ -7,7 +7,7 @@
   <span class="device-screen">
     <% if project.featured_image.attached? %>
       <%= cl_image_tag project.featured_image.key, width: 800, crop: :scale, quality: :auto, fetch_format: :auto,
-          alt: "", loading: "lazy", class: "device-scroll-shot" %>
+          alt: "", loading: local_assigns.fetch(:loading, "lazy"), class: "device-scroll-shot" %>
     <% else %>
       <span class="device-soon">Coming soon</span>
     <% end %>

@@ -15,126 +15,63 @@
   document.addEventListener('DOMContentLoaded', trackProjectViewOnLoad);
   document.addEventListener('turbo:load', trackProjectViewOnLoad);
 </script>
-<article itemscope itemtype="https://schema.org/CreativeWork">
-  <div class="container mt-4">
-    <div class="row">
-      <div class="col-md-8 mx-auto">
-        <header>
-          <h1 class="mb-4" itemprop="name"><%= @project.title %></h1>
-        </header>
-        <% if @project.featured_image.attached? %>
-          <div class="mb-4">
-            <div class="browser-window browser-window-showcase">
-              <div class="browser-header">
-                <div class="browser-controls">
-                  <div class="control-button control-close"></div>
-                  <div class="control-button control-minimize"></div>
-                  <div class="control-button control-maximize"></div>
-                </div>
-                <% if @project.live_url.present? %>
-                  <%= link_to format_url(@project.live_url, add_www: true), target: "_blank", class: "browser-url-bar clickable-url", rel: "noopener noreferrer" do %>
-                    <%= @project.live_url.gsub(/^https?:\/\//, '').gsub(/^www\./, '') %>
-                  <% end %>
-                <% else %>
-                  <div class="browser-url-bar"><%= @project.title.downcase.gsub(' ', '') + '.com' %></div>
-                <% end %>
-              </div>
-              <div class="browser-content">
-                <%= cl_image_tag @project.featured_image.key,
-                    width: 1200, height: 510, crop: :fill, quality: :auto, fetch_format: :auto,
-                    class: "browser-image",
-                    alt: "Screenshot of #{@project.title} project",
-                    itemprop: "image" %>
-              </div>
-            </div>
-          </div>
-        <% end %>
-        <div class="mb-4">
-          <h2>Description</h2>
-          <div class="lead" itemprop="description">
-            <%= simple_format(@project.description) %>
-          </div>
-        </div>
-        <% if @project.categorized_tags.any? %>
-          <div class="mb-4">
-            <h3>Technologies & Features</h3>
-            <div class="technologies-grid">
-              <% @project.categorized_tags.each do |category, tags| %>
-                <div class="technology-category mb-3">
-                  <h6 class="category-label text-muted mb-2">
-                    <i class="fas fa-<%= category_icon(category) %> me-2"></i>
-                    <%= category %>
-                  </h6>
-                  <div class="category-tags">
-                    <% tags.each do |tag| %>
-                      <span class="badge bg-primary bg-opacity-10 text-primary me-2 mb-2" itemprop="keywords">
-                        <%= tag %>
-                      </span>
-                    <% end %>
-                  </div>
-                </div>
-              <% end %>
-            </div>
-          </div>
-        <% end %>
-        <% if @project.has_links? %>
-          <div class="mb-4">
-            <h3>Project Links</h3>
-            <div class="d-flex flex-wrap gap-3">
-              <% if @project.live_url.present? %>
-                <%= link_to format_url(@project.live_url, add_www: true),
-                    target: "_blank",
-                    class: "btn btn-primary",
-                    rel: "noopener noreferrer",
-                    itemprop: "url",
-                    onclick: "if(typeof trackExternalLink === 'function') trackExternalLink('#{@project.live_url}', 'View Live Site')" do %>
-                  <i class="fas fa-external-link-alt me-2"></i>View Live Site
-                <% end %>
-              <% end %>
-              <% if @project.github_url.present? %>
-                <%= link_to format_url(@project.github_url),
-                    target: "_blank",
-                    class: "btn btn-outline-dark",
-                    rel: "noopener noreferrer",
-                    onclick: "if(typeof trackExternalLink === 'function') trackExternalLink('#{@project.github_url}', 'View Code')" do %>
-                  <i class="fab fa-github me-2"></i>View Code
-                <% end %>
-              <% end %>
-            </div>
-          </div>
-        <% end %>
-        <footer class="mt-5 pt-4 border-top">
-          <div class="d-flex justify-content-between align-items-center">
-            <%= link_to "← Back to Projects", projects_path, class: "btn btn-outline-primary" %>
-            <div class="project-meta text-muted">
-              <small>
-                <span itemprop="creator" itemscope itemtype="https://schema.org/Person">
-                  <span itemprop="name">Julian Schoenfeld</span>
-                </span>
-              </small>
-            </div>
-          </div>
-        </footer>
+<article class="container mt-4" itemscope itemtype="https://schema.org/CreativeWork">
+  <nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><%= link_to "Home", root_path, class: "text-decoration-none" %></li>
+      <li class="breadcrumb-item"><%= link_to "Projects", projects_path, class: "text-decoration-none" %></li>
+      <li class="breadcrumb-item active" aria-current="page"><%= @project.title.strip %></li>
+    </ol>
+  </nav>
+
+  <%# Same shape as the Projects page's hero: the device beside the title, intro, stack and links. %>
+  <header class="project-featured">
+    <div class="project-featured-media slide-card-media slide-card-media--device slide-card-media--<%= @project.frame %>"
+         style="--accent: <%= project_accent(@project) %>">
+      <%= render "projects/device", project: @project %>
+    </div>
+    <div class="project-featured-body">
+      <h1 class="project-featured-title page-title" itemprop="name"><%= @project.title.strip %></h1>
+      <p class="project-featured-desc" itemprop="description"><%= @project.description.to_s.squish %></p>
+      <% if @project.tag_list.any? %>
+        <ul class="project-tags list-unstyled" aria-label="Stack">
+          <% @project.tag_list.each do |tag| %>
+            <li class="tag-pill" itemprop="keywords"><%= tag %></li>
+          <% end %>
+        </ul>
+      <% end %>
+      <div class="project-featured-actions d-flex flex-wrap gap-2">
+        <%= render "projects/links", project: @project %>
       </div>
     </div>
-  </div>
-</article>
-<!-- Related Projects Section -->
-<% if @related_projects = Project.where.not(id: @project.id).limit(3) and @related_projects.any? %>
-  <section class="related-projects mt-5 pt-5 border-top">
-    <div class="container">
-      <div class="row">
-        <div class="col-12">
-          <h2 class="text-center mb-4">More Projects</h2>
-        </div>
-      </div>
-      <div class="row justify-content-center">
-        <% @related_projects.each do |project| %>
-          <div class="col-lg-4 col-md-6 mb-4">
-            <%= render "projects/card", project: project %>
-          </div>
+  </header>
+
+  <% if @project.highlight_list.any? %>
+    <section class="project-built" aria-labelledby="what-i-built">
+      <h2 id="what-i-built">What I built</h2>
+      <ul>
+        <% @project.highlight_list.each do |line| %>
+          <li><%= line %></li>
         <% end %>
-      </div>
+      </ul>
+    </section>
+  <% end %>
+
+  <footer class="project-page-footer">
+    <%= link_to projects_path, class: "btn btn-outline-primary" do %>
+      <i class="fas fa-arrow-left me-1" aria-hidden="true"></i> All projects
+    <% end %>
+    <span class="project-meta" itemprop="creator" itemscope itemtype="https://schema.org/Person">
+      <span itemprop="name">Julian Schoenfeld</span>
+    </span>
+  </footer>
+</article>
+
+<% if @more_projects.any? %>
+  <section class="container project-more" aria-labelledby="more-projects">
+    <h2 class="projects-grid-heading" id="more-projects">More projects</h2>
+    <div class="project-era-grid">
+      <%= render partial: "pages/project_slide", collection: @more_projects, as: :project %>
     </div>
   </section>
 <% end %>

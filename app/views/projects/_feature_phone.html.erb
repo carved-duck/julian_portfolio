@@ -20,5 +20,5 @@
       </span>
     <% end %>
   </span>
-  <%= render "projects/frame_phone", project: project %>
+  <%= render "projects/frame_phone", project: project, loading: local_assigns.fetch(:loading, "lazy") %>
 </span>

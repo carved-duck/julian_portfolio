@@ -1,0 +1,8 @@
+<%# A project's device at hero size (top of the page, so its screenshot loads eagerly): the App
+    Store-style phone card for apps, otherwise its browser or terminal window. The caller wraps it in
+    the .slide-card-media--device box that sizes and colours it. %>
+<% if project.frame == "phone" %>
+  <%= render "projects/feature_phone", project: project, loading: "eager" %>
+<% else %>
+  <%= render "projects/frame_#{project.frame}", project: project, loading: "eager" %>
+<% end %>

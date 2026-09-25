@@ -22,7 +22,8 @@ class ShowcaseLoader
   def load_featured(card, index)
     project = Project.find_or_initialize_by(title: card["title"])
     project.assign_attributes(card.slice("frame", "tags", "description", "started_on"))
-    project.assign_attributes(live_url: card["live_url"], section: "work", featured: true)
+    project.assign_attributes(live_url: card["live_url"], highlights: Array(card["highlights"]).join("\n"),
+                              section: "work", featured: true)
     project.created_at = (index + 1).minutes.ago # re-set every run so the file's order always wins
     project.save!
 

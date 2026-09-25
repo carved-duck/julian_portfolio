@@ -201,23 +201,6 @@ module ApplicationHelper
     keywords ? "#{keywords}, #{base_keywords}" : base_keywords
   end
 
-  def category_icon(category)
-    case category
-    when "Core Stack"
-      "code"
-    when "Frontend"
-      "palette"
-    when "Services"
-      "cloud"
-    when "Tools & Libraries"
-      "tools"
-    when "Features"
-      "star"
-    else
-      "tag"
-    end
-  end
-
   def breadcrumb_structured_data(items)
     list_items = items.map.with_index do |item, index|
       {

@@ -9,10 +9,13 @@ When something closes, delete its line here in the same session (the commit mess
 ## Next
 - **The site redesign, page by page** (Julian, 2026-09-25). Burgundy is now Bootstrap's primary.
   Agree each page's changes before building (`../workers/workflow.md` step 2).
-  - **Built locally (not deployed):** Home, waves on every page, Projects (Menyu hero, eras by
-    date), Photos contact sheet, Home viewer matching the photo page
+  - **Built locally (not deployed):** Home, waves on every page, Projects (Menyu hero, eras sorted
+    by start), project pages ("What I built"), Photos (contact sheet + grid, full-size viewer)
     (`specs/2026-09-25-pages-redesign*.md`). Julian's eye check still owed: Claude's Chrome tab
-    was hidden, so motion, smooth scroll and the viewer's final paint were checked by measurement.
+    was hidden, so motion and the viewer's final paint were checked by measurement.
+  - **Next (Julian, 2026-09-26):** refine each project's page one by one. The seven featured
+    projects' "What I built" bullets are first drafts in `db/showcase/projects.yml`; the five
+    older ones have none yet.
   - **Still owed by Julian:** phone screenshots for Menyu (home screen) and Sollo (today cropped
     from App Store tiles) · optionally a photo for the imagebank-reader card · a MyTap screenshot
     if the app's colours changed (today's is sollo.my/tap cropped to phone width).
@@ -49,6 +52,4 @@ When something closes, delete its line here in the same session (the commit mess
   `events-page` is never set.
 - `ApplicationMailer` default `from` is still `from@example.com`.
 - The contact rate limit resets on every dyno restart (`architecture.md` § Contact form and email).
-- Dead code: `Project#display_tags_inline` (no callers); `bin/docker-entrypoint` and
-  `.dockerignore` (the Dockerfile is gone).
-- `projects/show` "More Projects" loads images one query each (3 rows; minor).
+- Dead code: `bin/docker-entrypoint` and `.dockerignore` (the Dockerfile is gone).

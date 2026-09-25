@@ -19,13 +19,15 @@ When the code and this file disagree, the code wins: fix this file in place.
 - **Project** — `has_one_attached :featured_image`, `has_many_attached :screenshots`,
   `has_one_attached :icon`. `frame` is how its card shows the image (`browser`, `phone`,
   `terminal`); `section` is where it sits on the Projects page (`work`, `earlier`, `bootcamp`).
-  The admin form offers `started_on` but not frame, section, icon or screenshots: only `showcase:load`
-  (`ShowcaseLoader`, data in `db/showcase/projects.yml`) sets them. Tags are one comma-separated string;
-  `tag_list` / `tag_list=` split and join it, `categorized_tags` buckets them (Core Stack,
-  Frontend, Services, Tools & Libraries, Features). Scopes `featured`, `recent`, `by_start`
-  (newest `started_on` first, undated last). `started_on` is when Julian began it; it only sorts,
-  it's never shown (Julian: dates make ongoing work look finished). The Projects page leads with `HERO_TITLE` (Menyu, else the newest project), then one
-  grid per section in `SECTIONS` order. `has_links?` checks for a GitHub or live URL.
+  The admin form offers `started_on` and `highlights` but not frame, section, icon or screenshots:
+  only `showcase:load` (`ShowcaseLoader`, data in `db/showcase/projects.yml`) sets those. Tags are
+  one comma-separated string; `tag_list` / `tag_list=` split and join it. `highlights` is the
+  project page's "What I built" list, one point per line (`highlight_list`). Scopes `featured`,
+  `recent`, `by_start` (newest `started_on` first, undated last). `started_on` is when Julian began
+  it; it only sorts, it's never shown (Julian: dates make ongoing work look finished). The Projects
+  page leads with `HERO_TITLE` (Menyu, else the newest project), then one grid per section in
+  `SECTIONS` order; each project page reuses that hero's layout. `has_links?` checks for a GitHub
+  or live URL.
 - **BlogPost** — builds a unique `slug` before save (adds a counter on collision); `to_param`
   returns it, so URLs use the slug. `published` = `published_at` present; `recent` orders by
   `published_at` desc.

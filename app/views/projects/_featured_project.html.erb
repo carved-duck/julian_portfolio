@@ -4,11 +4,7 @@
   <%= link_to project_path(project),
       class: "project-featured-media slide-card-media slide-card-media--device slide-card-media--#{project.frame}",
       style: "--accent: #{project_accent(project)}", aria: { label: "More about #{project.title.strip}" } do %>
-    <% if project.frame == "phone" %>
-      <%= render "projects/feature_phone", project: project %>
-    <% else %>
-      <%= render "projects/frame_#{project.frame}", project: project %>
-    <% end %>
+    <%= render "projects/device", project: project %>
   <% end %>
   <div class="project-featured-body">
     <span class="project-featured-eyebrow">Featured project</span>
@@ -24,20 +20,7 @@
       </ul>
     <% end %>
     <div class="project-featured-actions d-flex flex-wrap gap-2">
-      <% if project.live_url.present? %>
-        <%= link_to project_live_url(project), class: "btn btn-primary", target: "_blank", rel: "noopener" do %>
-          <% if project.live_url.include?("apps.apple.com") %>
-            <i class="fab fa-app-store-ios me-1" aria-hidden="true"></i>App Store
-          <% else %>
-            <i class="fas fa-arrow-up-right-from-square me-1" aria-hidden="true"></i>Live site
-          <% end %>
-        <% end %>
-      <% end %>
-      <% if project.github_url.present? %>
-        <%= link_to project.github_url, class: "btn btn-outline-secondary", target: "_blank", rel: "noopener" do %>
-          <i class="fab fa-github me-1" aria-hidden="true"></i>Code
-        <% end %>
-      <% end %>
+      <%= render "projects/links", project: project %>
       <%= link_to project_path(project), class: "btn btn-outline-primary" do %>
         More about it <i class="fas fa-arrow-right ms-1" aria-hidden="true"></i>
       <% end %>

@@ -10,7 +10,6 @@
 @import "image";
 @import "modal";
 @import "navbar";
-@import "browser_window";
 @import "depth";
 
 // Layout and base styles
@@ -19,7 +18,6 @@
 @import "mobile";
 
 // Feature-specific components
-@import "tags";
 
 // Photo Gallery Components (organized from general to specific)
 @import "photo_gallery";

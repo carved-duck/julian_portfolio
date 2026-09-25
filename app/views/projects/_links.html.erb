@@ -1,0 +1,15 @@
+<%# A project's outbound buttons: App Store or live site, and the code. %>
+<% if project.live_url.present? %>
+  <%= link_to project_live_url(project), class: "btn btn-primary", target: "_blank", rel: "noopener" do %>
+    <% if project.live_url.include?("apps.apple.com") %>
+      <i class="fab fa-app-store-ios me-1" aria-hidden="true"></i>App Store
+    <% else %>
+      <i class="fas fa-arrow-up-right-from-square me-1" aria-hidden="true"></i>Live site
+    <% end %>
+  <% end %>
+<% end %>
+<% if project.github_url.present? %>
+  <%= link_to project.github_url, class: "btn btn-outline-secondary", target: "_blank", rel: "noopener" do %>
+    <i class="fab fa-github me-1" aria-hidden="true"></i>Code
+  <% end %>
+<% end %>
