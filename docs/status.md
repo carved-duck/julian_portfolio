@@ -17,9 +17,9 @@ When something closes, delete its line here in the same session (the commit mess
   Agree each page's changes before building (`../workers/workflow.md` step 2).
   - **Julian's eye check still owed:** Claude's Chrome tab was hidden, so motion and the viewer's
     final paint were checked by measurement.
-  - **Next (Julian, 2026-09-26):** refine each project's page one by one. The seven featured
-    projects' "What I built" bullets are first drafts in `db/showcase/projects.yml`; the five
-    older ones have none yet.
+  - **Project copy and tags rewritten for all 12 (2026-09-26), local only until deployed:** after
+    `git push heroku master`, run `heroku run -a julian-portfolio rails showcase:load` (no image
+    changes, so no `FORCE_IMAGES`).
   - **Still owed by Julian:** phone screenshots for Menyu (home screen) and Sollo (today cropped
     from App Store tiles) · optionally a photo for the imagebank-reader card · a MyTap screenshot
     if the app's colours changed (today's is sollo.my/tap cropped to phone width).
@@ -54,3 +54,5 @@ When something closes, delete its line here in the same session (the commit mess
 - `ApplicationMailer` default `from` is still `from@example.com`.
 - The contact rate limit resets on every dyno restart (`architecture.md` § Contact form and email).
 - Dead code: `bin/docker-entrypoint` and `.dockerignore` (the Dockerfile is gone).
+- `projects/index.html.erb` builds its JSON-LD by hand with `truncate(strip_tags(...))`, so
+  apostrophes land as a literal `&#39;` (it still parses); build it with `to_json` like the show page.

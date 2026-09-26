@@ -14,7 +14,7 @@
     <p class="project-featured-desc" itemprop="description"><%= project.description.to_s.squish %></p>
     <% if project.tag_list.any? %>
       <ul class="project-tags list-unstyled">
-        <% project.tag_list.first(6).each do |tag| %>
+        <% project.tag_list.each do |tag| %>
           <li class="tag-pill" itemprop="keywords"><%= tag %></li>
         <% end %>
       </ul>

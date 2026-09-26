@@ -116,8 +116,7 @@ module ApplicationHelper
       creator: {
         '@type': "Person",
         name: "Julian Schoenfeld"
-      },
-      dateCreated: project.created_at.iso8601
+      }
     }
 
     data["url"] = project.live_url if project.live_url.present?

@@ -1,8 +1,9 @@
 # Loads the dev-work cards from db/showcase/projects.yml and their images (same folder), and files
 # the older projects under "earlier" and "bootcamp"; every project gets its started_on date.
 # Safe to run again: it updates by title and only attaches an image that isn't attached yet
-# (force_images re-attaches them). Each run resets the featured cards' copy, dates, featured flag,
-# section and order to the file's, overriding admin edits.
+# (force_images re-attaches them). Each run resets every listed project's copy (tags, description,
+# highlights), dates, featured flag and section, and the featured cards' order, to the file's,
+# overriding admin edits. The older projects' images and links stay admin-managed.
 # Run it with `bin/rails showcase:load`.
 class ShowcaseLoader
   def initialize(dir: Rails.root.join("db/showcase"), force_images: false, out: $stdout)
@@ -37,6 +38,8 @@ class ShowcaseLoader
     project = Project.where("TRIM(title) = ?", entry["title"]).first
     return @out.puts("#{entry['title']}: not found, skipped") unless project
 
+    project.assign_attributes(entry.slice("tags", "description"))
+    project.highlights = Array(entry["highlights"]).join("\n") if entry.key?("highlights")
     project.update!(section: entry["section"], started_on: entry["started_on"], featured: false)
     @out.puts "#{entry['title']}: #{entry['section']}, #{project.started_on&.strftime('%b %Y')}"
   end

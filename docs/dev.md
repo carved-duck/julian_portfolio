@@ -37,7 +37,7 @@ The test database (`julian_portfolio_test`) has not been created; the suite is b
 | Lint | `~/.rbenv/shims/bundle exec rubocop <changed files>` |
 | Boot check | `~/.rbenv/shims/ruby bin/rails runner scripts/check-boot.rb` |
 | Doc guards | `scripts/check-doc-size.sh` · `scripts/check-doc-staleness.sh` |
-| Load the dev-work cards | `~/.rbenv/shims/ruby bin/rails showcase:load` — creates/updates them by title from `db/showcase/projects.yml` (copy, tags, order) and the images beside it (`FORCE_IMAGES=1` re-uploads). Each run resets those cards to the file, overriding admin edits |
+| Load the dev-work cards | `~/.rbenv/shims/ruby bin/rails showcase:load` — creates/updates them by title from `db/showcase/projects.yml` (copy, tags, order) and the images beside it (`FORCE_IMAGES=1` re-uploads), and sets the older projects' copy and tags too. Each run resets every listed project's copy to the file, overriding admin edits |
 | Tests | `bin/rails test` (minitest, parallel; system tests in `test/system/`, Capybara + Chrome) — **broken today**, see Test suite state |
 
 - **Lint baseline:** rubocop is not clean repo-wide (mostly `Metrics` and long-line noise). The bar is

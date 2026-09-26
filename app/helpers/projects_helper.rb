@@ -46,7 +46,7 @@ module ProjectsHelper
   end
 
   # The app card's short line: whole sentences from the description until it has at least 40
-  # characters ("Life in Japan, explained." alone is too thin; Menyu's first sentence is enough).
+  # characters (a short first sentence like "Life in Japan, explained." alone is too thin).
   def project_tagline(project)
     sentences = project.description.to_s.squish.split(/(?<=[.!?])\s+/)
     sentences.each_with_object(+"") do |sentence, line|
