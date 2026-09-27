@@ -4,9 +4,9 @@ ELI5: the short list of what's waiting. One line per item, a pointer to the deta
 When something closes, delete its line here in the same session (the commit message is the record).
 
 ## Live
-- Heroku runs release v76 (`443eb2f`): the 2026-09-25 redesign (Home, waves on every page,
-  Projects, project pages, Photos) plus the 2026-09-26 rewrite of all 12 projects' copy and tags.
-  Migrations and `showcase:load` done on production.
+- Heroku runs release v77 (`f22629f`): the 2026-09-25 redesign (Home, waves on every page,
+  Projects, project pages, Photos), the 2026-09-26 rewrite of all 12 projects' copy and tags, and
+  the 2026-09-27 home tagline wording. Migrations and `showcase:load` done on production.
 - **Deploy steps** (at Julian's go): `git push heroku master`, then straight away
   `heroku run rails db:migrate -a julian-portfolio` if there are migrations (no release phase, so
   pages that need the new columns error until it runs), then
