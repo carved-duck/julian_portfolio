@@ -1,7 +1,7 @@
 // Card Component Styles
 
 .card {
-  transition: transform 0.3s ease, box-shadow 0.3s ease; // not `all`: the wind drift sets translate every frame
+  transition: transform 0.3s ease, box-shadow 0.3s ease; // not `all`: the wind float sets translate every frame
   border: none;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   border-radius: 12px;

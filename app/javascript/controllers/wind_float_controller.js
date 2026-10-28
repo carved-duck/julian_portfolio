@@ -1,19 +1,20 @@
 import { Controller } from "@hotwired/stimulus"
-import { smoothstep } from "wind/math"
 
-// Nudges elements marked data-wind along a passing gust from seigaiha_controller, then lets them
-// settle. What gets the mark, and the CSS rules a marked element must follow: docs/frontend.md § Wind.
+// Floats elements marked data-wind on the billow from seigaiha_controller, like things resting on
+// cloth the wind lifts: each rises with the cloth under it, tilts toward whichever side sits
+// higher, and is carried a hair downwind, then settles. What gets the mark, and the CSS rules a
+// marked element must follow: docs/frontend.md § Wind.
 export default class extends Controller {
   static values = {
-    reach: { type: Number, default: 180 }, // px from the gust that a card still feels it
-    drift: { type: Number, default: 5 },   // max slide, px
-    tilt: { type: Number, default: 1 }     // max tilt, degrees
+    rise: { type: Number, default: 5 },  // max lift, px
+    carry: { type: Number, default: 2 }, // max slide downwind, px
+    tilt: { type: Number, default: 1.5 } // max tilt, degrees
   }
 
   connect() {
-    this.gust = null
+    this.billow = null
     this.offsets = new Map() // element -> { x, y, rot } for everything not at rest
-    this.held = new Set()    // hovered or focused during this gust: stays still until it ends
+    this.held = new Set()    // hovered or focused during this billow: stays still until it ends
     this.visible = new Set()
     this.rafId = null
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return
@@ -40,14 +41,14 @@ export default class extends Controller {
     this.settleAll()
   }
 
-  push({ detail }) {
+  ride({ detail }) {
     if (!this.observer) return
-    this.gust = detail
+    this.billow = detail
     this.wake()
   }
 
   calm() {
-    this.gust = null
+    this.billow = null
     this.held.clear()
     this.wake()
   }
@@ -78,7 +79,7 @@ export default class extends Controller {
       const settled = Math.abs(o.x) < 0.05 && Math.abs(o.y) < 0.05 && Math.abs(o.rot) < 0.01
       if (resting && settled) {
         this.offsets.delete(el)
-        clearDrift(el)
+        clearFloat(el)
         continue
       }
       this.offsets.set(el, o)
@@ -86,15 +87,14 @@ export default class extends Controller {
       el.style.rotate = `${o.rot.toFixed(3)}deg`
       moving = true
     }
-    if (moving || this.gust) this.wake()
+    if (moving || this.billow) this.wake()
   }
 
-  // How far the gust wants this element moved right now. Cards follow the gust's overall
-  // direction (wind), not its swirls, so they never drift against the wind.
+  // Where the cloth under this element wants it right now.
   targetFor(el, now) {
-    const gust = this.gust
-    if (!gust || !this.visible.has(el) || this.held.has(el)) return REST
-    // Holding for the rest of the gust stops a card that drifts under a resting cursor from
+    const billow = this.billow
+    if (!billow || !this.visible.has(el) || this.held.has(el)) return REST
+    // Holding for the rest of the billow stops a card that floats under a resting cursor from
     // flickering between hovered and not.
     if (el.matches(":hover, :focus-within")) {
       this.held.add(el)
@@ -104,33 +104,32 @@ export default class extends Controller {
     if (el.checkVisibility && !el.checkVisibility({ visibilityProperty: true })) return REST
 
     const rect = el.getBoundingClientRect()
-    const dx = Math.max(rect.left - gust.x, 0, gust.x - rect.right)
-    const dy = Math.max(rect.top - gust.y, 0, gust.y - rect.bottom)
-    const dist = Math.hypot(dx, dy)
-    if (dist >= this.reachValue) return REST
+    const y = rect.top + rect.height / 2
+    const inset = rect.width * 0.2
+    const left = billow.sample(rect.left + inset, y, now).lift
+    const middle = billow.sample(rect.left + rect.width / 2, y, now).lift
+    const right = billow.sample(rect.right - inset, y, now).lift
+    if (Math.max(Math.abs(left), Math.abs(middle), Math.abs(right)) < 0.01) return REST
 
-    const t = (1 - smoothstep(0, this.reachValue, dist)) * gust.strength
-    const flutter = 0.75 + 0.25 * Math.sin(now / 140 + rect.left * 0.05) // neighbours sway out of step
-    const k = t * flutter
     return {
-      x: gust.windX * this.driftValue * k,
-      y: gust.windY * this.driftValue * k,
-      rot: gust.windX * this.tiltValue * k
+      x: billow.dirX * this.carryValue * middle,
+      y: billow.dirY * this.carryValue * middle - this.riseValue * middle,
+      rot: (left - right) * this.tiltValue // CSS rotate turns clockwise, so a higher right side is negative
     }
   }
 
   settleAll() {
     cancelAnimationFrame(this.rafId)
     this.rafId = null
-    for (const el of this.offsets.keys()) clearDrift(el)
+    for (const el of this.offsets.keys()) clearFloat(el)
     this.offsets.clear()
   }
 }
 
-const EASE = 0.08 // share of the remaining distance covered each frame
+const EASE = 0.1 // share of the remaining distance covered each frame
 const REST = Object.freeze({ x: 0, y: 0, rot: 0 })
 
-function clearDrift(el) {
+function clearFloat(el) {
   el.style.translate = ""
   el.style.rotate = ""
 }

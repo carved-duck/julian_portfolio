@@ -1,15 +1,15 @@
 import { Controller } from "@hotwired/stimulus"
-import { createGust } from "wind/gust_path"
+import { createBillow } from "wind/billow"
 import { random, smoothstep } from "wind/math"
 
 // Seigaiha (青海波) waves drawn on a <canvas>: rows of half-circle "scales", each row offset by half a
-// scale. Near the mouse the scales slide outward and turn a little, like leaves pushed aside, then
-// drift back. A click or tap sends a ripple through them. Every few seconds a gust of wind crosses
-// the page left to right and stirs the scales along its path; each frame of it is sent out as a
-// "seigaiha:gust" event (viewport coordinates), then one "seigaiha:gust-end", so
-// wind_drift_controller can nudge cards. Gusts rest after a minute with no scroll, key or pointer
-// input, so a page left open costs no battery. Under reduced motion the pattern is drawn once and
-// stays still. It only animates while something moves.
+// scale. Near the mouse the scales slide outward and turn a little, then drift back. A click or tap
+// sends a ripple through them. Every few seconds the wind lifts the pattern like cloth: a billow
+// (wind/billow.js) rolls across the page and the scales rise, tilt and darken as it passes. Its
+// start is sent out as a "seigaiha:billow" event and its end as "seigaiha:billow-end", so
+// wind_float_controller can float cards on it. Billows rest after a minute with no scroll, key or
+// pointer input, so a page left open costs no battery. Under reduced motion the pattern is drawn
+// once and stays still. It only animates while something moves.
 //
 // <canvas data-controller="seigaiha"></canvas>
 const IDLE_MS = 60000
@@ -22,7 +22,7 @@ export default class extends Controller {
     reach: { type: Number, default: 100 },            // how far the mouse is felt, px
     push: { type: Number, default: 12 },              // max slide, px
     turn: { type: Number, default: 0.55 },            // max turn, radians
-    gustEvery: { type: Array, default: [4000, 8000] } // ms between gusts: [min, max]
+    billowEvery: { type: Array, default: [4000, 8000] } // ms between billows: [min, max]
   }
 
   connect() {
@@ -31,7 +31,7 @@ export default class extends Controller {
 
     this.mouse = null
     this.ripples = []
-    this.gust = null
+    this.billow = null
     this.rafId = null
     this.lastInputAt = performance.now()
     this.reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -54,7 +54,7 @@ export default class extends Controller {
       const p = this.toLocal(e.clientX, e.clientY)
       if (p) { this.ripples.push({ ...p, start: performance.now() }); this.wake() }
     }
-    // Chrome runs no frames in a hidden tab; pick a half-finished gust back up on return.
+    // Chrome runs no frames in a hidden tab; pick a half-finished billow back up on return.
     this.onVisibility = () => this.wake()
 
     this.resize()
@@ -67,13 +67,13 @@ export default class extends Controller {
     document.addEventListener("visibilitychange", this.onVisibility)
     window.addEventListener("scroll", this.onInput, { passive: true })
     window.addEventListener("keydown", this.onInput)
-    this.scheduleGust(random(1500, 3000)) // the first one comes soon, so a visitor sees it
+    this.scheduleBillow(random(1500, 3000)) // the first one comes soon, so a visitor sees it
   }
 
   disconnect() {
     cancelAnimationFrame(this.rafId)
     clearTimeout(this.resizeTimer)
-    clearTimeout(this.gustTimer)
+    clearTimeout(this.billowTimer)
     window.removeEventListener("resize", this.onResize)
     window.removeEventListener("pointermove", this.onPointerMove)
     document.documentElement.removeEventListener("pointerleave", this.onPointerLeave)
@@ -83,37 +83,40 @@ export default class extends Controller {
     window.removeEventListener("keydown", this.onInput)
   }
 
-  scheduleGust(delay) {
-    clearTimeout(this.gustTimer)
-    this.gustTimer = setTimeout(() => {
+  scheduleBillow(delay) {
+    clearTimeout(this.billowTimer)
+    this.billowTimer = setTimeout(() => {
       // Wait while nobody can see the page, is using it, or a pop-up such as the photo viewer covers it.
       const covered = document.body.classList.contains("modal-open")
       const idle = performance.now() - this.lastInputAt > IDLE_MS
-      if (document.hidden || covered || idle) return this.scheduleGust(1000)
-      this.gust = { at: createGust(this.width, this.height), start: performance.now(), point: null }
-      this.wake()
+      if (document.hidden || covered || idle) return this.scheduleBillow(1000)
+      this.startBillow()
     }, delay)
   }
 
-  // Move the gust along; when it has left the page, book the next one.
-  advanceGust(now) {
-    if (!this.gust) return
-    this.gust.point = this.gust.at(now - this.gust.start)
-    if (!this.gust.point) {
-      this.gust = null
-      this.dispatch("gust-end")
-      this.scheduleGust(random(...this.gustEveryValue))
-      return
-    }
-    const { x, y } = this.gust.point
-    this.dispatch("gust", { detail: { ...this.gust.point, x: x + this.left, y: y + this.top } })
+  startBillow() {
+    const billow = createBillow(this.width, this.height)
+    const start = performance.now()
+    this.billow = { ...billow, start }
+    // Cards sample the same cloth, in viewport coordinates and page time.
+    const sample = (clientX, clientY, now) => billow.sample(clientX - this.left, clientY - this.top, now - start)
+    this.dispatch("billow", { detail: { sample, dirX: billow.dirX, dirY: billow.dirY } })
+    this.wake()
+  }
+
+  // Once the billow has rolled off the page, book the next one.
+  endBillowIfDone(now) {
+    if (!this.billow || now - this.billow.start < this.billow.ms) return
+    this.billow = null
+    this.dispatch("billow-end")
+    this.scheduleBillow(random(...this.billowEveryValue))
   }
 
   // Lay out the scales for the current size and draw the resting pattern.
   resize() {
     const dpr = window.devicePixelRatio || 1
     const rect = this.element.getBoundingClientRect()
-    this.left = rect.left // cached: reading it per frame would force a layout after the card drift writes
+    this.left = rect.left // cached: reading it per frame would force a layout after the card float writes
     this.top = rect.top
     this.width = rect.width
     this.height = rect.height
@@ -121,12 +124,15 @@ export default class extends Controller {
     this.element.height = Math.max(1, Math.round(rect.height * dpr))
     this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
 
+    // Keep each scale's motion across the resize: a phone's toolbar hiding mid-scroll resizes the
+    // page, and starting every scale from rest would flatten a passing billow in one frame.
+    const previous = new Map((this.scales || []).map((s) => [`${s.x},${s.y}`, s]))
     const r = this.radiusValue
     this.scales = []
     for (let row = 0, y = 0; y <= this.height + r; row++, y += r) {
       const shift = row % 2 ? r : 0
       for (let x = shift - 2 * r; x <= this.width + 2 * r; x += 2 * r) {
-        this.scales.push({ x, y, dx: 0, dy: 0, rot: 0, glow: 0 })
+        this.scales.push(previous.get(`${x},${y}`) || { x, y, dx: 0, dy: 0, rot: 0, size: 1, glow: 0 })
       }
     }
     this.draw()
@@ -148,23 +154,24 @@ export default class extends Controller {
     this.rafId = null
     const now = performance.now()
     this.ripples = this.ripples.filter((rp) => now - rp.start < 900)
-    this.advanceGust(now)
+    this.endBillowIfDone(now)
     const moving = this.step(now)
     this.draw()
     // A resting mouse needs no frames; pointermove wakes it.
-    if (moving || this.ripples.length || this.gust) this.wake()
+    if (moving || this.ripples.length || this.billow) this.wake()
   }
 
-  // Move every scale a step toward where the mouse (and any ripple) wants it. Returns true while
-  // anything is still in motion.
+  // Move every scale a step toward where the mouse, the billow and any ripple want it. Returns true
+  // while anything is still in motion.
   step(now) {
     const reach = this.reachValue
-    const gust = this.gust?.point
-    const gustReach = reach * 2.2 // a wide band, so it reads as wind rather than a cursor
+    const push = this.pushValue
+    const billow = this.billow
+    const billowMs = billow ? now - billow.start : 0
     let moving = false
 
     for (const s of this.scales) {
-      let tx = 0, ty = 0, trot = 0, tglow = 0
+      let tx = 0, ty = 0, trot = 0, tsize = 1, tglow = 0
 
       if (this.mouse) {
         const vx = s.x - this.mouse.x
@@ -174,26 +181,25 @@ export default class extends Controller {
           const t = 1 - smoothstep(0, reach, dist)
           const nx = dist > 0 ? vx / dist : 0
           const ny = dist > 0 ? vy / dist : 0
-          tx += nx * this.pushValue * t
-          ty += ny * this.pushValue * t
+          tx += nx * push * t
+          ty += ny * push * t
           trot += nx * this.turnValue * t // scales left of the mouse turn one way, right the other
           tglow = Math.max(tglow, t)
         }
       }
 
-      // The gust pushes scales downwind, and turns those on either side of its path opposite ways,
-      // so a swirl visibly spins them.
-      if (gust) {
-        const vx = s.x - gust.x
-        const vy = s.y - gust.y
-        const dist = Math.hypot(vx, vy)
-        if (dist < gustReach) {
-          const t = (1 - smoothstep(0, gustReach, dist)) * gust.strength
-          const side = Math.sign(gust.dirX * vy - gust.dirY * vx)
-          tx += gust.dirX * this.pushValue * t
-          ty += gust.dirY * this.pushValue * t
-          trot += side * this.turnValue * 0.8 * t
-          tglow = Math.max(tglow, t * 1.4) // darker than the mouse: the gust's trail should show
+      // Lifted cloth: the scale rises (moves up the screen), is carried a little downwind, grows as
+      // if nearer the eye, and tilts with the slope of the fold. Light comes from upwind, so the
+      // face ahead of the crest darkens and the face behind it catches the light and fades.
+      if (billow) {
+        const { lift, slope } = billow.sample(s.x, s.y, billowMs)
+        if (Math.abs(lift) > 0.005 || Math.abs(slope) > 0.02) {
+          tx += billow.dirX * push * 0.35 * lift
+          ty += billow.dirY * push * 0.35 * lift - push * 0.6 * lift
+          trot += slope * this.turnValue * 0.6
+          tsize += 0.16 * lift
+          const shade = 0.5 * lift + 0.8 * (slope > 0 ? slope : 1.6 * slope)
+          tglow = tglow > 0 ? Math.max(tglow, shade) : shade
         }
       }
 
@@ -205,8 +211,8 @@ export default class extends Controller {
         const ring = Math.abs(dist - 320 * age)
         if (ring < 60 && dist > 0) {
           const t = (1 - ring / 60) * (1 - age) ** 2
-          tx += (vx / dist) * this.pushValue * t
-          ty += (vy / dist) * this.pushValue * t
+          tx += (vx / dist) * push * t
+          ty += (vy / dist) * push * t
           trot += (vx / dist) * this.turnValue * t
           tglow = Math.max(tglow, t)
         }
@@ -217,45 +223,53 @@ export default class extends Controller {
       s.dx += (tx - s.dx) * k
       s.dy += (ty - s.dy) * k
       s.rot += (trot - s.rot) * k
+      s.size += (tsize - s.size) * k
       s.glow += (tglow - s.glow) * k
-      if (Math.abs(s.dx) > 0.05 || Math.abs(s.dy) > 0.05 || Math.abs(s.rot) > 0.002) moving = true
+      if (Math.abs(s.dx) > 0.05 || Math.abs(s.dy) > 0.05 || Math.abs(s.rot) > 0.002 || Math.abs(s.size - 1) > 0.002) {
+        moving = true
+      }
     }
     return moving
   }
 
+  // Every scale goes into one path per line strength, so a frame is a handful of strokes rather
+  // than one per moving scale (thousands on a wide screen while a billow passes).
   draw() {
     const { ctx } = this
     const r = this.radiusValue
-    const inner = r * 0.5
     ctx.clearRect(0, 0, this.width, this.height)
-    ctx.lineWidth = 1
 
-    // Resting scales: one path, one stroke.
-    ctx.beginPath()
-    const active = []
+    const paths = new Map() // rounded alpha -> Path2D
     for (const s of this.scales) {
-      if (s.glow > 0.01 || Math.abs(s.dx) > 0.05 || Math.abs(s.dy) > 0.05) { active.push(s); continue }
-      ctx.moveTo(s.x - r, s.y)
-      ctx.arc(s.x, s.y, r, Math.PI, 2 * Math.PI)
-      ctx.moveTo(s.x - inner, s.y)
-      ctx.arc(s.x, s.y, inner, Math.PI, 2 * Math.PI)
+      const moving = Math.abs(s.glow) > 0.01 || Math.abs(s.dx) > 0.05 || Math.abs(s.dy) > 0.05 ||
+        Math.abs(s.rot) > 0.002 || Math.abs(s.size - 1) > 0.002
+      const alpha = moving ? Math.round(this.lineAlpha(s.glow) * 200) / 200 : this.alphaValue
+      let path = paths.get(alpha)
+      if (!path) paths.set(alpha, (path = new Path2D()))
+      if (moving) addScale(path, s.x + s.dx, s.y + s.dy, r * s.size, s.rot)
+      else addScale(path, s.x, s.y, r, 0)
     }
-    ctx.strokeStyle = `rgba(${this.colorValue}, ${this.alphaValue})`
-    ctx.stroke()
 
-    // Moving scales: each one shifted, turned, and a little stronger while it moves.
-    for (const s of active) {
-      ctx.save()
-      ctx.translate(s.x + s.dx, s.y + s.dy)
-      ctx.rotate(s.rot)
-      ctx.beginPath()
-      ctx.moveTo(-r, 0)
-      ctx.arc(0, 0, r, Math.PI, 2 * Math.PI)
-      ctx.moveTo(-inner, 0)
-      ctx.arc(0, 0, inner, Math.PI, 2 * Math.PI)
-      ctx.strokeStyle = `rgba(${this.colorValue}, ${(this.alphaValue + 0.16 * s.glow).toFixed(3)})`
-      ctx.stroke()
-      ctx.restore()
+    for (const [alpha, path] of paths) {
+      ctx.lineWidth = alpha > this.alphaValue ? 1.15 : 1 // darker lines are a touch thicker too
+      ctx.strokeStyle = `rgba(${this.colorValue}, ${alpha})`
+      ctx.stroke(path)
     }
+  }
+
+  // Positive glow darkens a line; negative glow (the lit face of a billow) fades it, in proportion
+  // to the resting strength so the quieter inner pages fade as gently as Home, and never to nothing.
+  lineAlpha(glow) {
+    if (glow >= 0) return this.alphaValue + 0.16 * glow
+    return this.alphaValue * Math.max(0.3, 1 + 0.55 * glow)
+  }
+}
+
+// One scale: an outer and an inner half-circle, opening downward. Turning a half-circle about its
+// centre only shifts its start and end angles, so no canvas transform is needed.
+function addScale(path, x, y, radius, rot) {
+  for (const rad of [radius, radius * 0.5]) {
+    path.moveTo(x + rad * Math.cos(Math.PI + rot), y + rad * Math.sin(Math.PI + rot))
+    path.arc(x, y, rad, Math.PI + rot, 2 * Math.PI + rot)
   }
 }

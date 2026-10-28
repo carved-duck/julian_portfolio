@@ -23,15 +23,19 @@ If a Bootstrap carousel is ever added back, dispose the old instance before maki
   layout renders via `ApplicationHelper#site_pattern_tag`, at `z-index: -1`. Never give `<main>` a
   z-index to lift content over it instead: that traps every modal rendered inside `<main>` (the
   photo viewer, the events pending modal) beneath Bootstrap's backdrop. Burgundy at 7% on Home, 4% with a smaller
-  push on inner pages, none on the black photo page or in `/admin`. Near the mouse the scales slide outward and turn, like leaves pushed aside; a
-  click or tap sends a ripple; still pattern under reduced motion. It only runs animation frames while
-  something is moving; a resting mouse costs nothing.
-- **Wind:** every 4–8 s a gust crosses the page, always left to right, entering anywhere on the left
-  and leaving anywhere on the right (exit at most 40° from the entry), bending and sometimes swirling
-  (`app/javascript/wind/`, pinned in `config/importmap.rb`). It skips while the tab is hidden, a
-  modal is open, or nobody has scrolled, typed or moved the pointer for a minute, so an idle page
-  runs no frames. `wind_drift_controller.js`, on the same canvas, nudges elements marked `data-wind`
-  a few px along the gust's overall direction with a slight tilt. Only glanceable things get the mark
+  push on inner pages, none on the black photo page or in `/admin`. Near the mouse the scales slide
+  outward and turn; a click or tap sends a ripple; still pattern under reduced motion. It only runs
+  animation frames while something is moving; a resting mouse costs nothing.
+- **Wind:** seigaiha is a textile pattern, so the wind moves it like cloth (an open kimono in a
+  breeze). 4–8 s after one ends, a billow (`app/javascript/wind/billow.js`, pinned in
+  `config/importmap.rb`) rolls left to right, up to 25° off level: an uneven fold whose crest curves,
+  leads at one end, swells and dips along its length, flutters as it settles, and sometimes brings a
+  smaller second fold. Scales under it rise, grow, tilt, and darken on the face ahead of the crest
+  and fade on the lit face behind it. A billow is on screen about 5–7 s on a laptop, less on a phone,
+  more on a wide screen; the fold is sized to the screen width. It skips while the tab is hidden, a modal is open, or nobody has scrolled, typed or
+  moved the pointer for a minute, so an idle page runs no frames. `wind_float_controller.js`, on the
+  same canvas, samples the same cloth under each element marked `data-wind`: it rises a few px and
+  tilts toward the higher side, then settles. Only glanceable things get the mark
   (home slider cards, project grid cards, `/photos` place pills, frames and tiles, blog cards); never
   reading text, the featured project, the "More projects" cards on a project page
   (`pages/_project_slide` takes `wind: false`) or the photo viewer. Hovered or focused ones stay

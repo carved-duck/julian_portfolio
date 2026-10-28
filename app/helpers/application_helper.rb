@@ -16,8 +16,8 @@ module ApplicationHelper
   def site_pattern_tag
     return if controller_path.start_with?("admin/") || (controller_name == "photos" && action_name == "show")
 
-    data = { controller: "seigaiha wind-drift",
-             action: "seigaiha:gust->wind-drift#push seigaiha:gust-end->wind-drift#calm" }
+    data = { controller: "seigaiha wind-float",
+             action: "seigaiha:billow->wind-float#ride seigaiha:billow-end->wind-float#calm" }
     unless controller_name == "pages" && action_name == "home"
       data.merge!(seigaiha_alpha_value: 0.04, seigaiha_push_value: 8)
     end
