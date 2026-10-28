@@ -103,6 +103,9 @@
     -webkit-overflow-scrolling: touch;
     scroll-behavior: smooth;
     scrollbar-width: none;
+    // Room for the wind drift, which the scroll box would otherwise clip; the margin cancels it.
+    padding-top: 6px;
+    margin-top: -6px;
     padding-bottom: 4px;
 
     &::-webkit-scrollbar {
@@ -164,7 +167,8 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   color: var(--burgundy);
   text-decoration: none;
-  transition: all 0.2s ease;
+  // Not `all`: the wind drift sets translate every frame.
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
   flex-shrink: 0; // Prevent buttons from shrinking
   font-weight: 500;
   font-family: $body-font;

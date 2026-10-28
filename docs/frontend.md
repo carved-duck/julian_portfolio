@@ -24,8 +24,18 @@ If a Bootstrap carousel is ever added back, dispose the old instance before maki
   z-index to lift content over it instead: that traps every modal rendered inside `<main>` (the
   photo viewer, the events pending modal) beneath Bootstrap's backdrop. Burgundy at 7% on Home, 4% with a smaller
   push on inner pages, none on the black photo page or in `/admin`. Near the mouse the scales slide outward and turn, like leaves pushed aside; a
-  tap sends a ripple; still pattern under reduced motion. It only runs animation frames while
+  click or tap sends a ripple; still pattern under reduced motion. It only runs animation frames while
   something is moving; a resting mouse costs nothing.
+- **Wind:** every 4–8 s a gust crosses the page, always left to right, entering anywhere on the left
+  and leaving anywhere on the right (exit at most 40° from the entry), bending and sometimes swirling
+  (`app/javascript/wind/`, pinned in `config/importmap.rb`). It skips while the tab is hidden or a
+  modal is open. `wind_drift_controller.js`, on the same canvas, nudges elements marked `data-wind`
+  a few px along the gust's overall direction with a slight tilt. Only glanceable things get the mark
+  (home slider cards, project grid cards, `/photos` place pills, frames and tiles, blog cards); never
+  reading text, the featured project, the "More projects" cards on a project page
+  (`pages/_project_slide` takes `wind: false`) or the photo viewer. Hovered or focused ones stay
+  still. It writes CSS `translate`/`rotate`, so a marked element must not use `transition: all`
+  (it would lag every frame), and a scroll box around one needs a few px of padding or it clips.
 - `showcase_controller.js` — the two doors (Featured photos, Featured dev work). Hover opens a
   panel on mouse devices; click/tap/Enter opens it everywhere. Both panels share one grid cell, so
   swapping them never moves the page.

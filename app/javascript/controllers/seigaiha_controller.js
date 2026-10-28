@@ -1,9 +1,13 @@
 import { Controller } from "@hotwired/stimulus"
+import { createGust } from "wind/gust_path"
+import { random, smoothstep } from "wind/math"
 
 // Seigaiha (青海波) waves drawn on a <canvas>: rows of half-circle "scales", each row offset by half a
 // scale. Near the mouse the scales slide outward and turn a little, like leaves pushed aside, then
-// drift back. A tap on a touch screen sends a ripple through them. Under reduced motion the pattern
-// is drawn once and stays still. It only animates while something is moving.
+// drift back. A click or tap sends a ripple through them. Every few seconds a gust of wind crosses
+// the page left to right and stirs the scales along its path; each frame of it is sent out as a
+// "seigaiha:gust" event (viewport coordinates) so wind_drift_controller can nudge cards. Under
+// reduced motion the pattern is drawn once and stays still. It only animates while something moves.
 //
 // <canvas data-controller="seigaiha"></canvas>
 export default class extends Controller {
@@ -13,7 +17,8 @@ export default class extends Controller {
     radius: { type: Number, default: 15 },            // scale radius, px
     reach: { type: Number, default: 100 },            // how far the mouse is felt, px
     push: { type: Number, default: 12 },              // max slide, px
-    turn: { type: Number, default: 0.55 }             // max turn, radians
+    turn: { type: Number, default: 0.55 },            // max turn, radians
+    gustEvery: { type: Array, default: [4000, 8000] } // ms between gusts: [min, max]
   }
 
   connect() {
@@ -22,6 +27,7 @@ export default class extends Controller {
 
     this.mouse = null
     this.ripples = []
+    this.gust = null
     this.rafId = null
     this.reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
     this.hoverMQ = window.matchMedia("(hover: hover) and (pointer: fine)")
@@ -37,10 +43,11 @@ export default class extends Controller {
     }
     this.onPointerLeave = () => { this.mouse = null; this.wake() }
     this.onPointerDown = (e) => {
-      if (e.pointerType === "mouse") return
       const p = this.toLocal(e.clientX, e.clientY)
       if (p) { this.ripples.push({ ...p, start: performance.now() }); this.wake() }
     }
+    // Chrome runs no frames in a hidden tab; pick a half-finished gust back up on return.
+    this.onVisibility = () => this.wake()
 
     this.resize()
     window.addEventListener("resize", this.onResize)
@@ -49,15 +56,44 @@ export default class extends Controller {
     window.addEventListener("pointermove", this.onPointerMove)
     document.documentElement.addEventListener("pointerleave", this.onPointerLeave)
     window.addEventListener("pointerdown", this.onPointerDown)
+    document.addEventListener("visibilitychange", this.onVisibility)
+    this.scheduleGust(random(1500, 3000)) // the first one comes soon, so a visitor sees it
   }
 
   disconnect() {
     cancelAnimationFrame(this.rafId)
     clearTimeout(this.resizeTimer)
+    clearTimeout(this.gustTimer)
     window.removeEventListener("resize", this.onResize)
     window.removeEventListener("pointermove", this.onPointerMove)
     document.documentElement.removeEventListener("pointerleave", this.onPointerLeave)
     window.removeEventListener("pointerdown", this.onPointerDown)
+    document.removeEventListener("visibilitychange", this.onVisibility)
+  }
+
+  scheduleGust(delay) {
+    clearTimeout(this.gustTimer)
+    this.gustTimer = setTimeout(() => {
+      // Wait while nobody can see the page, or a pop-up such as the photo viewer covers it.
+      const covered = document.body.classList.contains("modal-open")
+      if (document.hidden || covered) return this.scheduleGust(1000)
+      this.gust = { at: createGust(this.width, this.height), start: performance.now(), point: null }
+      this.wake()
+    }, delay)
+  }
+
+  // Move the gust along; when it has left the page, book the next one.
+  advanceGust(now) {
+    if (!this.gust) return
+    this.gust.point = this.gust.at(now - this.gust.start)
+    if (!this.gust.point) {
+      this.gust = null
+      this.scheduleGust(random(...this.gustEveryValue))
+      return
+    }
+    const rect = this.element.getBoundingClientRect()
+    const { x, y } = this.gust.point
+    this.dispatch("gust", { detail: { ...this.gust.point, x: x + rect.left, y: y + rect.top } })
   }
 
   // Lay out the scales for the current size and draw the resting pattern.
@@ -97,15 +133,19 @@ export default class extends Controller {
     this.rafId = null
     const now = performance.now()
     this.ripples = this.ripples.filter((rp) => now - rp.start < 900)
+    this.advanceGust(now)
     const moving = this.step(now)
     this.draw()
-    if (moving || this.ripples.length) this.wake() // a resting mouse needs no frames; pointermove wakes it
+    // A resting mouse needs no frames; pointermove wakes it.
+    if (moving || this.ripples.length || this.gust) this.wake()
   }
 
   // Move every scale a step toward where the mouse (and any ripple) wants it. Returns true while
   // anything is still in motion.
   step(now) {
     const reach = this.reachValue
+    const gust = this.gust?.point
+    const gustReach = reach * 2.2 // a wide band, so it reads as wind rather than a cursor
     let moving = false
 
     for (const s of this.scales) {
@@ -123,6 +163,22 @@ export default class extends Controller {
           ty += ny * this.pushValue * t
           trot += nx * this.turnValue * t // scales left of the mouse turn one way, right the other
           tglow = Math.max(tglow, t)
+        }
+      }
+
+      // The gust pushes scales downwind, and turns those on either side of its path opposite ways,
+      // so a swirl visibly spins them.
+      if (gust) {
+        const vx = s.x - gust.x
+        const vy = s.y - gust.y
+        const dist = Math.hypot(vx, vy)
+        if (dist < gustReach) {
+          const t = (1 - smoothstep(0, gustReach, dist)) * gust.strength
+          const side = Math.sign(gust.dirX * vy - gust.dirY * vx)
+          tx += gust.dirX * this.pushValue * t
+          ty += gust.dirY * this.pushValue * t
+          trot += side * this.turnValue * 0.8 * t
+          tglow = Math.max(tglow, t * 1.4) // darker than the mouse: the gust's trail should show
         }
       }
 
@@ -187,9 +243,4 @@ export default class extends Controller {
       ctx.restore()
     }
   }
-}
-
-function smoothstep(edge0, edge1, x) {
-  const t = Math.max(0, Math.min(1, (x - edge0) / (edge1 - edge0)))
-  return t * t * (3 - 2 * t)
 }

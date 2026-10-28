@@ -1,8 +1,9 @@
 <%# Same shape as a photo slide (image area + pill footer) so the two home panels line up.
     Apps get an App Store-style layout (projects/_feature_phone). Websites and tools get a
     full-bleed window (projects/_frame_*) with the name and stack on top; the description slides up
-    on hover. %>
-<article class="slide-card slide-card--project" itemscope itemtype="https://schema.org/CreativeWork">
+    on hover. Pass wind: false where the wind must leave the card alone (project pages). %>
+<%= tag.article class: "slide-card slide-card--project", data: { wind: local_assigns.fetch(:wind, true) || nil },
+                itemscope: true, itemtype: "https://schema.org/CreativeWork" do %>
   <%= link_to project_path(project), class: "slide-card-media slide-card-media--device slide-card-media--#{project.frame}",
       style: "--accent: #{project_accent(project)}" do %>
     <% if project.frame == "phone" %>
@@ -43,4 +44,4 @@
       <% end %>
     <% end %>
   </footer>
-</article>
+<% end %>

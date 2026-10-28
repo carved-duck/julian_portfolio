@@ -1,4 +1,4 @@
-<article class="slide-card" itemscope itemtype="https://schema.org/Photograph">
+<article class="slide-card" data-wind itemscope itemtype="https://schema.org/Photograph">
   <% if photo.image.attached? %>
     <%= link_to photo_path(photo), class: "slide-card-media", data: photo_viewer_data(photo) do %>
       <%= cl_image_tag photo.image.key,

@@ -13,7 +13,8 @@
     <!-- Unified category filter (one pill style, all breakpoints) -->
     <nav class="photo-filter" aria-label="Filter photos by category">
       <% @categories.each do |category| %>
-        <%= link_to category.titleize, photos_path(category: category), class: "category-pill #{'active' if @selected_category == category}" %>
+        <%= link_to category.titleize, photos_path(category: category), class: "category-pill #{'active' if @selected_category == category}",
+                    data: { wind: true } %>
       <% end %>
     </nav>
   <% end %>
@@ -30,7 +31,7 @@
         <% roll.each_with_index do |photo, index| %>
           <li class="contact-frame">
             <%= link_to photo_path(photo), class: "contact-frame-link", aria: { label: "Open frame #{index + 1}" },
-                data: photo_viewer_data(photo) do %>
+                data: photo_viewer_data(photo).merge(wind: true) do %>
               <%= cl_image_tag photo.image.key,
                   width: 240, height: 160, crop: :fill, quality: :auto, fetch_format: :auto,
                   alt: "", loading: "lazy", draggable: false, oncontextmenu: "return false;" %>
@@ -43,7 +44,8 @@
 
     <div class="photo-grid">
       <% roll.each_with_index do |photo, index| %>
-        <%= link_to photo_path(photo), class: "photo-grid-item", id: "photo-#{photo.id}", data: photo_viewer_data(photo) do %>
+        <%= link_to photo_path(photo), class: "photo-grid-item", id: "photo-#{photo.id}",
+                    data: photo_viewer_data(photo).merge(wind: true) do %>
           <%= cl_image_tag photo.image.key,
               width: 400, height: 400, crop: :fill, quality: :auto, fetch_format: :auto,
               class: "photo-grid-image", loading: "lazy",

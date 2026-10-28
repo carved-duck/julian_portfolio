@@ -91,7 +91,10 @@
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
-  padding: 4px 0 8px; // room for the card lift and shadow; no side padding so the first card snaps to 0
+  // Room for the card lift, wind drift and shadow (the margin keeps the row where it was);
+  // no side padding so the first card snaps to 0.
+  padding: 8px 0;
+  margin-top: -4px;
 
   &::-webkit-scrollbar { display: none; }
 

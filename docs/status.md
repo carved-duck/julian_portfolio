@@ -18,6 +18,9 @@ When something closes, delete its line here in the same session (the commit mess
   Agree each page's changes before building (`../workers/workflow.md` step 2).
   - **Julian's eye check still owed:** Claude's Chrome tab was hidden, so motion and the viewer's
     final paint were checked by measurement.
+  - **Wind gusts (not deployed yet):** Julian's eye check of the feel, and phone width (place pills,
+    home slider top edge, contact-sheet frames drifting near the sprocket holes). Tuning is one
+    number each (`frontend.md` § Home page pieces).
   - **Still owed by Julian:** phone screenshots for Menyu (home screen) and Sollo (today cropped
     from App Store tiles) · optionally a photo for the imagebank-reader card · a MyTap screenshot
     if the app's colours changed (today's is sollo.my/tap cropped to phone width).

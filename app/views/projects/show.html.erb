@@ -68,7 +68,7 @@
   <section class="container project-more" aria-labelledby="more-projects">
     <h2 class="projects-grid-heading" id="more-projects">More projects</h2>
     <div class="project-era-grid">
-      <%= render partial: "pages/project_slide", collection: @more_projects, as: :project %>
+      <%= render partial: "pages/project_slide", collection: @more_projects, as: :project, locals: { wind: false } %>
     </div>
   </section>
 <% end %>
