@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import { createBillow } from "wind/billow"
-import { random, smoothstep } from "wind/math"
+import { clamp, random, smoothstep } from "wind/math"
 
 // Seigaiha (青海波) waves drawn on a <canvas>: rows of half-circle "scales", each row offset by half a
 // scale. Near the mouse the scales slide outward and turn a little, then drift back. A click or tap
@@ -97,16 +97,23 @@ export default class extends Controller {
   startBillow() {
     const billow = createBillow(this.width, this.height)
     const start = performance.now()
-    this.billow = { ...billow, start }
-    // Cards sample the same cloth, in viewport coordinates and page time.
-    const sample = (clientX, clientY, now) => billow.sample(clientX - this.left, clientY - this.top, now - start)
+    this.billow = { ...billow, width: this.width, start }
+    // Cards sample the same cloth, in viewport coordinates and page time. A point off screen (a tall
+    // card's centre) samples the nearest on-screen spot, so it never floats before the fold arrives
+    // or after it has gone.
+    const { width, height } = this
+    const sample = (clientX, clientY, now) =>
+      billow.sample(clamp(clientX - this.left, 0, width), clamp(clientY - this.top, 0, height), now - start)
     this.dispatch("billow", { detail: { sample, dirX: billow.dirX, dirY: billow.dirY } })
     this.wake()
   }
 
   // Once the billow has rolled off the page, book the next one.
   endBillowIfDone(now) {
-    if (!this.billow || now - this.billow.start < this.billow.ms) return
+    if (this.billow && now - this.billow.start >= this.billow.ms) this.endBillow()
+  }
+
+  endBillow() {
     this.billow = null
     this.dispatch("billow-end")
     this.scheduleBillow(random(...this.billowEveryValue))
@@ -123,6 +130,9 @@ export default class extends Controller {
     this.element.width = Math.max(1, Math.round(rect.width * dpr))
     this.element.height = Math.max(1, Math.round(rect.height * dpr))
     this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+    // A billow is shaped for the width it started at; after a rotation or window resize, let the
+    // scales settle and start a fresh one later. (A phone toolbar only changes the height.)
+    if (this.billow && this.billow.width !== this.width) this.endBillow()
 
     // Keep each scale's motion across the resize: a phone's toolbar hiding mid-scroll resizes the
     // page, and starting every scale from rest would flatten a passing billow in one frame.
@@ -225,9 +235,7 @@ export default class extends Controller {
       s.rot += (trot - s.rot) * k
       s.size += (tsize - s.size) * k
       s.glow += (tglow - s.glow) * k
-      if (Math.abs(s.dx) > 0.05 || Math.abs(s.dy) > 0.05 || Math.abs(s.rot) > 0.002 || Math.abs(s.size - 1) > 0.002) {
-        moving = true
-      }
+      if (!atRest(s)) moving = true
     }
     return moving
   }
@@ -241,8 +249,7 @@ export default class extends Controller {
 
     const paths = new Map() // rounded alpha -> Path2D
     for (const s of this.scales) {
-      const moving = Math.abs(s.glow) > 0.01 || Math.abs(s.dx) > 0.05 || Math.abs(s.dy) > 0.05 ||
-        Math.abs(s.rot) > 0.002 || Math.abs(s.size - 1) > 0.002
+      const moving = !atRest(s)
       const alpha = moving ? Math.round(this.lineAlpha(s.glow) * 200) / 200 : this.alphaValue
       let path = paths.get(alpha)
       if (!path) paths.set(alpha, (path = new Path2D()))
@@ -263,6 +270,12 @@ export default class extends Controller {
     if (glow >= 0) return this.alphaValue + 0.16 * glow
     return this.alphaValue * Math.max(0.3, 1 + 0.55 * glow)
   }
+}
+
+// Close enough to its resting place and strength to draw as resting, and to stop animating.
+function atRest(s) {
+  return Math.abs(s.dx) <= 0.05 && Math.abs(s.dy) <= 0.05 && Math.abs(s.rot) <= 0.002 &&
+    Math.abs(s.size - 1) <= 0.002 && Math.abs(s.glow) <= 0.01
 }
 
 // One scale: an outer and an inner half-circle, opening downward. Turning a half-circle about its

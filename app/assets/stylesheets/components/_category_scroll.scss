@@ -104,8 +104,8 @@
     scroll-behavior: smooth;
     scrollbar-width: none;
     // Room for the wind float, which the scroll box would otherwise clip; the margin cancels it.
-    padding-top: 6px;
-    margin-top: -6px;
+    padding-top: 12px;
+    margin-top: -12px;
     padding-bottom: 4px;
 
     &::-webkit-scrollbar {

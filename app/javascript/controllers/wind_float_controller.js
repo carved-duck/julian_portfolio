@@ -103,12 +103,17 @@ export default class extends Controller {
     // Skips cards inside a hidden panel, which the IntersectionObserver still counts as on screen.
     if (el.checkVisibility && !el.checkVisibility({ visibilityProperty: true })) return REST
 
+    // Sample where the element sits at rest: its box on screen already includes the float, and
+    // following that would make it chase its own motion. Turning doesn't move the centre, and
+    // offsetWidth is the width before turning.
     const rect = el.getBoundingClientRect()
-    const y = rect.top + rect.height / 2
-    const inset = rect.width * 0.2
-    const left = billow.sample(rect.left + inset, y, now).lift
-    const middle = billow.sample(rect.left + rect.width / 2, y, now).lift
-    const right = billow.sample(rect.right - inset, y, now).lift
+    const offset = this.offsets.get(el) || REST
+    const x = (rect.left + rect.right) / 2 - offset.x
+    const y = (rect.top + rect.bottom) / 2 - offset.y
+    const reach = el.offsetWidth * 0.3 // from the centre to each side's sample point
+    const left = billow.sample(x - reach, y, now).lift
+    const middle = billow.sample(x, y, now).lift
+    const right = billow.sample(x + reach, y, now).lift
     if (Math.max(Math.abs(left), Math.abs(middle), Math.abs(right)) < 0.01) return REST
 
     return {

@@ -31,8 +31,9 @@ If a Bootstrap carousel is ever added back, dispose the old instance before maki
   `config/importmap.rb`) rolls left to right, up to 25° off level: an uneven fold whose crest curves,
   leads at one end, swells and dips along its length, flutters as it settles, and sometimes brings a
   smaller second fold. Scales under it rise, grow, tilt, and darken on the face ahead of the crest
-  and fade on the lit face behind it. A billow is on screen about 5–7 s on a laptop, less on a phone,
-  more on a wide screen; the fold is sized to the screen width. It skips while the tab is hidden, a modal is open, or nobody has scrolled, typed or
+  and fade on the lit face behind it. At 1440 px a billow runs about 6–11 s, with the fold clearly
+  visible for about 5–7 s; less on a phone, more on a wide screen. The fold is sized to the screen
+  width, and a width change mid-billow ends it. It skips while the tab is hidden, a modal is open, or nobody has scrolled, typed or
   moved the pointer for a minute, so an idle page runs no frames. `wind_float_controller.js`, on the
   same canvas, samples the same cloth under each element marked `data-wind`: it rises a few px and
   tilts toward the higher side, then settles. Only glanceable things get the mark

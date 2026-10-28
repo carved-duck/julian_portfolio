@@ -94,8 +94,8 @@
   // Room on every side for the card lift, wind float and shadow, so the scroll box doesn't clip
   // them or grow while a card drifts. The negative margins keep the row where it was, and
   // scroll-padding makes cards snap to the visible edge, not the padding.
-  padding: 8px 10px;
-  margin: -4px -10px 0;
+  padding: 14px 10px 8px;
+  margin: -10px -10px 0;
   scroll-padding-inline: 10px;
 
   &::-webkit-scrollbar { display: none; }
