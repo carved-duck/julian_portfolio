@@ -4,9 +4,10 @@ ELI5: the short list of what's waiting. One line per item, a pointer to the deta
 When something closes, delete its line here in the same session (the commit message is the record).
 
 ## Live
-- Heroku runs release v77 (`f22629f`): the 2026-09-25 redesign (Home, waves on every page,
-  Projects, project pages, Photos), the 2026-09-26 rewrite of all 12 projects' copy and tags, and
-  the 2026-09-27 home tagline wording. Migrations and `showcase:load` done on production.
+- Heroku runs release v78 (`67ebbea`): the 2026-09-25 redesign (Home, waves on every page,
+  Projects, project pages, Photos), the 2026-09-26 rewrite of all 12 projects' copy and tags, the
+  2026-09-27 home tagline wording, and the 2026-10-28 wind billows (the waves lift like cloth).
+  Migrations and `showcase:load` done on production.
 - **Deploy steps** (at Julian's go): `git push heroku master`, then straight away
   `heroku run rails db:migrate -a julian-portfolio` if there are migrations (no release phase, so
   pages that need the new columns error until it runs), then
@@ -18,9 +19,9 @@ When something closes, delete its line here in the same session (the commit mess
   Agree each page's changes before building (`../workers/workflow.md` step 2).
   - **Julian's eye check still owed:** Claude's Chrome tab was hidden, so motion and the viewer's
     final paint were checked by measurement.
-  - **Wind billows (not deployed yet):** Julian's eye check of the feel, and phone width (place pills,
-    home slider top edge, contact-sheet frames floating near the sprocket holes). Tuning is one
-    number each (`frontend.md` § Home page pieces).
+  - **Wind billows on a real phone:** Julian approved the feel on desktop; still unchecked at phone
+    width (place pills, home slider top edge, contact-sheet frames floating near the sprocket
+    holes). Tuning is one number each (`frontend.md` § Home page pieces).
   - **Still owed by Julian:** phone screenshots for Menyu (home screen) and Sollo (today cropped
     from App Store tiles) · optionally a photo for the imagebank-reader card · a MyTap screenshot
     if the app's colours changed (today's is sollo.my/tap cropped to phone width).
