@@ -1,16 +1,8 @@
 import { Controller } from "@hotwired/stimulus"
 import { smoothstep } from "wind/math"
 
-// Nudges anything marked data-wind a few pixels downwind while a gust (seigaiha_controller) passes
-// over it, with the slightest tilt, then lets it settle back. Only glanceable things get the mark:
-// cards, thumbnails, place buttons. Never text to read, and never the photo viewer.
-// Whatever is under the mouse or holds keyboard focus stays still, so nobody chases a target.
-// Cards follow the gust's overall direction, not its swirls, so they never drift against the wind.
-// It writes the CSS `translate` and `rotate` properties, which stack on top of an element's own
-// `transform`, so hover lifts keep working. Those elements must not transition `all`.
-//
-// Sits on the wave canvas, so it only runs on pages that have the waves:
-// <canvas data-controller="seigaiha wind-drift" data-action="seigaiha:gust->wind-drift#push">
+// Nudges elements marked data-wind along a passing gust from seigaiha_controller, then lets them
+// settle. What gets the mark, and the CSS rules a marked element must follow: docs/frontend.md § Wind.
 export default class extends Controller {
   static values = {
     reach: { type: Number, default: 180 }, // px from the gust that a card still feels it
@@ -20,8 +12,8 @@ export default class extends Controller {
 
   connect() {
     this.gust = null
-    this.gustAt = 0
     this.offsets = new Map() // element -> { x, y, rot } for everything not at rest
+    this.held = new Set()    // hovered or focused during this gust: stays still until it ends
     this.visible = new Set()
     this.rafId = null
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return
@@ -36,19 +28,27 @@ export default class extends Controller {
 
     // Turbo snapshots the page for the Back button before disconnect() runs; settle cards first.
     this.onBeforeCache = () => this.settleAll()
+    this.onVisibility = () => this.wake()
     document.addEventListener("turbo:before-cache", this.onBeforeCache)
+    document.addEventListener("visibilitychange", this.onVisibility)
   }
 
   disconnect() {
     this.observer?.disconnect()
     document.removeEventListener("turbo:before-cache", this.onBeforeCache)
+    document.removeEventListener("visibilitychange", this.onVisibility)
     this.settleAll()
   }
 
   push({ detail }) {
     if (!this.observer) return
     this.gust = detail
-    this.gustAt = performance.now()
+    this.wake()
+  }
+
+  calm() {
+    this.gust = null
+    this.held.clear()
     this.wake()
   }
 
@@ -59,12 +59,11 @@ export default class extends Controller {
   frame() {
     this.rafId = null
     const now = performance.now()
-    const gust = now - this.gustAt < 100 ? this.gust : null // no event lately: the gust has gone
 
     // Read every position first, then write, so the browser lays out the page once per frame.
     const elements = new Set([...this.visible, ...this.offsets.keys()])
     const targets = new Map()
-    for (const el of elements) targets.set(el, this.targetFor(el, gust, now))
+    for (const el of elements) targets.set(el, this.targetFor(el, now))
 
     let moving = false
     for (const [el, target] of targets) {
@@ -72,9 +71,9 @@ export default class extends Controller {
       if (resting && !this.offsets.has(el)) continue
 
       const o = this.offsets.get(el) || { x: 0, y: 0, rot: 0 }
-      o.x += (target.x - o.x) * 0.08
-      o.y += (target.y - o.y) * 0.08
-      o.rot += (target.rot - o.rot) * 0.08
+      o.x += (target.x - o.x) * EASE
+      o.y += (target.y - o.y) * EASE
+      o.rot += (target.rot - o.rot) * EASE
 
       const settled = Math.abs(o.x) < 0.05 && Math.abs(o.y) < 0.05 && Math.abs(o.rot) < 0.01
       if (resting && settled) {
@@ -87,12 +86,22 @@ export default class extends Controller {
       el.style.rotate = `${o.rot.toFixed(3)}deg`
       moving = true
     }
-    if (moving || gust) this.wake()
+    if (moving || this.gust) this.wake()
   }
 
-  // How far the gust wants this element moved right now.
-  targetFor(el, gust, now) {
-    if (!gust || !this.visible.has(el) || el.matches(":hover, :focus-within")) return REST
+  // How far the gust wants this element moved right now. Cards follow the gust's overall
+  // direction (wind), not its swirls, so they never drift against the wind.
+  targetFor(el, now) {
+    const gust = this.gust
+    if (!gust || !this.visible.has(el) || this.held.has(el)) return REST
+    // Holding for the rest of the gust stops a card that drifts under a resting cursor from
+    // flickering between hovered and not.
+    if (el.matches(":hover, :focus-within")) {
+      this.held.add(el)
+      return REST
+    }
+    // Skips cards inside a hidden panel, which the IntersectionObserver still counts as on screen.
+    if (el.checkVisibility && !el.checkVisibility({ visibilityProperty: true })) return REST
 
     const rect = el.getBoundingClientRect()
     const dx = Math.max(rect.left - gust.x, 0, gust.x - rect.right)
@@ -118,6 +127,7 @@ export default class extends Controller {
   }
 }
 
+const EASE = 0.08 // share of the remaining distance covered each frame
 const REST = Object.freeze({ x: 0, y: 0, rot: 0 })
 
 function clearDrift(el) {

@@ -91,10 +91,12 @@
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
-  // Room for the card lift, wind drift and shadow (the margin keeps the row where it was);
-  // no side padding so the first card snaps to 0.
-  padding: 8px 0;
-  margin-top: -4px;
+  // Room on every side for the card lift, wind drift and shadow, so the scroll box doesn't clip
+  // them or grow while a card drifts. The negative margins keep the row where it was, and
+  // scroll-padding makes cards snap to the visible edge, not the padding.
+  padding: 8px 10px;
+  margin: -4px -10px 0;
+  scroll-padding-inline: 10px;
 
   &::-webkit-scrollbar { display: none; }
 

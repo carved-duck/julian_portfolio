@@ -6,10 +6,14 @@ import { random, smoothstep } from "wind/math"
 // scale. Near the mouse the scales slide outward and turn a little, like leaves pushed aside, then
 // drift back. A click or tap sends a ripple through them. Every few seconds a gust of wind crosses
 // the page left to right and stirs the scales along its path; each frame of it is sent out as a
-// "seigaiha:gust" event (viewport coordinates) so wind_drift_controller can nudge cards. Under
-// reduced motion the pattern is drawn once and stays still. It only animates while something moves.
+// "seigaiha:gust" event (viewport coordinates), then one "seigaiha:gust-end", so
+// wind_drift_controller can nudge cards. Gusts rest after a minute with no scroll, key or pointer
+// input, so a page left open costs no battery. Under reduced motion the pattern is drawn once and
+// stays still. It only animates while something moves.
 //
 // <canvas data-controller="seigaiha"></canvas>
+const IDLE_MS = 60000
+
 export default class extends Controller {
   static values = {
     color: { type: String, default: "141, 11, 65" }, // "r, g, b"
@@ -29,6 +33,7 @@ export default class extends Controller {
     this.ripples = []
     this.gust = null
     this.rafId = null
+    this.lastInputAt = performance.now()
     this.reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
     this.hoverMQ = window.matchMedia("(hover: hover) and (pointer: fine)")
 
@@ -36,13 +41,16 @@ export default class extends Controller {
       clearTimeout(this.resizeTimer)
       this.resizeTimer = setTimeout(() => this.resize(), 50)
     }
+    this.onInput = () => { this.lastInputAt = performance.now() }
     this.onPointerMove = (e) => {
+      this.onInput()
       if (e.pointerType !== "mouse" || !this.hoverMQ.matches) return
       this.mouse = this.toLocal(e.clientX, e.clientY)
       this.wake()
     }
     this.onPointerLeave = () => { this.mouse = null; this.wake() }
     this.onPointerDown = (e) => {
+      this.onInput()
       const p = this.toLocal(e.clientX, e.clientY)
       if (p) { this.ripples.push({ ...p, start: performance.now() }); this.wake() }
     }
@@ -57,6 +65,8 @@ export default class extends Controller {
     document.documentElement.addEventListener("pointerleave", this.onPointerLeave)
     window.addEventListener("pointerdown", this.onPointerDown)
     document.addEventListener("visibilitychange", this.onVisibility)
+    window.addEventListener("scroll", this.onInput, { passive: true })
+    window.addEventListener("keydown", this.onInput)
     this.scheduleGust(random(1500, 3000)) // the first one comes soon, so a visitor sees it
   }
 
@@ -69,14 +79,17 @@ export default class extends Controller {
     document.documentElement.removeEventListener("pointerleave", this.onPointerLeave)
     window.removeEventListener("pointerdown", this.onPointerDown)
     document.removeEventListener("visibilitychange", this.onVisibility)
+    window.removeEventListener("scroll", this.onInput)
+    window.removeEventListener("keydown", this.onInput)
   }
 
   scheduleGust(delay) {
     clearTimeout(this.gustTimer)
     this.gustTimer = setTimeout(() => {
-      // Wait while nobody can see the page, or a pop-up such as the photo viewer covers it.
+      // Wait while nobody can see the page, is using it, or a pop-up such as the photo viewer covers it.
       const covered = document.body.classList.contains("modal-open")
-      if (document.hidden || covered) return this.scheduleGust(1000)
+      const idle = performance.now() - this.lastInputAt > IDLE_MS
+      if (document.hidden || covered || idle) return this.scheduleGust(1000)
       this.gust = { at: createGust(this.width, this.height), start: performance.now(), point: null }
       this.wake()
     }, delay)
@@ -88,18 +101,20 @@ export default class extends Controller {
     this.gust.point = this.gust.at(now - this.gust.start)
     if (!this.gust.point) {
       this.gust = null
+      this.dispatch("gust-end")
       this.scheduleGust(random(...this.gustEveryValue))
       return
     }
-    const rect = this.element.getBoundingClientRect()
     const { x, y } = this.gust.point
-    this.dispatch("gust", { detail: { ...this.gust.point, x: x + rect.left, y: y + rect.top } })
+    this.dispatch("gust", { detail: { ...this.gust.point, x: x + this.left, y: y + this.top } })
   }
 
   // Lay out the scales for the current size and draw the resting pattern.
   resize() {
     const dpr = window.devicePixelRatio || 1
     const rect = this.element.getBoundingClientRect()
+    this.left = rect.left // cached: reading it per frame would force a layout after the card drift writes
+    this.top = rect.top
     this.width = rect.width
     this.height = rect.height
     this.element.width = Math.max(1, Math.round(rect.width * dpr))

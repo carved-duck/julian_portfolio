@@ -28,8 +28,9 @@ If a Bootstrap carousel is ever added back, dispose the old instance before maki
   something is moving; a resting mouse costs nothing.
 - **Wind:** every 4–8 s a gust crosses the page, always left to right, entering anywhere on the left
   and leaving anywhere on the right (exit at most 40° from the entry), bending and sometimes swirling
-  (`app/javascript/wind/`, pinned in `config/importmap.rb`). It skips while the tab is hidden or a
-  modal is open. `wind_drift_controller.js`, on the same canvas, nudges elements marked `data-wind`
+  (`app/javascript/wind/`, pinned in `config/importmap.rb`). It skips while the tab is hidden, a
+  modal is open, or nobody has scrolled, typed or moved the pointer for a minute, so an idle page
+  runs no frames. `wind_drift_controller.js`, on the same canvas, nudges elements marked `data-wind`
   a few px along the gust's overall direction with a slight tilt. Only glanceable things get the mark
   (home slider cards, project grid cards, `/photos` place pills, frames and tiles, blog cards); never
   reading text, the featured project, the "More projects" cards on a project page
