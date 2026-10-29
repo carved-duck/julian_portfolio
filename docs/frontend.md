@@ -40,8 +40,11 @@ If a Bootstrap carousel is ever added back, dispose the old instance before maki
   breeze). 4–8 s after one ends, a billow (`app/javascript/wind/billow.js`, pinned in
   `config/importmap.rb`) rolls left to right, up to 25° off level: an uneven fold whose crest curves,
   leads at one end, swells and dips along its length, flutters as it settles, and sometimes brings a
-  smaller second fold. Scales under it rise, grow, tilt, and darken on the face ahead of the crest
-  and fade on the lit face behind it. At 1440 px a billow runs about 6–11 s, with the fold clearly
+  smaller second fold. Scales under it rise, grow, tilt, and darken on the face ahead of the
+  crest; the lit face behind it turns gold, the crest glints (a brighter gold with a halo; a few
+  scales flash), and each raised scale casts a soft shadow below and downwind. Tuning is `LIGHT` in
+  `app/javascript/waves/light.js`: strengths are multiples of the page's line strength, shadow
+  offsets shares of `push`. At 1440 px a billow runs about 6–11 s, with the fold clearly
   visible for about 5–7 s; less on a phone, more on a wide screen. The fold is sized to the screen
   width, and a width change mid-billow ends it. It skips while the tab is hidden, a modal is open, or nobody has scrolled, typed or
   moved the pointer for a minute, so an idle page runs no frames. `wind_float_controller.js`, on the

@@ -2,15 +2,18 @@ import { Controller } from "@hotwired/stimulus"
 import { createBillow } from "wind/billow"
 import { clamp, random, smoothstep } from "wind/math"
 import { Lens } from "waves/lens"
-import { addScale } from "waves/scale"
+import { GLINT, GOLD, LIGHT, SHADOW, lightAt } from "waves/light"
+import { REST, atRest, easeScale, newScale } from "waves/scale"
+import { StrokeBatch } from "waves/strokes"
 
 // Seigaiha (青海波) waves drawn on a <canvas>: rows of half-circle "scales", each row offset by half a
 // scale. Around the mouse the pattern opens a circle filled with smaller and smaller copies of itself
 // (waves/lens.js), and the big scales at its rim part a little. A click or tap sends a ripple
 // through them. Every few seconds the wind lifts the pattern like cloth: a billow
-// (wind/billow.js) rolls across the page and the scales rise, tilt and darken as it passes. Its
-// start is sent out as a "seigaiha:billow" event and its end as "seigaiha:billow-end", so
-// wind_float_controller can float cards on it. Billows rest after a minute with no scroll, key or
+// (wind/billow.js) rolls across the page and the scales rise and tilt as it passes, catching the
+// light in gold and casting a shadow (waves/light.js). Its start is sent out as a
+// "seigaiha:billow" event and its end as "seigaiha:billow-end", so wind_float_controller can float
+// cards on it. Billows rest after a minute with no scroll, key or
 // pointer input, so a page left open costs no battery. Under reduced motion the pattern is drawn
 // once and stays still. It only animates while something moves.
 //
@@ -38,6 +41,7 @@ export default class extends Controller {
     this.lens = null
     this.ripples = []
     this.billow = null
+    this.wind = { x: 1, y: 0 } // the last billow's direction; shadows keep it while the cloth settles
     this.rafId = null
     this.lastInputAt = performance.now()
     this.reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -104,6 +108,7 @@ export default class extends Controller {
     const billow = createBillow(this.width, this.height)
     const start = performance.now()
     this.billow = { ...billow, width: this.width, start }
+    this.wind = { x: billow.dirX, y: billow.dirY }
     // Cards sample the same cloth, in viewport coordinates and page time. A point off screen (a tall
     // card's centre) samples the nearest on-screen spot, so it never floats before the fold arrives
     // or after it has gone.
@@ -148,7 +153,7 @@ export default class extends Controller {
     for (let row = 0, y = 0; y <= this.height + r; row++, y += r) {
       const shift = row % 2 ? r : 0
       for (let x = shift - 2 * r; x <= this.width + 2 * r; x += 2 * r) {
-        this.scales.push(previous.get(`${x},${y}`) || { x, y, dx: 0, dy: 0, rot: 0, size: 1, glow: 0 })
+        this.scales.push(previous.get(`${x},${y}`) || newScale(x, y))
       }
     }
     this.draw()
@@ -190,109 +195,117 @@ export default class extends Controller {
   // while anything is still in motion.
   step(now) {
     let moving = this.stepLens()
-    const push = this.pushValue
-    const lens = this.lens
-    const billow = this.billow
-    const billowMs = billow ? now - billow.start : 0
+    const billowMs = this.billow ? now - this.billow.start : 0
+    const target = { ...REST }
 
     for (const s of this.scales) {
-      let tx = 0, ty = 0, trot = 0, tsize = 1, tglow = 0
+      Object.assign(target, REST)
+      if (this.lens) this.partAtRim(s, target)
+      if (this.billow) this.liftWithBillow(s, target, billowMs)
+      for (const rp of this.ripples) this.pushWithRipple(s, target, rp, now)
 
-      // Big scales around the rim part outward a little, so the circle reads as an opening.
-      if (lens) {
-        const vx = s.x - lens.x
-        const vy = s.y - lens.y
-        const dist = Math.hypot(vx, vy)
-        const felt = lens.radius * 1.15
-        if (dist < felt && dist > 0) {
-          const t = 1 - smoothstep(lens.radius * 0.5, felt, dist)
-          tx += (vx / dist) * push * RIM_PUSH * t
-          ty += (vy / dist) * push * RIM_PUSH * t
-          trot += (vx / dist) * this.turnValue * RIM_PUSH * t // left of the lens turn one way, right the other
-          tglow = Math.max(tglow, t)
-        }
-      }
-
-      // Lifted cloth: the scale rises (moves up the screen), is carried a little downwind, grows as
-      // if nearer the eye, and tilts with the slope of the fold. Light comes from upwind, so the
-      // face ahead of the crest darkens and the face behind it catches the light and fades.
-      if (billow) {
-        const { lift, slope } = billow.sample(s.x, s.y, billowMs)
-        if (Math.abs(lift) > 0.005 || Math.abs(slope) > 0.02) {
-          tx += billow.dirX * push * 0.35 * lift
-          ty += billow.dirY * push * 0.35 * lift - push * 0.6 * lift
-          trot += slope * this.turnValue * 0.6
-          tsize += 0.16 * lift
-          const shade = 0.5 * lift + 0.8 * (slope > 0 ? slope : 1.6 * slope)
-          tglow = tglow > 0 ? Math.max(tglow, shade) : shade
-        }
-      }
-
-      for (const rp of this.ripples) {
-        const age = (now - rp.start) / 900
-        const vx = s.x - rp.x
-        const vy = s.y - rp.y
-        const dist = Math.hypot(vx, vy)
-        const ring = Math.abs(dist - 320 * age)
-        if (ring < 60 && dist > 0) {
-          const t = (1 - ring / 60) * (1 - age) ** 2
-          tx += (vx / dist) * push * t
-          ty += (vy / dist) * push * t
-          trot += (vx / dist) * this.turnValue * t
-          tglow = Math.max(tglow, t)
-        }
-      }
-
-      // Ease toward the target: quick to part, softer to settle back. Done once it has arrived, even
-      // if that is away from rest (the lens rim holds scales parted while the mouse sits still).
-      const k = (tx || ty) ? 0.2 : 0.1
-      s.dx += (tx - s.dx) * k
-      s.dy += (ty - s.dy) * k
-      s.rot += (trot - s.rot) * k
-      s.size += (tsize - s.size) * k
-      s.glow += (tglow - s.glow) * k
-      if (!near(s, tx, ty, trot, tsize, tglow)) moving = true
+      // Quick to part, softer to settle back. Done once it has arrived, even if that is away from
+      // rest (the lens rim holds scales parted while the mouse sits still).
+      const k = (target.dx || target.dy) ? 0.2 : 0.1
+      if (!easeScale(s, target, k)) moving = true
     }
     return moving
   }
 
-  // Every scale goes into one path per line strength and width, so a frame is a handful of strokes
-  // rather than one per moving scale (thousands on a wide screen while a billow passes).
+  // Big scales around the lens rim part outward a little, so the circle reads as an opening.
+  partAtRim(s, target) {
+    const { lens } = this
+    const vx = s.x - lens.x
+    const vy = s.y - lens.y
+    const dist = Math.hypot(vx, vy)
+    const felt = lens.radius * 1.15
+    if (dist >= felt || dist === 0) return
+    const t = 1 - smoothstep(lens.radius * 0.5, felt, dist)
+    const part = RIM_PUSH * t
+    target.dx += (vx / dist) * this.pushValue * part
+    target.dy += (vy / dist) * this.pushValue * part
+    target.rot += (vx / dist) * this.turnValue * part // left of the lens turn one way, right the other
+    target.glow = Math.max(target.glow, t)
+  }
+
+  // Lifted cloth: the scale rises (moves up the screen), is carried a little downwind, grows as if
+  // nearer the eye, and tilts with the slope of the fold. Light comes from upwind, so the face ahead
+  // of the crest darkens and the face behind it fades to let the gold show (waves/light.js).
+  liftWithBillow(s, target, ms) {
+    const { billow } = this
+    const push = this.pushValue
+    const { lift, slope } = billow.sample(s.x, s.y, ms)
+    if (Math.abs(lift) <= 0.005 && Math.abs(slope) <= 0.02) return
+    target.dx += billow.dirX * push * 0.35 * lift
+    target.dy += billow.dirY * push * 0.35 * lift - push * 0.6 * lift
+    target.rot += slope * this.turnValue * 0.6
+    target.size += 0.16 * lift
+    const shade = 0.5 * lift + 0.8 * (slope > 0 ? slope : 1.6 * slope)
+    target.glow = target.glow > 0 ? Math.max(target.glow, shade) : shade
+    const { sheen, glint } = lightAt(lift, slope, s.spark)
+    target.lift = lift
+    target.sheen = sheen
+    target.glint = glint
+  }
+
+  pushWithRipple(s, target, rp, now) {
+    const age = (now - rp.start) / 900
+    const vx = s.x - rp.x
+    const vy = s.y - rp.y
+    const dist = Math.hypot(vx, vy)
+    const ring = Math.abs(dist - 320 * age)
+    if (ring >= 60 || dist === 0) return
+    const t = (1 - ring / 60) * (1 - age) ** 2
+    target.dx += (vx / dist) * this.pushValue * t
+    target.dy += (vy / dist) * this.pushValue * t
+    target.rot += (vx / dist) * this.turnValue * t
+    target.glow = Math.max(target.glow, t)
+  }
+
+  // Three layers, bottom to top: shadows on the cloth, the burgundy lines, then gold and glints.
   draw() {
     const { ctx, lens } = this
     const r = this.radiusValue
+    const rest = this.alphaValue
     ctx.clearRect(0, 0, this.width, this.height)
-
-    const paths = new Map() // "alpha width" -> { alpha, width, path }
-    const pathFor = (rawAlpha, width) => {
-      const alpha = Math.round(rawAlpha * 200) / 200
-      const key = `${alpha} ${width}`
-      if (!paths.has(key)) paths.set(key, { alpha, width, path: new Path2D() })
-      return paths.get(key).path
-    }
+    const shadows = new StrokeBatch()
+    const lines = new StrokeBatch()
+    const light = new StrokeBatch()
 
     for (const s of this.scales) {
       const shown = lens ? lens.weight(0, s.x, s.y) : 1 // big scales fade out inside the lens
       if (shown < 0.02) continue
       if (shown === 1 && atRest(s)) {
-        addScale(pathFor(this.alphaValue, 1), s.x, s.y, r, 0)
+        lines.addScale(this.colorValue, rest, 1, s.x, s.y, r, 0)
         continue
       }
+      const x = s.x + s.dx
+      const y = s.y + s.dy
+      const radius = r * s.size
       const alpha = this.lineAlpha(s.glow)
-      const width = alpha > this.alphaValue ? 1.15 : 1 // darker lines are a touch thicker too
-      addScale(pathFor(alpha * shown, width), s.x + s.dx, s.y + s.dy, r * s.size, s.rot)
+      const width = alpha > rest ? 1.15 : 1 // darker lines are a touch thicker too
+      lines.addScale(this.colorValue, alpha * shown, width, x, y, radius, s.rot)
+      if (s.lift > 0.02) this.addShadow(shadows, s, x, y, radius, shown)
+      if (s.sheen > 0.01) light.addScale(GOLD, rest * LIGHT.gold * s.sheen * shown, 1.15, x, y, radius, s.rot)
+      if (s.glint > 0.02) {
+        light.addScale(GLINT, rest * LIGHT.halo * s.glint * shown, 3, x, y, radius, s.rot)
+        light.addScale(GLINT, rest * LIGHT.glint * s.glint * shown, 1.5, x, y, radius, s.rot)
+      }
     }
 
     lens?.forEachFineScale(r, (x, y, radius, weight, lineWidth) => {
-      const alpha = this.alphaValue * FINE_ALPHA * weight
-      if (alpha >= 0.0025) addScale(pathFor(alpha, lineWidth), x, y, radius, 0) // fainter rounds to 0
+      lines.addScale(this.colorValue, rest * FINE_ALPHA * weight, lineWidth, x, y, radius, 0)
     })
 
-    for (const { alpha, width, path } of paths.values()) {
-      ctx.lineWidth = width
-      ctx.strokeStyle = `rgba(${this.colorValue}, ${alpha})`
-      ctx.stroke(path)
-    }
+    for (const batch of [shadows, lines, light]) batch.stroke(ctx)
+  }
+
+  // The raised scale's shadow falls below it and a little downwind, further the higher it is lifted.
+  addShadow(batch, s, x, y, radius, shown) {
+    const drop = this.pushValue * s.lift
+    const alpha = this.alphaValue * LIGHT.shadow * s.lift * shown
+    batch.addScale(SHADOW, alpha, 2.5, x + this.wind.x * drop * LIGHT.shadowRun,
+      y + drop * LIGHT.shadowDrop, radius, s.rot)
   }
 
   // Positive glow darkens a line; negative glow (the lit face of a billow) fades it, in proportion
@@ -301,15 +314,4 @@ export default class extends Controller {
     if (glow >= 0) return this.alphaValue + 0.16 * glow
     return this.alphaValue * Math.max(0.3, 1 + 0.55 * glow)
   }
-}
-
-// Close enough to its resting place and strength to draw as resting, and to stop animating.
-function atRest(s) {
-  return near(s, 0, 0, 0, 1, 0)
-}
-
-// Close enough to the given offset, turn, size and glow that another step would not show.
-function near(s, dx, dy, rot, size, glow) {
-  return Math.abs(s.dx - dx) <= 0.05 && Math.abs(s.dy - dy) <= 0.05 && Math.abs(s.rot - rot) <= 0.002 &&
-    Math.abs(s.size - size) <= 0.002 && Math.abs(s.glow - glow) <= 0.01
 }

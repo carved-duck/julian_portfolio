@@ -25,6 +25,8 @@ When something closes, delete its line here in the same session (the commit mess
     Lens tuning is `reach` and `CUTS` (`frontend.md` § Home page pieces). Idea: the lens's small
     waves stay still while a billow lifts the cloth around them; fading the lens during a billow
     would hide it.
+  - **Gold light and shadow on billows (on `master`, not deployed):** Julian's eye check owed on the
+    live motion (checked by still frames headless); tuning is `LIGHT` in `waves/light.js`.
   - **Wind billows on a real phone:** Julian approved the feel on desktop; still unchecked at phone
     width (place pills, home slider top edge, contact-sheet frames floating near the sprocket
     holes). Tuning is one number each (`frontend.md` § Home page pieces).
