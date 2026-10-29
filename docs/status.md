@@ -4,9 +4,10 @@ ELI5: the short list of what's waiting. One line per item, a pointer to the deta
 When something closes, delete its line here in the same session (the commit message is the record).
 
 ## Live
-- Heroku runs release v78 (`67ebbea`): the 2026-09-25 redesign (Home, waves on every page,
+- Heroku runs release v79 (`998518b`): the 2026-09-25 redesign (Home, waves on every page,
   Projects, project pages, Photos), the 2026-09-26 rewrite of all 12 projects' copy and tags, the
-  2026-09-27 home tagline wording, and the 2026-10-28 wind billows (the waves lift like cloth).
+  2026-09-27 home tagline wording, the 2026-10-28 wind billows (the waves lift like cloth), and the
+  2026-10-30 hover lens, one-screen Home, and gold light and shadow on billows.
   Migrations and `showcase:load` done on production.
 - **Deploy steps** (at Julian's go): `git push heroku master`, then straight away
   `heroku run rails db:migrate -a julian-portfolio` if there are migrations (no release phase, so
@@ -19,14 +20,14 @@ When something closes, delete its line here in the same session (the commit mess
   Agree each page's changes before building (`../workers/workflow.md` step 2).
   - **Julian's eye check still owed:** Claude's Chrome tab was hidden, so motion and the viewer's
     final paint were checked by measurement.
-  - **Home fits one screen + hover lens (on `master`, not deployed):** Julian's eye check owed on a
+  - **Home fits one screen + hover lens:** Julian's eye check owed on a
     real phone (the toolbar case can't be simulated headless). At 320 px wide the cards get
     cramped ("App Store" pill shows "Ap…"); raise the fit floor for narrow phones if that matters.
     Lens tuning is `reach` and `CUTS` (`frontend.md` § Home page pieces). Idea: the lens's small
     waves stay still while a billow lifts the cloth around them; fading the lens during a billow
     would hide it.
-  - **Gold light and shadow on billows (on `master`, not deployed):** Julian's eye check owed on the
-    live motion (checked by still frames headless); tuning is `LIGHT` in `waves/light.js`.
+  - **Gold light and shadow on billows:** Julian kept it "for now"; tuning is `LIGHT` in
+    `waves/light.js`.
   - **Wind billows on a real phone:** Julian approved the feel on desktop; still unchecked at phone
     width (place pills, home slider top edge, contact-sheet frames floating near the sprocket
     holes). Tuning is one number each (`frontend.md` § Home page pieces).
