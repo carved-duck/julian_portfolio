@@ -19,6 +19,12 @@ When something closes, delete its line here in the same session (the commit mess
   Agree each page's changes before building (`../workers/workflow.md` step 2).
   - **Julian's eye check still owed:** Claude's Chrome tab was hidden, so motion and the viewer's
     final paint were checked by measurement.
+  - **Home fits one screen + hover lens (on `master`, not deployed):** Julian's eye check owed on a
+    real phone (the toolbar case can't be simulated headless). At 320 px wide the cards get
+    cramped ("App Store" pill shows "Ap…"); raise the fit floor for narrow phones if that matters.
+    Lens tuning is `reach` and `CUTS` (`frontend.md` § Home page pieces). Idea: the lens's small
+    waves stay still while a billow lifts the cloth around them; fading the lens during a billow
+    would hide it.
   - **Wind billows on a real phone:** Julian approved the feel on desktop; still unchecked at phone
     width (place pills, home slider top edge, contact-sheet frames floating near the sprocket
     holes). Tuning is one number each (`frontend.md` § Home page pieces).

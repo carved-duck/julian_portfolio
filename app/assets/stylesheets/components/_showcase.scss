@@ -178,10 +178,14 @@
   padding: 0.85rem;
 }
 
+// One line always: on a narrow card the label shortens with "…" instead of wrapping, so every card
+// footer keeps the height the home page's fit (pages/_home.scss) counts on.
 .slide-pill {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
+  min-width: 0;
+  white-space: nowrap;
   padding: 6px 16px;
   border: 1.5px solid var(--burgundy);
   border-radius: 999px;
@@ -196,6 +200,12 @@
     background: var(--burgundy);
     color: var(--cream);
   }
+}
+
+.slide-pill-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 // Project card: name + stack sit on the image; the description slides up on hover or focus.

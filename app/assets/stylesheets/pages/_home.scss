@@ -29,3 +29,97 @@
 
   .home .showcase { padding-bottom: 2.5rem; }
 }
+
+// ---------- One screen, no scrolling ----------
+// Home fits the screen on every laptop and upright phone. The card row shrinks, keeping the cards'
+// 4:3 shape (device frames are drawn in percentages of it), to fit the height left under the hero
+// and the doors. Below $fit-min-height (a phone held sideways) the cards would be too small, so the
+// page scrolls as usual there.
+$fit-min-height: 560px;
+// Height of everything in a panel except the card image: the track's padding, the card's pill
+// footer and border, the "See all" link, plus a few px to spare. It assumes one row of pills, so
+// pills never wrap (_showcase.scss).
+$card-chrome: 128px;
+$card-chrome-phone: 118px;
+
+@media (min-height: $fit-min-height) {
+  body.home-page {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    height: 100svh; // the height with a phone's toolbars showing, so it never scrolls under them
+    min-height: 0;  // _depth.scss gives every body min-height: 100vh, which would beat the svh
+  }
+
+  .home-page .main-content,
+  .home,
+  .home .showcase,
+  .home .showcase-panels {
+    flex: 1;
+    min-height: 0;
+  }
+
+  .home-page .main-content,
+  .home,
+  .home .showcase {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .home .showcase {
+    width: 100%;
+    padding-bottom: 0.5rem;
+  }
+
+  // A size container, so the slider below can be sized from the height this box was given.
+  .home .showcase-panels { container-type: size; }
+
+  // Three cards per view: 3 × (4/3 × image height + 2px border) + 2 gaps + the arrows' room.
+  .home .slider {
+    margin-inline: auto;
+    max-width: calc((100cqh - #{$card-chrome}) * 4 + 166px);
+  }
+}
+
+// Shorter laptops: a tighter hero leaves the cards more room. (769px: just past the phone hero.)
+@media (min-height: $fit-min-height) and (max-height: 820px) and (min-width: 769px) {
+  .home .hero-section { padding: 1.25rem 0 1.25rem; }
+  .home .hero-greeting { font-size: 3rem; margin-bottom: 0.75rem; }
+  .home .hero-description { font-size: 1.3rem; }
+  .home .hero-description-small { font-size: 1rem; margin-top: 0.35rem; }
+  .home .showcase-doors { margin-bottom: 1.25rem; }
+  .home .showcase-door { min-height: 48px; padding: 0.6rem 1.25rem; }
+}
+
+// Short laptop windows (a 768px-tall screen minus the browser's bars): tighter still, so the cards
+// stay wide enough for two link pills side by side.
+@media (min-height: $fit-min-height) and (max-height: 680px) and (min-width: 769px) {
+  .home .hero-section { padding: 0.5rem 0 0.75rem; }
+  .home .hero-greeting { font-size: 2.5rem; margin-bottom: 0.5rem; }
+  .home .hero-description { font-size: 1.15rem; }
+  .home .hero-description-small { font-size: 0.95rem; margin-top: 0.2rem; }
+  .home .showcase-doors { margin-bottom: 1rem; }
+}
+
+// Two cards per view.
+@media (min-height: $fit-min-height) and (min-width: 768px) and (max-width: 991px) {
+  .home .slider { max-width: calc((100cqh - #{$card-chrome}) * 2.6667 + 140px); }
+}
+
+// Phones: one card is 84% of the row, so the row is (4/3 × image height + border) / 0.84.
+// Same breakpoint as the phone slider in _showcase.scss.
+@media (min-height: $fit-min-height) and (max-width: 767px) {
+  .home .slider { max-width: calc((100cqh - #{$card-chrome-phone}) * 1.5873 + 3px); }
+  .home .slide-card-footer { padding: 0.5rem; }
+}
+
+// Phones: a tighter hero. Same breakpoint as the phone hero in _hero.scss.
+@media (min-height: $fit-min-height) and (max-width: 768px) {
+  .home .hero-section { padding: 0.75rem 0; }
+  .home .hero-greeting { font-size: 2.25rem; margin-bottom: 0.5rem; }
+  .home .hero-description { font-size: 1.1rem; }
+  .home .hero-description-small { font-size: 0.95rem; margin-top: 0.25rem; }
+  .home .showcase-doors { margin-bottom: 0.75rem; }
+  .home .showcase-door { padding: 0.55rem 0.5rem; gap: 0.2rem; }
+  .home .showcase-more { margin-top: 0.75rem; }
+}

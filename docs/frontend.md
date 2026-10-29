@@ -23,9 +23,19 @@ If a Bootstrap carousel is ever added back, dispose the old instance before maki
   layout renders via `ApplicationHelper#site_pattern_tag`, at `z-index: -1`. Never give `<main>` a
   z-index to lift content over it instead: that traps every modal rendered inside `<main>` (the
   photo viewer, the events pending modal) beneath Bootstrap's backdrop. Burgundy at 7% on Home, 4% with a smaller
-  push on inner pages, none on the black photo page or in `/admin`. Near the mouse the scales slide
-  outward and turn; a click or tap sends a ripple; still pattern under reduced motion. It only runs
-  animation frames while something is moving; a resting mouse costs nothing.
+  push on inner pages, none on the black photo page or in `/admin`. A mouse opens a small circle
+  (`reach`, 55 px radius) where the pattern subdivides into half, quarter and eighth-size copies
+  of itself toward the centre (`app/javascript/waves/lens.js`; `CUTS` sets how much room each size
+  gets), while the big scales at the rim part a little. A click or tap sends a ripple; still pattern
+  under reduced motion. It only runs animation frames until every scale reaches its target, so a
+  resting mouse (lens held open) costs nothing.
+- **Home fits one screen:** at 560 px of height or more the home page fits without scrolling
+  (measured from 320×568 to 2560×1440, both panels; real phones still owe Julian's eye). The body is a
+  one-screen flex column, and the card row narrows (cards keep 4:3, because device frames are drawn
+  in percentages of it) to the height left under the hero and doors. Shorter laptop windows get a
+  tighter hero first. Numbers and breakpoints: `pages/_home.scss` § One screen. It counts on one
+  row of link pills per card, so `.slide-pill` never wraps (a long label ends in "…"). A phone held
+  sideways scrolls as before.
 - **Wind:** seigaiha is a textile pattern, so the wind moves it like cloth (an open kimono in a
   breeze). 4–8 s after one ends, a billow (`app/javascript/wind/billow.js`, pinned in
   `config/importmap.rb`) rolls left to right, up to 25° off level: an uneven fold whose crest curves,

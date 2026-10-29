@@ -18,13 +18,17 @@ module ApplicationHelper
 
     data = { controller: "seigaiha wind-float",
              action: "seigaiha:billow->wind-float#ride seigaiha:billow-end->wind-float#calm" }
-    unless controller_name == "pages" && action_name == "home"
-      data.merge!(seigaiha_alpha_value: 0.04, seigaiha_push_value: 8)
-    end
+    data.merge!(seigaiha_alpha_value: 0.04, seigaiha_push_value: 8) unless home_page?
     tag.canvas(class: "site-pattern", data: data, aria: { hidden: true })
   end
 
+  def home_page?
+    controller_name == "pages" && action_name == "home"
+  end
+
   def body_class
+    return 'home-page' if home_page?
+
     case controller_name
     when 'projects'
       'projects-page'  # Spring - Cherry Blossom

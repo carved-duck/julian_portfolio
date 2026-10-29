@@ -1,10 +1,13 @@
 import { Controller } from "@hotwired/stimulus"
 import { createBillow } from "wind/billow"
 import { clamp, random, smoothstep } from "wind/math"
+import { Lens } from "waves/lens"
+import { addScale } from "waves/scale"
 
 // Seigaiha (青海波) waves drawn on a <canvas>: rows of half-circle "scales", each row offset by half a
-// scale. Near the mouse the scales slide outward and turn a little, then drift back. A click or tap
-// sends a ripple through them. Every few seconds the wind lifts the pattern like cloth: a billow
+// scale. Around the mouse the pattern opens a circle filled with smaller and smaller copies of itself
+// (waves/lens.js), and the big scales at its rim part a little. A click or tap sends a ripple
+// through them. Every few seconds the wind lifts the pattern like cloth: a billow
 // (wind/billow.js) rolls across the page and the scales rise, tilt and darken as it passes. Its
 // start is sent out as a "seigaiha:billow" event and its end as "seigaiha:billow-end", so
 // wind_float_controller can float cards on it. Billows rest after a minute with no scroll, key or
@@ -13,13 +16,15 @@ import { clamp, random, smoothstep } from "wind/math"
 //
 // <canvas data-controller="seigaiha"></canvas>
 const IDLE_MS = 60000
+const RIM_PUSH = 0.4   // share of `push` the lens rim parts the big scales by
+const FINE_ALPHA = 1.6 // the smaller waves' line strength, as a multiple of the resting strength
 
 export default class extends Controller {
   static values = {
     color: { type: String, default: "141, 11, 65" }, // "r, g, b"
     alpha: { type: Number, default: 0.07 },           // resting line strength
     radius: { type: Number, default: 15 },            // scale radius, px
-    reach: { type: Number, default: 100 },            // how far the mouse is felt, px
+    reach: { type: Number, default: 55 },            // radius of the circle the mouse opens, px
     push: { type: Number, default: 12 },              // max slide, px
     turn: { type: Number, default: 0.55 },            // max turn, radians
     billowEvery: { type: Array, default: [4000, 8000] } // ms between billows: [min, max]
@@ -30,6 +35,7 @@ export default class extends Controller {
     if (!this.ctx) return
 
     this.mouse = null
+    this.lens = null
     this.ripples = []
     this.billow = null
     this.rafId = null
@@ -171,29 +177,38 @@ export default class extends Controller {
     if (moving || this.ripples.length || this.billow) this.wake()
   }
 
-  // Move every scale a step toward where the mouse, the billow and any ripple want it. Returns true
+  // The lens follows the mouse and opens; once the mouse has gone it closes where it is.
+  stepLens() {
+    if (this.mouse && !this.lens) this.lens = new Lens(this.mouse.x, this.mouse.y, this.reachValue)
+    if (!this.lens) return false
+    const changing = this.lens.step(this.mouse)
+    if (!this.mouse && this.lens.closed) this.lens = null
+    return changing
+  }
+
+  // Move every scale a step toward where the lens, the billow and any ripple want it. Returns true
   // while anything is still in motion.
   step(now) {
-    const reach = this.reachValue
+    let moving = this.stepLens()
     const push = this.pushValue
+    const lens = this.lens
     const billow = this.billow
     const billowMs = billow ? now - billow.start : 0
-    let moving = false
 
     for (const s of this.scales) {
       let tx = 0, ty = 0, trot = 0, tsize = 1, tglow = 0
 
-      if (this.mouse) {
-        const vx = s.x - this.mouse.x
-        const vy = s.y - this.mouse.y
+      // Big scales around the rim part outward a little, so the circle reads as an opening.
+      if (lens) {
+        const vx = s.x - lens.x
+        const vy = s.y - lens.y
         const dist = Math.hypot(vx, vy)
-        if (dist < reach) {
-          const t = 1 - smoothstep(0, reach, dist)
-          const nx = dist > 0 ? vx / dist : 0
-          const ny = dist > 0 ? vy / dist : 0
-          tx += nx * push * t
-          ty += ny * push * t
-          trot += nx * this.turnValue * t // scales left of the mouse turn one way, right the other
+        const felt = lens.radius * 1.15
+        if (dist < felt && dist > 0) {
+          const t = 1 - smoothstep(lens.radius * 0.5, felt, dist)
+          tx += (vx / dist) * push * RIM_PUSH * t
+          ty += (vy / dist) * push * RIM_PUSH * t
+          trot += (vx / dist) * this.turnValue * RIM_PUSH * t // left of the lens turn one way, right the other
           tglow = Math.max(tglow, t)
         }
       }
@@ -228,37 +243,53 @@ export default class extends Controller {
         }
       }
 
-      // Ease toward the target: quick to part, softer to settle back.
+      // Ease toward the target: quick to part, softer to settle back. Done once it has arrived, even
+      // if that is away from rest (the lens rim holds scales parted while the mouse sits still).
       const k = (tx || ty) ? 0.2 : 0.1
       s.dx += (tx - s.dx) * k
       s.dy += (ty - s.dy) * k
       s.rot += (trot - s.rot) * k
       s.size += (tsize - s.size) * k
       s.glow += (tglow - s.glow) * k
-      if (!atRest(s)) moving = true
+      if (!near(s, tx, ty, trot, tsize, tglow)) moving = true
     }
     return moving
   }
 
-  // Every scale goes into one path per line strength, so a frame is a handful of strokes rather
-  // than one per moving scale (thousands on a wide screen while a billow passes).
+  // Every scale goes into one path per line strength and width, so a frame is a handful of strokes
+  // rather than one per moving scale (thousands on a wide screen while a billow passes).
   draw() {
-    const { ctx } = this
+    const { ctx, lens } = this
     const r = this.radiusValue
     ctx.clearRect(0, 0, this.width, this.height)
 
-    const paths = new Map() // rounded alpha -> Path2D
-    for (const s of this.scales) {
-      const moving = !atRest(s)
-      const alpha = moving ? Math.round(this.lineAlpha(s.glow) * 200) / 200 : this.alphaValue
-      let path = paths.get(alpha)
-      if (!path) paths.set(alpha, (path = new Path2D()))
-      if (moving) addScale(path, s.x + s.dx, s.y + s.dy, r * s.size, s.rot)
-      else addScale(path, s.x, s.y, r, 0)
+    const paths = new Map() // "alpha width" -> { alpha, width, path }
+    const pathFor = (rawAlpha, width) => {
+      const alpha = Math.round(rawAlpha * 200) / 200
+      const key = `${alpha} ${width}`
+      if (!paths.has(key)) paths.set(key, { alpha, width, path: new Path2D() })
+      return paths.get(key).path
     }
 
-    for (const [alpha, path] of paths) {
-      ctx.lineWidth = alpha > this.alphaValue ? 1.15 : 1 // darker lines are a touch thicker too
+    for (const s of this.scales) {
+      const shown = lens ? lens.weight(0, s.x, s.y) : 1 // big scales fade out inside the lens
+      if (shown < 0.02) continue
+      if (shown === 1 && atRest(s)) {
+        addScale(pathFor(this.alphaValue, 1), s.x, s.y, r, 0)
+        continue
+      }
+      const alpha = this.lineAlpha(s.glow)
+      const width = alpha > this.alphaValue ? 1.15 : 1 // darker lines are a touch thicker too
+      addScale(pathFor(alpha * shown, width), s.x + s.dx, s.y + s.dy, r * s.size, s.rot)
+    }
+
+    lens?.forEachFineScale(r, (x, y, radius, weight, lineWidth) => {
+      const alpha = this.alphaValue * FINE_ALPHA * weight
+      if (alpha >= 0.0025) addScale(pathFor(alpha, lineWidth), x, y, radius, 0) // fainter rounds to 0
+    })
+
+    for (const { alpha, width, path } of paths.values()) {
+      ctx.lineWidth = width
       ctx.strokeStyle = `rgba(${this.colorValue}, ${alpha})`
       ctx.stroke(path)
     }
@@ -274,15 +305,11 @@ export default class extends Controller {
 
 // Close enough to its resting place and strength to draw as resting, and to stop animating.
 function atRest(s) {
-  return Math.abs(s.dx) <= 0.05 && Math.abs(s.dy) <= 0.05 && Math.abs(s.rot) <= 0.002 &&
-    Math.abs(s.size - 1) <= 0.002 && Math.abs(s.glow) <= 0.01
+  return near(s, 0, 0, 0, 1, 0)
 }
 
-// One scale: an outer and an inner half-circle, opening downward. Turning a half-circle about its
-// centre only shifts its start and end angles, so no canvas transform is needed.
-function addScale(path, x, y, radius, rot) {
-  for (const rad of [radius, radius * 0.5]) {
-    path.moveTo(x + rad * Math.cos(Math.PI + rot), y + rad * Math.sin(Math.PI + rot))
-    path.arc(x, y, rad, Math.PI + rot, 2 * Math.PI + rot)
-  }
+// Close enough to the given offset, turn, size and glow that another step would not show.
+function near(s, dx, dy, rot, size, glow) {
+  return Math.abs(s.dx - dx) <= 0.05 && Math.abs(s.dy - dy) <= 0.05 && Math.abs(s.rot - rot) <= 0.002 &&
+    Math.abs(s.size - size) <= 0.002 && Math.abs(s.glow - glow) <= 0.01
 }
