@@ -51,7 +51,8 @@ class AttendeesController < ApplicationController
       end
     else
       flash.now[:alert] = "😔 Sorry, there was an issue with your signup. Please check the form and try again."
-      @attendee = @event.attendees.build # Reset for re-render
+      # Re-render the same @attendee: it carries the field errors and what the visitor typed.
+      restore_other_choice(@attendee)
       render 'events/show', status: :unprocessable_entity
     end
   end
@@ -77,6 +78,16 @@ class AttendeesController < ApplicationController
 
   def set_event
     @event = Event.find(params[:event_id])
+  end
+
+  # The "Other" text was copied into `bringing` above. Put it back, or the re-rendered select
+  # matches no option and the browser silently shows the first category instead.
+  def restore_other_choice(attendee)
+    return if attendee.bringing.blank? || attendee.bringing == 'Other'
+    return if Event::BRINGING_CATEGORIES.include?(attendee.bringing)
+
+    attendee.bringing_other = attendee.bringing
+    attendee.bringing = 'Other'
   end
 
   def attendee_params
