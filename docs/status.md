@@ -4,7 +4,7 @@ ELI5: the short list of what's waiting. One line per item, a pointer to the deta
 When something closes, delete its line here in the same session (the commit message is the record).
 
 ## Live
-- Heroku runs release v81 (`8413865`): the 2026-09-25 redesign (Home, waves on every page,
+- Heroku runs release v82 (`0580d39`): the 2026-09-25 redesign (Home, waves on every page,
   Projects, project pages, Photos), the 2026-09-26 rewrite of all 12 projects' copy and tags, the
   2026-09-27 home tagline wording, the 2026-10-28 wind billows (the waves lift like cloth), and the
   2026-10-30 hover lens, one-screen Home, and gold light and shadow on billows.
@@ -14,6 +14,9 @@ When something closes, delete its line here in the same session (the commit mess
   "Most needed" on the single fewest dish, "Not sure yet" and "Something else"); the "Something
   else" text box works after Turbo visits and needs its text; only listed answers are saved.
   - **Still owed:** Julian's look on a real phone, and a writer pass on the picker's placeholder copy.
+- The 2026-11-08 admin guest-list tools: tick attendees (or "Select all") and remove them, "Remove
+  all attendees" keeps the event for reuse, and every admin delete asks first.
+  - **Still owed:** Julian's first click on a confirm's OK (Claude's browser tool can't click them).
 - **Deploy steps** (at Julian's go): `git push heroku master`, then straight away
   `heroku run rails db:migrate -a julian-portfolio` if there are migrations (no release phase, so
   pages that need the new columns error until it runs), then
@@ -44,9 +47,6 @@ When something closes, delete its line here in the same session (the commit mess
     Projects.
 
 ## Waiting on Julian
-- **Deploy the admin guest-list tools** (on `master`, not on Heroku yet): checkboxes, "Select all"
-  and "Remove N attendees", "Remove all attendees" (keeps the event), and confirms that really
-  show on every admin delete. Julian's first click on a confirm's OK is the one check left.
 - **Bringing Summary content** (admin event page): it lists every typed "Other" answer as its own
   category, troll entries included, in database order. Option: the five categories in fixed order
   plus one "Other (typed): N" line. Julian's call.
