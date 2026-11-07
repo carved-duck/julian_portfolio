@@ -1,0 +1,64 @@
+<%# The event's guest list with checkboxes for removing several at once.
+    Expects `event` and `attendees`. %>
+<div class="card mt-4">
+  <div class="card-header">
+    <h3>Event Attendees (<%= attendees.size %>)</h3>
+  </div>
+  <div class="card-body">
+    <% if attendees.any? %>
+      <%= form_with url: remove_selected_admin_event_attendees_path(event), method: :delete,
+            data: { controller: "bulk-select", bulk_select_event_value: event.title,
+                    turbo_confirm: "Remove the ticked attendees from #{event.title}? This can't be undone." } do %>
+        <div class="guest-list-toolbar d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+          <label class="guest-list-toolbar__select-all" for="select_all_attendees">
+            <input type="checkbox" class="form-check-input guest-list-check" id="select_all_attendees"
+                   data-bulk-select-target="all" data-action="bulk-select#toggleAll">
+            Select all
+          </label>
+          <button type="submit" class="btn btn-outline-danger" data-bulk-select-target="button">
+            Remove selected
+          </button>
+        </div>
+
+        <% attendees.each do |attendee| %>
+          <div class="card mb-2">
+            <div class="card-body py-2">
+              <div class="row align-items-center">
+                <div class="col-auto">
+                  <input type="checkbox" class="form-check-input guest-list-check" name="attendee_ids[]" value="<%= attendee.id %>"
+                         id="attendee_check_<%= attendee.id %>" aria-label="Select <%= attendee.name %>"
+                         data-bulk-select-target="item" data-action="bulk-select#refresh">
+                </div>
+                <label class="<%= event.requires_bringing_field? ? 'col-md-3' : 'col-md-6' %> col mb-0" for="attendee_check_<%= attendee.id %>">
+                  <span class="d-block fw-semibold mb-1"><%= attendee.name %></span>
+                  <small class="text-muted">@<%= attendee.instagram_handle %></small>
+                </label>
+                <% if event.requires_bringing_field? %>
+                  <div class="col-md-3">
+                    <strong>Bringing:</strong><br>
+                    <span class="badge bg-secondary"><%= attendee.bringing || 'Not specified' %></span>
+                  </div>
+                <% end %>
+                <div class="col-md-3">
+                  <% if attendee.message.present? %>
+                    <small><%= truncate(attendee.message, length: 50) %></small>
+                  <% else %>
+                    <small class="text-muted">No message</small>
+                  <% end %>
+                </div>
+                <div class="col-md-2 text-end">
+                  <%= link_to "View", admin_event_attendee_path(event, attendee), class: "btn btn-sm btn-outline-primary" %>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    <% else %>
+      <div class="alert alert-info">
+        <h5>No attendees yet</h5>
+        <p>When people sign up for this event, they'll appear here.</p>
+      </div>
+    <% end %>
+  </div>
+</div>

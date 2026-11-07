@@ -93,6 +93,13 @@ scrolling, scroll events and the wave animation all stall there. It's not a bug;
   function, so the remove matches nothing. `photo_protection_controller.js` does this today (open
   bug in `status.md`).
 
+## Confirm before delete
+rails-ujs is not loaded, so `data: { confirm: }` does nothing: the delete runs on the first click.
+Use Turbo's attribute. On `button_to` it goes on the form:
+`button_to "Delete", path, method: :delete, form: { data: { turbo_confirm: "Delete X? This can't be undone." } }`.
+`test/controllers/admin/attendee_removal_test.rb` fails if a `data-confirm` comes back on the admin
+event page.
+
 ## Workarounds in `app/javascript/application.js`
 - Submit buttons are re-enabled on `turbo:load` (Turbo can leave them disabled).
 - Flash messages auto-hide on both load events.

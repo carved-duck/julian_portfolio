@@ -1,4 +1,3 @@
-<p style="color: green"><%= notice %></p>
 <div class="row">
   <div class="col-md-8">
     <div class="card">
@@ -51,7 +50,7 @@
           <% categories_with_people = breakdown.select { |category, count| count > 0 } %>
           <% if categories_with_people.any? %>
             <p>
-              <% categories_with_people.map { |category, count|
+              <%= categories_with_people.map { |category, count|
                 "#{category}: #{count} #{count == 1 ? 'person' : 'people'}"
               }.join(' • ') %>
             </p>
@@ -62,48 +61,7 @@
       </div>
     <% end %>
 
-    <div class="card mt-4">
-      <div class="card-header">
-        <h3>Event Attendees (<%= @attendees.count %>)</h3>
-      </div>
-      <div class="card-body">
-        <% if @attendees.any? %>
-          <% @attendees.each do |attendee| %>
-            <div class="card mb-2">
-              <div class="card-body py-2">
-                <div class="row align-items-center">
-                  <div class="<%= @event.normal_event? ? 'col-md-3' : 'col-md-6' %>">
-                    <h6 class="mb-1"><%= attendee.name %></h6>
-                    <small class="text-muted">@<%= attendee.instagram_handle %></small>
-                  </div>
-                  <% if @event.requires_bringing_field? %>
-                    <div class="col-md-3">
-                      <strong>Bringing:</strong><br>
-                      <span class="badge bg-secondary"><%= attendee.bringing || 'Not specified' %></span>
-                    </div>
-                  <% end %>
-                  <div class="col-md-4">
-                    <% if attendee.message.present? %>
-                      <small><%= truncate(attendee.message, length: 50) %></small>
-                    <% else %>
-                      <small class="text-muted">No message</small>
-                    <% end %>
-                  </div>
-                  <div class="col-md-2 text-end">
-                    <%= link_to "View", admin_event_attendee_path(@event, attendee), class: "btn btn-sm btn-outline-primary" %>
-                  </div>
-                </div>
-              </div>
-            </div>
-          <% end %>
-        <% else %>
-          <div class="alert alert-info">
-            <h5>No attendees yet</h5>
-            <p>When people sign up for this event, they'll appear here.</p>
-          </div>
-        <% end %>
-      </div>
-    </div>
+    <%= render "admin/events/attendee_list", event: @event, attendees: @attendees %>
   </div>
   <div class="col-md-4">
     <div class="card">
@@ -111,13 +69,22 @@
         <h5>Actions</h5>
       </div>
       <div class="card-body">
-        <%= link_to "Edit Event", edit_admin_event_path(@event), class: "btn btn-primary btn-block mb-2" %>
-        <%= link_to "View Public Page", event_path(@event), class: "btn btn-outline-secondary btn-block mb-2", target: "_blank" %>
+        <%= link_to "Edit Event", edit_admin_event_path(@event), class: "btn btn-primary w-100 mb-2" %>
+        <%= link_to "View Public Page", event_path(@event), class: "btn btn-outline-secondary w-100 mb-2", target: "_blank" %>
+        <% if @attendees.any? %>
+          <% everyone = whole_guest_list(@attendees.size) %>
+          <%= button_to "Remove #{everyone}", remove_all_admin_event_attendees_path(@event),
+              method: :delete,
+              form: { data: { turbo_confirm: "Remove #{everyone} from #{@event.title}? " \
+                                             "The event stays, ready to reuse. This can't be undone." } },
+              class: "btn btn-outline-danger w-100 mb-2" %>
+        <% end %>
         <hr>
-        <%= link_to "Back to Events", admin_events_path, class: "btn btn-secondary btn-block mb-2" %>
+        <%= link_to "Back to Events", admin_events_path, class: "btn btn-secondary w-100 mb-2" %>
+        <% going_too = " and #{whole_guest_list(@attendees.size)}" if @attendees.any? %>
         <%= button_to "Delete Event", admin_event_path(@event), method: :delete,
-            data: { confirm: "Are you sure? This will delete the event and all #{@event.attendee_count} attendees." },
-            class: "btn btn-danger btn-block" %>
+            form: { data: { turbo_confirm: "Delete #{@event.title}#{going_too}? This can't be undone." } },
+            class: "btn btn-danger w-100" %>
       </div>
     </div>
   </div>

@@ -38,7 +38,28 @@ module Admin
       end
     end
 
+    # DELETE /admin/events/:event_id/attendees/remove_selected
+    def remove_selected
+      removed = @event.attendees.where(id: params[:attendee_ids]).destroy_all.size
+      redirect_to admin_event_path(@event), status: :see_other, notice: removed_selected_notice(removed)
+    end
+
+    # DELETE /admin/events/:event_id/attendees/remove_all
+    # Clears the guest list so the event can be reused; the event itself stays.
+    def remove_all
+      removed = @event.attendees.destroy_all.size
+      redirect_to admin_event_path(@event), status: :see_other,
+                                            notice: "Removed #{helpers.whole_guest_list(removed)}."
+    end
+
     private
+
+    def removed_selected_notice(removed)
+      return "Tick at least one attendee to remove." if params[:attendee_ids].blank?
+      return "Nobody was removed. They may already be gone." if removed.zero?
+
+      "Removed #{helpers.pluralize(removed, 'attendee')}."
+    end
 
     def set_event
       @event = Event.find(params[:event_id])

@@ -44,6 +44,12 @@ When something closes, delete its line here in the same session (the commit mess
     Projects.
 
 ## Waiting on Julian
+- **Deploy the admin guest-list tools** (on `master`, not on Heroku yet): checkboxes, "Select all"
+  and "Remove N attendees", "Remove all attendees" (keeps the event), and confirms that really
+  show on every admin delete. Julian's first click on a confirm's OK is the one check left.
+- **Bringing Summary content** (admin event page): it lists every typed "Other" answer as its own
+  category, troll entries included, in database order. Option: the five categories in fixed order
+  plus one "Other (typed): N" line. Julian's call.
 - **Broken admin scaffold tests:** repair them, or delete them (`dev.md` § Commands, "Test suite
   state"). Until tests run, event capacity changes have no automated check.
 - **Event SEO wording:** `ApplicationHelper` describes events as "photography workshops, tech

@@ -9,7 +9,7 @@
 </div>
 <%= link_to "Edit", edit_admin_project_path(@project), class: "btn btn-primary" %> |
 <%= link_to "Back to list", admin_projects_path, class: "btn btn-secondary" %> |
-<%= button_to "Destroy", admin_project_path(@project), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger" %>
+<%= button_to "Destroy", admin_project_path(@project), method: :delete, form: { data: { turbo_confirm: "Delete this project? This can't be undone." } }, class: "btn btn-danger" %>
 <p>
   <%= link_to "← Back to Admin List", admin_projects_path, class: "btn btn-secondary" %>
   <%= link_to "View on Public Site", project_path(@project), class: "btn btn-primary", target: "_blank" %>

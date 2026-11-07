@@ -34,7 +34,12 @@ Rails.application.routes.draw do
     end
     resources :blog_posts
     resources :events do
-      resources :attendees, only: [:show, :edit, :update, :destroy]
+      resources :attendees, only: %i[show edit update destroy] do
+        collection do
+          delete :remove_selected
+          delete :remove_all
+        end
+      end
     end
   end
   root to: "pages#home"

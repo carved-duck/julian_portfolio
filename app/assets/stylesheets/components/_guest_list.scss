@@ -1,0 +1,24 @@
+// Admin guest list (admin/events/_attendee_list.html.erb): the bulk-remove controls get 44px
+// tap targets, since Bootstrap's checkbox is 16px and its small buttons ~31px.
+
+.guest-list-toolbar {
+  .btn {
+    min-height: 44px;
+  }
+}
+
+.guest-list-toolbar__select-all {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  margin: 0;
+  padding-right: 0.5rem;
+  cursor: pointer;
+}
+
+.guest-list-check {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin: 0;
+}
