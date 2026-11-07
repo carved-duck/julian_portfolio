@@ -4,7 +4,7 @@ ELI5: the short list of what's waiting. One line per item, a pointer to the deta
 When something closes, delete its line here in the same session (the commit message is the record).
 
 ## Live
-- Heroku runs release v80 (`4c00320`): the 2026-09-25 redesign (Home, waves on every page,
+- Heroku runs release v81 (`8413865`): the 2026-09-25 redesign (Home, waves on every page,
   Projects, project pages, Photos), the 2026-09-26 rewrite of all 12 projects' copy and tags, the
   2026-09-27 home tagline wording, the 2026-10-28 wind billows (the waves lift like cloth), and the
   2026-10-30 hover lens, one-screen Home, and gold light and shadow on billows.
