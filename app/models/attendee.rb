@@ -10,7 +10,11 @@ class Attendee < ApplicationRecord
 
   validates :name, presence: true
   validates :instagram_handle, presence: true
-  validates :bringing, presence: true, if: :requires_bringing_field?
+  validates :bringing, presence: { message: "Pick one so we can plan the table. \"#{BRINGING_NOT_SURE}\" is fine." },
+                       if: :requires_bringing_field?
+  validates :bringing, inclusion: { in: ->(_) { Event::BRINGING_CATEGORIES + [BRINGING_NOT_SURE, BRINGING_OTHER] },
+                                    message: 'is not one of the choices' },
+                       on: :create, allow_blank: true, if: :requires_bringing_field?
   validates :bringing_other, presence: true, on: :create, if: :other_picked?
   # Message is optional
 

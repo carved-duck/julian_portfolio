@@ -82,9 +82,8 @@ If a code or copy issue is the root cause of a UX problem, name it and route it.
    liability.
 8. **Destructive actions earn a pause.** Deleting a project, destroying a photo category:
    distinct treatment, plain-language consequence, default focus on the safe option.
-9. **Brand, not chaos.** Use the brand variables deliberately; color carries meaning. Remember
-   Bootstrap's `$primary` is still blue (`../docs/styling.md`), so a stock `.btn-primary` is
-   off-brand. There is no dark mode: check contrast directly.
+9. **Brand, not chaos.** Use the brand variables deliberately; color carries meaning. Bootstrap's
+   `$primary` is burgundy (`../docs/styling.md`). There is no dark mode: check contrast directly.
 
 ## Common traps
 

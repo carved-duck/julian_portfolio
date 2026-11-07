@@ -1,0 +1,212 @@
+// Event signup: "What are you bringing?" as a sign-up sheet (events/_bringing_picker.html.erb).
+// Real radio inputs, restyled, so it works by keyboard and without JS. Picked and focus looks
+// hang off `:checked` / `:focus-visible` on the input itself; `:has()` only adds the row tint.
+
+$sheet-fill: rgba(255, 248, 230, 0.5); // cream at half strength, like .form-control
+$sheet-line: #E9E2CC;
+$radio-ring: #7D7253; // 3:1+ against the sheet, so the control is visible before it's picked
+$error-red: #B02A37;
+
+@mixin bringing-focus-ring {
+  outline: 2px solid var(--burgundy);
+  outline-offset: 2px;
+}
+
+.bringing-picker {
+  margin: 0;
+  padding: 0;
+  border: 0;
+
+  legend {
+    margin-bottom: 0.25rem;
+    font-size: 1rem;
+  }
+}
+
+.bringing-picker__hint {
+  margin: 0 0 0.5rem;
+  font-size: 0.875rem;
+  color: #444;
+}
+
+.bringing-picker__error {
+  margin: 0.5rem 0 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: $error-red;
+}
+
+.bringing-sheet {
+  border: 1px solid var(--sage);
+  border-radius: 10px;
+  overflow: hidden;
+  background: $sheet-fill;
+
+  .bringing-picker--invalid & {
+    border: 2px solid $error-red;
+  }
+}
+
+.bringing-sheet__row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 64px;
+  padding: 0.625rem 0.875rem;
+  margin: 0;
+  cursor: pointer;
+
+  & + & {
+    border-top: 1px solid $sheet-line;
+  }
+
+  &:hover {
+    background: var(--cream);
+  }
+
+  &:has(.bringing-radio:checked) {
+    background: #FBEFF3;
+  }
+}
+
+// The radio itself, drawn as a ring with a burgundy dot when picked.
+.bringing-radio {
+  flex-shrink: 0;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  border: 2px solid $radio-ring;
+  border-radius: 50%;
+  background: #fff;
+  display: grid;
+  place-content: center;
+
+  &::before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--burgundy);
+    transform: scale(0);
+    transition: transform 0.12s ease;
+  }
+
+  &:checked {
+    border-color: var(--burgundy);
+
+    &::before {
+      transform: scale(1);
+    }
+  }
+
+  &:focus-visible {
+    @include bringing-focus-ring;
+  }
+}
+
+.bringing-sheet__text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.bringing-sheet__name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: var(--burgundy);
+}
+
+.bringing-sheet__needed {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #F6E3C6;
+  color: #5C3A0C;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.bringing-sheet__count {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: #5E4A52;
+}
+
+.bringing-sheet__bar {
+  display: block;
+  width: 72px;
+  height: 6px;
+  border-radius: 3px;
+  background: $sheet-line;
+  overflow: hidden;
+
+  span {
+    display: block;
+    height: 100%;
+    border-radius: 3px;
+    background: var(--burgundy);
+  }
+}
+
+.bringing-chips {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.bringing-chip {
+  position: relative;
+  display: flex;
+  margin: 0;
+  cursor: pointer;
+}
+
+// The visible button. A sibling of the input, so its picked look works without :has().
+.bringing-chip__face {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 0.75rem;
+  border: 1px solid var(--sage);
+  border-radius: 10px;
+  background: $sheet-fill;
+  color: var(--burgundy);
+  font-weight: 600;
+  text-align: center;
+
+  .bringing-chip:hover & {
+    background: var(--cream);
+  }
+
+  @media (max-width: 359px) {
+    padding: 0 0.5rem;
+  }
+}
+
+// Hidden but still focusable and announced: the face is the visible control.
+.bringing-chip__input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+
+  &:checked + .bringing-chip__face {
+    border: 2px solid var(--burgundy);
+    background: var(--burgundy);
+    color: #fff;
+  }
+
+  &:focus-visible + .bringing-chip__face {
+    @include bringing-focus-ring;
+  }
+}

@@ -1,0 +1,48 @@
+<%# "What are you bringing?" as a sign-up sheet: radio rows with live counts, then the two
+    non-food answers. Expects the simple_form builder `f` and the `event`. %>
+<% error = f.object.errors[:bringing].first %>
+<fieldset class="bringing-picker mb-3 <%= 'bringing-picker--invalid' if error %>"
+          data-action="change->bringing-other#toggle"
+          <%= tag.attributes(aria: { invalid: true, describedby: "bringing_error" }) if error %>>
+  <legend class="form-label">What are you bringing? <abbr title="required">*</abbr></legend>
+  <p class="bringing-picker__hint">Here's the table so far. Pick what you'll add.</p>
+
+  <div class="bringing-sheet">
+    <% bringing_rows(event).each do |row| %>
+      <label class="bringing-sheet__row">
+        <%= f.radio_button :bringing, row.value, class: "bringing-radio", id: "bringing_#{row.value.parameterize(separator: '_')}" %>
+        <span class="bringing-sheet__text">
+          <span class="bringing-sheet__name">
+            <%= row.value %>
+            <% if row.most_needed %><span class="bringing-sheet__needed">Most needed</span><% end %>
+          </span>
+          <span class="bringing-sheet__count">
+            <span class="bringing-sheet__bar" aria-hidden="true">
+              <span style="width: <%= row.bar_percent %>%"></span>
+            </span>
+            <%= row.count_text %>
+          </span>
+        </span>
+      </label>
+    <% end %>
+  </div>
+
+  <div class="bringing-chips">
+    <% [[Attendee::BRINGING_NOT_SURE, Attendee::BRINGING_NOT_SURE], [Attendee::BRINGING_OTHER, "Something else"]].each do |value, label| %>
+      <label class="bringing-chip">
+        <%= f.radio_button :bringing, value, class: "bringing-chip__input", id: "bringing_#{value.parameterize(separator: '_')}" %>
+        <span class="bringing-chip__face"><%= label %></span>
+      </label>
+    <% end %>
+  </div>
+
+  <% if error %>
+    <p class="bringing-picker__error" id="bringing_error" role="alert"><%= error %></p>
+  <% end %>
+</fieldset>
+
+<div data-bringing-other-target="other" <%= "hidden" unless f.object.bringing == Attendee::BRINGING_OTHER %>>
+  <%= f.input :bringing_other,
+      label: "Tell us what you're bringing",
+      input_html: { placeholder: "e.g. Homemade lasagna" } %>
+</div>

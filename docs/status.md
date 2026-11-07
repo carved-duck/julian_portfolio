@@ -10,8 +10,10 @@ When something closes, delete its line here in the same session (the commit mess
   2026-10-30 hover lens, one-screen Home, and gold light and shadow on billows.
   Migrations and `showcase:load` done on production.
 - The 2026-11-07 event signup fixes: a rejected signup keeps what the visitor typed and marks the
-  field in red; the "bringing" dropdown has "Not sure yet"; the "Other" text box works after Turbo
-  visits, and "Other" needs its text.
+  field in red; "What are you bringing?" is a sign-up sheet (`events/_bringing_picker`: live counts,
+  "Most needed" on the single fewest dish, "Not sure yet" and "Something else"); the "Something
+  else" text box works after Turbo visits and needs its text; only listed answers are saved.
+  - **Still owed:** Julian's look on a real phone, and a writer pass on the picker's placeholder copy.
 - **Deploy steps** (at Julian's go): `git push heroku master`, then straight away
   `heroku run rails db:migrate -a julian-portfolio` if there are migrations (no release phase, so
   pages that need the new columns error until it runs), then
@@ -42,10 +44,6 @@ When something closes, delete its line here in the same session (the commit mess
     Projects.
 
 ## Waiting on Julian
-- **Redesign the event signup "bringing" picker** (Julian, 2026-11-07: "quite bad design wise").
-  Seen so far: the prompt reads like a filled-in answer (all 4 failed live signups skipped it), the
-  select isn't styled like the cream inputs, the per-dish counts hide inside the list, and the
-  "Bringing *" label is curt. Agree the design before building.
 - **Broken admin scaffold tests:** repair them, or delete them (`dev.md` § Commands, "Test suite
   state"). Until tests run, event capacity changes have no automated check.
 - **Event SEO wording:** `ApplicationHelper` describes events as "photography workshops, tech

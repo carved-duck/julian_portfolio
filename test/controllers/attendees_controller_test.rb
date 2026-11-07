@@ -13,7 +13,7 @@ class AttendeesControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
     assert_select "#attendee_name[value=?]", "Luigi"
     assert_select "#attendee_instagram_handle[value=?]", "@luigi"
-    assert_select ".attendee_bringing .invalid-feedback"
+    assert_select ".bringing-picker__error", /Pick one/
   end
 
   test "a rejected Other signup keeps Other selected and its text" do
@@ -21,8 +21,8 @@ class AttendeesControllerTest < ActionDispatch::IntegrationTest
          params: { attendee: { name: "", instagram_handle: "@luigi", bringing: "Other", bringing_other: "Lasagna" } }
 
     assert_response :unprocessable_entity
-    assert_select "#attendee_bringing option[selected][value=?]", "Other"
-    assert_select "#attendee_bringing_other[value=?]", "Lasagna"
+    assert_select "input[type=radio][name='attendee[bringing]'][checked][value=?]", "Other"
+    assert_select "input[type=text]#attendee_bringing_other[value=?]", "Lasagna"
   end
 
   test "Not sure yet is a valid answer and the thanks doesn't claim a dish" do

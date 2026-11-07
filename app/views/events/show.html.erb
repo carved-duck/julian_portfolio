@@ -61,21 +61,7 @@
               <%= f.input :name, required: true, hint: "Your name" %>
               <%= f.input :instagram_handle, required: true, hint: "Your Instagram username or name if you don't have one" %>
 
-              <% if @event.requires_bringing_field? %>
-                <%= f.input :bringing,
-                    collection: bringing_options(@event),
-                    prompt: "What will you be bringing?",
-                    required: true,
-                    hint: "Pick what you're planning to bring, or \"#{Attendee::BRINGING_NOT_SURE}\" if you haven't decided",
-                    input_html: { data: { bringing_other_target: "select", action: "bringing-other#toggle" } } %>
-
-                <div data-bringing-other-target="other" <%= "hidden" unless @attendee.bringing == Attendee::BRINGING_OTHER %>>
-                  <%= f.input :bringing_other,
-                      label: "What are you bringing?",
-                      hint: "Please specify what you're bringing",
-                      input_html: { placeholder: "e.g., Homemade lasagna" } %>
-                </div>
-              <% end %>
+              <%= render "events/bringing_picker", f: f, event: @event if @event.requires_bringing_field? %>
 
               <%= f.input :message, as: :text, input_html: { rows: 3 }, hint: "Optional: Some kind of meaningful message :D" %>
             </div>

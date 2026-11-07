@@ -13,6 +13,13 @@ class AttendeeTest < ActiveSupport::TestCase
     assert attendee.errors[:bringing_other].any?
   end
 
+  test "free text only gets in through Other" do
+    attendee = @event.attendees.build(name: "Luigi", instagram_handle: "@luigi", bringing: "Lasagna")
+
+    assert_not attendee.valid?
+    assert attendee.errors[:bringing].any?
+  end
+
   test "Other saves what the visitor typed" do
     attendee = @event.attendees.create!(name: "Luigi", instagram_handle: "@luigi",
                                         bringing: "Other", bringing_other: " Lasagna ")
