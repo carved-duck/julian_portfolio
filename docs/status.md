@@ -9,6 +9,9 @@ When something closes, delete its line here in the same session (the commit mess
   2026-09-27 home tagline wording, the 2026-10-28 wind billows (the waves lift like cloth), and the
   2026-10-30 hover lens, one-screen Home, and gold light and shadow on billows.
   Migrations and `showcase:load` done on production.
+- The 2026-11-07 event signup fixes: a rejected signup keeps what the visitor typed and marks the
+  field in red; the "bringing" dropdown has "Not sure yet"; the "Other" text box works after Turbo
+  visits, and "Other" needs its text.
 - **Deploy steps** (at Julian's go): `git push heroku master`, then straight away
   `heroku run rails db:migrate -a julian-portfolio` if there are migrations (no release phase, so
   pages that need the new columns error until it runs), then
@@ -39,8 +42,10 @@ When something closes, delete its line here in the same session (the commit mess
     Projects.
 
 ## Waiting on Julian
-- **Deploy the event signup fix** (on `master`, not on Heroku yet): a rejected signup now keeps
-  what the visitor typed and shows the field error, instead of coming back blank.
+- **Redesign the event signup "bringing" picker** (Julian, 2026-11-07: "quite bad design wise").
+  Seen so far: the prompt reads like a filled-in answer (all 4 failed live signups skipped it), the
+  select isn't styled like the cream inputs, the per-dish counts hide inside the list, and the
+  "Bringing *" label is curt. Agree the design before building.
 - **Broken admin scaffold tests:** repair them, or delete them (`dev.md` § Commands, "Test suite
   state"). Until tests run, event capacity changes have no automated check.
 - **Event SEO wording:** `ApplicationHelper` describes events as "photography workshops, tech
@@ -59,11 +64,8 @@ When something closes, delete its line here in the same session (the commit mess
 - Auto-screenshot a project's live URL for its image (a screenshot service or headless capture).
 
 ## Known bugs (small, unfixed)
-- Event signup "Other" box: the toggle in `events/show.html.erb` listens only for
-  `DOMContentLoaded`, so after a Turbo visit from `/events` (or a failed submit) picking "Other"
-  shows no text box, and the signup saves the literal word "Other". Fix: a small Stimulus
-  controller, plus a model validation that "Other" needs its text.
-- A failed event signup shows two red banners (the flash and simple_form's notice); keep one.
+- Admin event page "Bringing Summary" prints nothing: `admin/events/show.html.erb` builds the
+  line with `<% %>` instead of `<%= %>`.
 - `photo_protection_controller.js` `disconnect()` removes fresh `.bind(this)` copies, so nothing is
   removed: listeners leak across Turbo visits (`frontend.md` § Stimulus).
 - `photo_navigation_controller.js` never removes its `turbo:frame-load` listener.

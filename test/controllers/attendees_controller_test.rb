@@ -21,7 +21,16 @@ class AttendeesControllerTest < ActionDispatch::IntegrationTest
          params: { attendee: { name: "", instagram_handle: "@luigi", bringing: "Other", bringing_other: "Lasagna" } }
 
     assert_response :unprocessable_entity
-    assert_select "#bringing-select option[selected][value=?]", "Other"
+    assert_select "#attendee_bringing option[selected][value=?]", "Other"
     assert_select "#attendee_bringing_other[value=?]", "Lasagna"
+  end
+
+  test "Not sure yet is a valid answer and the thanks doesn't claim a dish" do
+    post event_attendees_url(@event),
+         params: { attendee: { name: "Luigi", instagram_handle: "@luigi", bringing: "Not sure yet" } }
+
+    assert_redirected_to events_url
+    assert_equal "Not sure yet", @event.attendees.last.bringing
+    assert_no_match(/Thanks for bringing/, flash[:notice])
   end
 end

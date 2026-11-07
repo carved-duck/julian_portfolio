@@ -55,59 +55,26 @@
           <h3>Sign Up for This Event</h3>
         </div>
         <div class="card-body">
-          <%= simple_form_for([@event, @attendee]) do |f| %>
-            <%= f.error_notification %>
-            <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+          <%= simple_form_for([@event, @attendee], data: { controller: "bringing-other", bringing_other_choice_value: Attendee::BRINGING_OTHER }) do |f| %>
+            <%= f.error_notification message: "😔 Almost there! Please fix the field marked in red below." %>
             <div class="form-inputs">
               <%= f.input :name, required: true, hint: "Your name" %>
               <%= f.input :instagram_handle, required: true, hint: "Your Instagram username or name if you don't have one" %>
 
               <% if @event.requires_bringing_field? %>
-                <% breakdown = @event.bringing_breakdown %>
                 <%= f.input :bringing,
-                    collection: @event.class::BRINGING_CATEGORIES.map { |cat|
-                      count = breakdown[cat] || 0
-                      if count > 0
-                        people_text = count == 1 ? "person" : "people"
-                        display_text = "#{cat} (#{count} #{people_text})"
-                      else
-                        display_text = cat
-                      end
-                      [display_text, cat]
-                    } + [['Other (specify below)', 'Other']],
+                    collection: bringing_options(@event),
                     prompt: "What will you be bringing?",
                     required: true,
-                    hint: "Select what you're planning to bring to the event",
-                    input_html: { id: 'bringing-select' } %>
+                    hint: "Pick what you're planning to bring, or \"#{Attendee::BRINGING_NOT_SURE}\" if you haven't decided",
+                    input_html: { data: { bringing_other_target: "select", action: "bringing-other#toggle" } } %>
 
-                <div id="other-bringing-input" style="display: none;">
+                <div data-bringing-other-target="other" <%= "hidden" unless @attendee.bringing == Attendee::BRINGING_OTHER %>>
                   <%= f.input :bringing_other,
                       label: "What are you bringing?",
                       hint: "Please specify what you're bringing",
                       input_html: { placeholder: "e.g., Homemade lasagna" } %>
                 </div>
-
-                <script>
-                  document.addEventListener('DOMContentLoaded', function() {
-                    const bringingSelect = document.getElementById('bringing-select');
-                    const otherInput = document.getElementById('other-bringing-input');
-
-                    function toggleOtherInput() {
-                      if (bringingSelect.value === 'Other') {
-                        otherInput.style.display = 'block';
-                        otherInput.querySelector('input').required = true;
-                      } else {
-                        otherInput.style.display = 'none';
-                        otherInput.querySelector('input').required = false;
-                      }
-                    }
-
-                    if (bringingSelect) {
-                      bringingSelect.addEventListener('change', toggleOtherInput);
-                      toggleOtherInput(); // Run on page load
-                    }
-                  });
-                </script>
               <% end %>
 
               <%= f.input :message, as: :text, input_html: { rows: 3 }, hint: "Optional: Some kind of meaningful message :D" %>

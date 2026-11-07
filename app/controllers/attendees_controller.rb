@@ -2,14 +2,7 @@ class AttendeesController < ApplicationController
   before_action :set_event
 
   def create
-    # Handle the "Other" bringing option for normal events
-    processed_params = attendee_params
-    if @event.normal_event? && processed_params[:bringing] == 'Other' && processed_params[:bringing_other].present?
-      processed_params[:bringing] = processed_params[:bringing_other]
-    end
-    processed_params.delete(:bringing_other) # Remove the temporary field
-
-    @attendee = @event.attendees.build(processed_params)
+    @attendee = @event.attendees.build(attendee_params)
 
     # Check capacity before saving
     if @event.normal_event? && @event.at_capacity?
@@ -42,17 +35,10 @@ class AttendeesController < ApplicationController
         }
         redirect_to event_path(@event, show_pending_modal: true)
       else
-        success_message = if @event.normal_event?
-                            "🎉 Thanks #{@attendee.name}! You've successfully signed up for #{@event.title}. Thanks for bringing #{@attendee.bringing}!"
-                          else
-                            "🎉 Thanks #{@attendee.name}! You've successfully signed up for #{@event.title}. We'll be in touch soon!"
-                          end
         redirect_to events_path, notice: success_message
       end
     else
-      flash.now[:alert] = "😔 Sorry, there was an issue with your signup. Please check the form and try again."
       # Re-render the same @attendee: it carries the field errors and what the visitor typed.
-      restore_other_choice(@attendee)
       render 'events/show', status: :unprocessable_entity
     end
   end
@@ -80,14 +66,12 @@ class AttendeesController < ApplicationController
     @event = Event.find(params[:event_id])
   end
 
-  # The "Other" text was copied into `bringing` above. Put it back, or the re-rendered select
-  # matches no option and the browser silently shows the first category instead.
-  def restore_other_choice(attendee)
-    return if attendee.bringing.blank? || attendee.bringing == 'Other'
-    return if Event::BRINGING_CATEGORIES.include?(attendee.bringing)
+  def success_message
+    thanks = "🎉 Thanks #{@attendee.name}! You've successfully signed up for #{@event.title}."
+    return "#{thanks} We'll be in touch soon!" unless @event.normal_event?
+    return "#{thanks} Thanks for bringing #{@attendee.bringing}!" if @attendee.bringing_known?
 
-    attendee.bringing_other = attendee.bringing
-    attendee.bringing = 'Other'
+    thanks
   end
 
   def attendee_params
